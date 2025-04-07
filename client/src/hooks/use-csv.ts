@@ -115,30 +115,43 @@ export function useCsv(): UseCsvResult {
         }
       });
       
-      // Map data using the provided mapping
-      const mapped = csvData.map(row => {
-        const newRow: Record<string, any> = {};
+      // Process the data in chunks to prevent memory issues with large datasets
+      const chunkSize = 100; // Process 100 rows at a time
+      const totalChunks = Math.ceil(csvData.length / chunkSize);
+      let mapped: Record<string, any>[] = [];
+
+      for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+        const startIndex = chunkIndex * chunkSize;
+        const endIndex = Math.min(startIndex + chunkSize, csvData.length);
+        const chunk = csvData.slice(startIndex, endIndex);
         
-        // Only include mapped fields and clean the data
-        Object.entries(row).forEach(([csvHeader, value]) => {
-          const fieldName = reverseMapping[csvHeader];
-          if (fieldName) {
-            // Clean and normalize the value
-            if (typeof value === 'string') {
-              // Trim whitespace
-              newRow[fieldName] = value.trim();
-            } else if (value === null || value === undefined) {
-              // Handle null/undefined values but don't set them as empty string
-              // to allow schema default values to work
-            } else {
-              // Keep other values as is
-              newRow[fieldName] = value;
+        // Map data using the provided mapping
+        const mappedChunk = chunk.map(row => {
+          const newRow: Record<string, any> = {};
+          
+          // Only include mapped fields and clean the data
+          Object.entries(row).forEach(([csvHeader, value]) => {
+            const fieldName = reverseMapping[csvHeader];
+            if (fieldName) {
+              // Clean and normalize the value
+              if (typeof value === 'string') {
+                // Trim whitespace
+                newRow[fieldName] = value.trim();
+              } else if (value === null || value === undefined) {
+                // Handle null/undefined values but don't set them as empty string
+                // to allow schema default values to work
+              } else {
+                // Keep other values as is
+                newRow[fieldName] = value;
+              }
             }
-          }
+          });
+          
+          return newRow;
         });
         
-        return newRow;
-      });
+        mapped = [...mapped, ...mappedChunk];
+      }
       
       // Filter out completely empty rows (no values at all)
       const filteredMapped = mapped.filter(row => {
