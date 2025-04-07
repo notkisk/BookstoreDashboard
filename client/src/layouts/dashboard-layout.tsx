@@ -10,7 +10,9 @@ import {
   Search, 
   Bell, 
   X, 
-  Menu
+  Menu,
+  FileText,
+  MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +52,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { path: "/customers", label: "Customers", icon: <User /> },
     { path: "/import", label: "CSV Import", icon: <Upload /> },
     { path: "/export", label: "CSV Export", icon: <Download /> },
+    { path: "/location-data", label: "Location Data", icon: <MapPin /> },
   ];
 
   // Extract the title from the current route

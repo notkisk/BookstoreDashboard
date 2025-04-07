@@ -9,6 +9,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,10 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { wilayas, communes, getCommunesByWilayaId } from "@/data/algeria";
+import { wilayas, communes, getCommunesByWilayaId, updateLocationData, isLocationDataAvailable } from "@/data/algeria";
 import { useFuzzySearch } from "@/hooks/use-fuzzy-search";
-import { Plus, Minus, Trash2, Search } from "lucide-react";
+import { Plus, Minus, Trash2, Search, AlertTriangle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 // Define the book type
 interface Book {
@@ -287,6 +289,14 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
+        {!isLocationDataAvailable() && (
+          <Alert variant="destructive" className="mb-6">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              No location data (wilayas and communes) available. Please upload location data in the Location Data page before creating orders.
+            </AlertDescription>
+          </Alert>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Customer Information */}
           <div>
@@ -705,7 +715,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
           </Button>
           <Button 
             type="submit" 
-            disabled={isSubmitting}
+            disabled={isSubmitting || !isLocationDataAvailable()}
             className="bg-primary-300 hover:bg-primary-400 text-white"
           >
             Create Order
