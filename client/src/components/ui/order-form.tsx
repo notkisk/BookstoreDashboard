@@ -57,7 +57,10 @@ const orderFormSchema = z.object({
   address: z.string().min(1, "Full address is required"),
   
   // Order Information
-  deliveryType: z.string().min(1, "Delivery type is required"),
+  deliveryPrice: z.preprocess(
+    (val) => val === "" ? 0 : Number(val),
+    z.number().min(0, "Delivery price must be a positive number").default(0)
+  ),
   fragile: z.boolean().default(false),
   echange: z.boolean().default(false),
   pickup: z.boolean().default(false),
@@ -84,7 +87,8 @@ interface OrderFormData {
     wilaya: string;
     commune: string;
   };
-  deliveryType: string;
+  deliveryType: string; // This will be derived from stopDesk value
+  deliveryPrice: number;
   fragile: boolean;
   echange: boolean;
   pickup: boolean;
@@ -120,7 +124,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       wilaya: "",
       commune: "",
       address: "",
-      deliveryType: "",
+      deliveryPrice: 0,
       fragile: false,
       echange: false,
       pickup: false,
@@ -254,6 +258,9 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       return;
     }
     
+    // Derive delivery type from stopDesk value
+    const deliveryType = values.stopDesk ? "stopDesk" : "homeDelivery";
+    
     const formData: OrderFormData = {
       customer: {
         name: values.customerName,
@@ -263,7 +270,8 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
         wilaya: values.wilaya,
         commune: values.commune,
       },
-      deliveryType: values.deliveryType,
+      deliveryType: deliveryType,
+      deliveryPrice: values.deliveryPrice,
       fragile: values.fragile,
       echange: values.echange,
       pickup: values.pickup,
@@ -443,25 +451,26 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                 )}
               />
 
-              {/* Delivery Type */}
+              {/* Delivery Price */}
               <FormField
                 control={form.control}
-                name="deliveryType"
+                name="deliveryPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Delivery Type*</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Delivery Type..." />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="home">Home Delivery</SelectItem>
-                        <SelectItem value="pickup">Pickup Point</SelectItem>
-                        <SelectItem value="express">Express Delivery</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Delivery Price</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min="0"
+                        step="100"
+                        placeholder="0"
+                        onChange={(e) => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
+                        value={field.value}
+                      />
+                    </FormControl>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Cost of delivery, if applicable
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
