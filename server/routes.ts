@@ -111,24 +111,109 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Import books from CSV (array of book objects)
+  // Import books from CSV (array of book objects) with error tolerance
   app.post("/api/books/import", async (req, res) => {
     try {
-      const bookDataList = z.array(insertBookSchema).parse(req.body);
-      const books = [];
+      // Parse with loose schema to handle partial data
+      const looseBookSchema = insertBookSchema.partial().extend({
+        // Only title is truly required
+        title: z.string().min(1, "Title is required"),
+        // Make sure numbers are properly processed
+        price: z.preprocess(
+          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
+          z.number().min(0).default(0)
+        ),
+        buyPrice: z.preprocess(
+          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
+          z.number().min(0).default(0)
+        ),
+        quantityBought: z.preprocess(
+          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
+          z.number().min(0).default(0)
+        ),
+        quantityLeft: z.preprocess(
+          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
+          z.number().min(0).default(0)
+        ),
+      });
+
+      // First check if it's an array
+      if (!Array.isArray(req.body)) {
+        return res.status(400).json({ 
+          message: "Invalid data format. Expected an array of books.",
+          importSummary: {
+            totalAttempted: 0,
+            successfulImports: 0,
+            failedImports: 0,
+            errors: ["Data format is not an array"]
+          }
+        });
+      }
+
+      const bookDataList = req.body;
+      const successfulBooks = [];
+      const failedBooks = [];
+      const errors = [];
       
+      // Process each book independently to avoid batch failure
       for (const bookData of bookDataList) {
-        const book = await storage.createBook(bookData);
-        books.push(book);
+        try {
+          // First validate the data
+          const validatedData = looseBookSchema.parse(bookData);
+          
+          // Then try to save it
+          try {
+            const book = await storage.createBook(validatedData);
+            successfulBooks.push(book);
+          } catch (createError) {
+            console.error("Error creating book:", createError);
+            failedBooks.push({ 
+              data: bookData, 
+              error: createError instanceof Error ? createError.message : "Unknown database error" 
+            });
+            errors.push(`Error saving ${bookData.title || 'book'}: ${createError instanceof Error ? createError.message : "Unknown error"}`);
+          }
+        } catch (validationError) {
+          // Handle validation errors for this specific book
+          console.error("Validation error:", validationError);
+          failedBooks.push({ 
+            data: bookData, 
+            error: validationError instanceof z.ZodError 
+              ? validationError.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
+              : "Unknown validation error" 
+          });
+          errors.push(`Validation error for book ${
+            bookData.title ? `'${bookData.title}'` : '(no title)'
+          }: ${
+            validationError instanceof z.ZodError 
+              ? validationError.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')
+              : "Unknown validation error"
+          }`);
+        }
       }
       
-      res.status(201).json(books);
+      // Return results with import summary
+      return res.status(successfulBooks.length > 0 ? 201 : 400).json({
+        books: successfulBooks,
+        importSummary: {
+          totalAttempted: bookDataList.length,
+          successfulImports: successfulBooks.length,
+          failedImports: failedBooks.length,
+          errors: errors
+        }
+      });
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid book data", errors: error.errors });
-      }
-      console.error("Error importing books:", error);
-      res.status(500).json({ message: "Failed to import books" });
+      console.error("Error in book import process:", error);
+      res.status(500).json({ 
+        message: "Failed to process book import", 
+        error: error instanceof Error ? error.message : "Unknown error",
+        importSummary: {
+          totalAttempted: Array.isArray(req.body) ? req.body.length : 0,
+          successfulImports: 0,
+          failedImports: Array.isArray(req.body) ? req.body.length : 0,
+          errors: [error instanceof Error ? error.message : "Unknown server error"]
+        }
+      });
     }
   });
 

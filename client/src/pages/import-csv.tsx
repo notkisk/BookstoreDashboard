@@ -6,8 +6,22 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { CsvParser } from "@/components/ui/csv-parser";
-import { CheckCircle, ChevronLeft } from "lucide-react";
+import { 
+  AlertCircle, 
+  CheckCircle, 
+  ChevronDown, 
+  ChevronLeft, 
+  ChevronUp, 
+  XCircle 
+} from "lucide-react";
 import { z } from "zod";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 // Book schema for validation
 const bookSchema = z.object({
@@ -32,30 +46,109 @@ const bookSchema = z.object({
   ),
 });
 
+// Import response with error information
+interface ImportResponse {
+  books: any[];
+  importSummary: {
+    totalAttempted: number;
+    successfulImports: number;
+    failedImports: number;
+    errors: string[];
+  };
+}
+
 export default function ImportCsv() {
   const [isImported, setIsImported] = useState(false);
   const [importedCount, setImportedCount] = useState(0);
+  const [importErrors, setImportErrors] = useState<string[]>([]);
+  const [showErrors, setShowErrors] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Import books mutation
+  // Import books mutation with improved error handling
   const importBooks = useMutation({
-    mutationFn: async (books: any[]) => {
-      return apiRequest("POST", "/api/books/import", books);
+    mutationFn: async (books: any[]): Promise<ImportResponse> => {
+      const response = await apiRequest("POST", "/api/books/import", books);
+      return response as unknown as ImportResponse;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
+      // The response now contains an importSummary field
+      const summary = data.importSummary || {
+        successfulImports: data.books?.length || 0,
+        failedImports: 0,
+        totalAttempted: variables.length,
+        errors: []
+      };
+      
+      // Store any errors for display
+      if (summary.errors && summary.errors.length > 0) {
+        setImportErrors(summary.errors);
+        setShowErrors(true);
+      } else {
+        setImportErrors([]);
+      }
+      
       queryClient.invalidateQueries({ queryKey: ["/api/books"] });
-      setImportedCount(variables.length);
+      setImportedCount(summary.successfulImports);
       setIsImported(true);
-      toast({
-        title: "Books imported successfully",
-        description: `${variables.length} books have been added to your inventory.`,
-      });
+      
+      // Display appropriate message based on success/failure ratio
+      if (summary.failedImports === 0) {
+        toast({
+          title: "Books imported successfully",
+          description: `All ${summary.successfulImports} books have been added to your inventory.`,
+        });
+      } else if (summary.successfulImports > 0) {
+        toast({
+          title: "Partial import completed",
+          description: `${summary.successfulImports} books were imported successfully. ${summary.failedImports} books had errors and were skipped.`,
+          variant: "default",
+        });
+        
+        // If there are errors, show a separate toast with details
+        if (summary.errors && summary.errors.length > 0) {
+          const errorCount = summary.errors.length;
+          toast({
+            title: `${errorCount} error${errorCount !== 1 ? 's' : ''} occurred during import`,
+            description: `Check the error details below for more information.`,
+            variant: "destructive",
+          });
+        }
+      } else {
+        toast({
+          title: "Import failed",
+          description: `None of the books could be imported. Please check the errors and try again.`,
+          variant: "destructive",
+        });
+      }
     },
     onError: (error) => {
+      // Try to extract error information if possible
+      let errorMessages: string[] = [];
+      
+      if (error instanceof Error) {
+        try {
+          // Check if there's structured error data
+          const errorData = JSON.parse(error.message);
+          if (errorData.importSummary?.errors) {
+            errorMessages = errorData.importSummary.errors;
+          } else {
+            errorMessages = [error.message];
+          }
+        } catch {
+          // Not JSON, just use the raw message
+          errorMessages = [error.message];
+        }
+      } else {
+        errorMessages = ["Unknown error occurred during import"];
+      }
+      
+      setImportErrors(errorMessages);
+      setShowErrors(true);
+      
       toast({
         title: "Error importing books",
-        description: error.message,
+        description: "Failed to import books. Check the error details below.",
         variant: "destructive",
       });
     },
@@ -206,6 +299,57 @@ export default function ImportCsv() {
                   Import More Books
                 </Button>
               </div>
+              
+              {/* Display error details if there are any */}
+              {importErrors.length > 0 && (
+                <div className="mt-6 w-full">
+                  <Alert variant="destructive" className="mb-4">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Import completed with errors</AlertTitle>
+                    <AlertDescription>
+                      Some books couldn't be imported due to errors. See details below.
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <div className="border rounded-md overflow-hidden">
+                    <div 
+                      className="bg-gray-100 p-3 flex justify-between items-center cursor-pointer"
+                      onClick={() => setShowErrors(!showErrors)}
+                    >
+                      <h3 className="font-medium text-gray-900">
+                        {importErrors.length} Error{importErrors.length !== 1 ? 's' : ''}
+                      </h3>
+                      {showErrors ? (
+                        <ChevronUp className="h-4 w-4 text-gray-500" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4 text-gray-500" />
+                      )}
+                    </div>
+                    
+                    {showErrors && (
+                      <div className="p-3 bg-white max-h-64 overflow-y-auto">
+                        <Accordion type="single" collapsible className="w-full">
+                          {importErrors.map((error, index) => (
+                            <AccordionItem key={index} value={`error-${index}`}>
+                              <AccordionTrigger className="text-sm text-red-600 hover:text-red-800">
+                                <div className="flex items-center">
+                                  <XCircle className="h-4 w-4 mr-2" />
+                                  Error {index + 1}
+                                </div>
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <pre className="text-xs bg-gray-50 p-2 rounded whitespace-pre-wrap">
+                                  {error}
+                                </pre>
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
+                        </Accordion>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <CsvParser
