@@ -12,11 +12,13 @@ import { z } from "zod";
 // Book schema for validation
 const bookSchema = z.object({
   title: z.string().min(1, "Title is required"),
-  author: z.string().min(1, "Author is required"),
-  publisher: z.string().min(1, "Publisher is required"),
+  author: z.string().min(0, "Author is required"),
+  publisher: z.string().min(0, "Publisher is required"),
   price: z.coerce.number().min(1, "Price must be greater than 0"),
   buyPrice: z.coerce.number().min(1, "Buy price must be greater than 0"),
-  quantityBought: z.coerce.number().min(1, "Quantity bought must be at least 1"),
+  quantityBought: z.coerce
+    .number()
+    .min(1, "Quantity bought must be at least 1"),
   quantityLeft: z.coerce.number().min(0, "Quantity left cannot be negative"),
 });
 
@@ -29,10 +31,10 @@ export default function ImportCsv() {
   // Import books mutation
   const importBooks = useMutation({
     mutationFn: async (books: any[]) => {
-      return apiRequest('POST', '/api/books/import', books);
+      return apiRequest("POST", "/api/books/import", books);
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['/api/books'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/books"] });
       setImportedCount(variables.length);
       setIsImported(true);
       toast({
@@ -50,36 +52,48 @@ export default function ImportCsv() {
   });
 
   // Handle data mapping from CSV
-  const handleMappedData = useCallback((data: any[]) => {
-    // Validate and transform data
-    try {
-      const validBooks = data.map(book => {
-        // Validate book data
-        const validatedBook = bookSchema.parse(book);
-        return validatedBook;
-      });
+  const handleMappedData = useCallback(
+    (data: any[]) => {
+      // Validate and transform data
+      try {
+        const validBooks = data.map((book) => {
+          // Validate book data
+          const validatedBook = bookSchema.parse(book);
+          return validatedBook;
+        });
 
-      // Import books
-      importBooks.mutate(validBooks);
-    } catch (error) {
-      toast({
-        title: "Validation Error",
-        description: "Some books have invalid data. Please check your CSV file and try again.",
-        variant: "destructive",
-      });
-    }
-  }, [importBooks, toast]);
+        // Import books
+        importBooks.mutate(validBooks);
+      } catch (error) {
+        toast({
+          title: "Validation Error",
+          description:
+            "Some books have invalid data. Please check your CSV file and try again.",
+          variant: "destructive",
+        });
+      }
+    },
+    [importBooks, toast],
+  );
 
   // Required fields and their labels
-  const requiredFields = ['title', 'author', 'publisher', 'price', 'buyPrice', 'quantityBought', 'quantityLeft'];
+  const requiredFields = [
+    "title",
+    "author",
+    "publisher",
+    "price",
+    "buyPrice",
+    "quantityBought",
+    "quantityLeft",
+  ];
   const fieldLabels = {
-    title: 'Book Title',
-    author: 'Author',
-    publisher: 'Publisher',
-    price: 'Sale Price',
-    buyPrice: 'Buy Price',
-    quantityBought: 'Quantity Bought',
-    quantityLeft: 'Quantity Left'
+    title: "Book Title",
+    author: "Author",
+    publisher: "Publisher",
+    price: "Sale Price",
+    buyPrice: "Buy Price",
+    quantityBought: "Quantity Bought",
+    quantityLeft: "Quantity Left",
   };
 
   return (
@@ -98,9 +112,12 @@ export default function ImportCsv() {
               <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Import Successful!</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Import Successful!
+              </h3>
               <p className="text-center text-gray-600 mb-6">
-                {importedCount} books have been successfully imported to your inventory.
+                {importedCount} books have been successfully imported to your
+                inventory.
               </p>
               <div className="flex space-x-4">
                 <Link href="/inventory">
@@ -108,10 +125,7 @@ export default function ImportCsv() {
                     View Inventory
                   </Button>
                 </Link>
-                <Button 
-                  variant="outline" 
-                  onClick={() => setIsImported(false)}
-                >
+                <Button variant="outline" onClick={() => setIsImported(false)}>
                   Import More Books
                 </Button>
               </div>
