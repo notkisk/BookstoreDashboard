@@ -305,27 +305,27 @@ export class DatabaseStorage implements IStorage {
     
     const orderIdList = orderIds.map(o => o.id);
     
-    // Calculate total sales for delivered orders
+    // Calculate total sales for delivered orders using direct IN query
     const salesResult = await db
       .select({ total: sqlBuilder`sum(${orders.totalAmount})` })
       .from(orders)
       .where(
         and(
-          sqlBuilder`${orders.id} IN (${orderIdList.join(',')})`,
+          sqlBuilder`${orders.id} IN (${orderIdList.map(id => id).join(',')})`,
           eq(orders.status, 'delivered')
         )
       );
     
     const salesTotal = Number(salesResult[0]?.total) || 0;
     
-    // Calculate total cost (buy price)
+    // Calculate total cost (buy price) using direct IN query
     const costResult = await db
       .select({ 
         total: sqlBuilder`sum(${orderItems.quantity} * ${books.buyPrice})` 
       })
       .from(orderItems)
       .innerJoin(books, eq(orderItems.bookId, books.id))
-      .where(sqlBuilder`${orderItems.orderId} IN (${orderIdList.join(',')})`);
+      .where(sqlBuilder`${orderItems.orderId} IN (${orderIdList.map(id => id).join(',')})`);
     
     const costTotal = Number(costResult[0]?.total) || 0;
     
@@ -346,10 +346,12 @@ export class DatabaseStorage implements IStorage {
     if (result.length === 0) return [];
     
     const bookIds = result.map(r => r.bookId);
+    
+    // Use direct IN query with literal values
     const booksResult = await db
       .select()
       .from(books)
-      .where(sqlBuilder`${books.id} IN (${bookIds.join(',')})`);
+      .where(sqlBuilder`${books.id} IN (${bookIds.map(id => id).join(',')})`);
     
     const booksMap = new Map<number, Book>();
     booksResult.forEach(book => booksMap.set(book.id, book));
