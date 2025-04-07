@@ -11,15 +11,25 @@ import { z } from "zod";
 
 // Book schema for validation
 const bookSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  author: z.string().min(0, "Author is required"),
-  publisher: z.string().min(0, "Publisher is required"),
-  price: z.coerce.number().min(1, "Price must be greater than 0"),
-  buyPrice: z.coerce.number().min(1, "Buy price must be greater than 0"),
-  quantityBought: z.coerce
-    .number()
-    .min(1, "Quantity bought must be at least 1"),
-  quantityLeft: z.coerce.number().min(0, "Quantity left cannot be negative"),
+  title: z.string().min(1, "Title is required").optional().default("Unknown"),
+  author: z.string().optional().default("Unknown"),
+  publisher: z.string().optional().default("Unknown"),
+  price: z.preprocess(
+    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    z.number().min(0, "Price cannot be negative").default(0)
+  ),
+  buyPrice: z.preprocess(
+    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    z.number().min(0, "Buy price cannot be negative").default(0)
+  ),
+  quantityBought: z.preprocess(
+    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    z.number().min(0, "Quantity bought cannot be negative").default(0)
+  ),
+  quantityLeft: z.preprocess(
+    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    z.number().min(0, "Quantity left cannot be negative").default(0)
+  ),
 });
 
 export default function ImportCsv() {
@@ -54,37 +64,62 @@ export default function ImportCsv() {
   // Handle data mapping from CSV
   const handleMappedData = useCallback(
     (data: any[]) => {
-      // Validate and transform data
-      try {
-        const validBooks = data.map((book) => {
-          // Validate book data
-          const validatedBook = bookSchema.parse(book);
-          return validatedBook;
-        });
-
-        // Import books
-        importBooks.mutate(validBooks);
-      } catch (error) {
+      if (!data || data.length === 0) {
         toast({
-          title: "Validation Error",
-          description:
-            "Some books have invalid data. Please check your CSV file and try again.",
+          title: "No Data",
+          description: "No valid data found to import. Please check your CSV file.",
           variant: "destructive",
         });
+        return;
       }
+
+      // Validate and transform data
+      const validBooks = [];
+      const invalidEntries = [];
+
+      for (const book of data) {
+        try {
+          // Check if the book has minimal required data
+          if (!book.title && !book.author) {
+            invalidEntries.push(book);
+            continue;
+          }
+          
+          // Validate and transform
+          const validatedBook = bookSchema.parse(book);
+          validBooks.push(validatedBook);
+        } catch (error) {
+          invalidEntries.push(book);
+        }
+      }
+
+      if (validBooks.length === 0) {
+        toast({
+          title: "Validation Error",
+          description: "No valid books found. Please check your CSV file format and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Show warning if some entries were invalid
+      if (invalidEntries.length > 0) {
+        toast({
+          title: "Partial Import",
+          description: `${invalidEntries.length} entries had invalid data and were skipped. ${validBooks.length} valid books will be imported.`,
+        });
+      }
+
+      // Import valid books
+      importBooks.mutate(validBooks);
     },
     [importBooks, toast],
   );
 
   // Required fields and their labels
+  // Only title is truly required, others are optional with defaults
   const requiredFields = [
     "title",
-    "author",
-    "publisher",
-    "price",
-    "buyPrice",
-    "quantityBought",
-    "quantityLeft",
   ];
   const fieldLabels = {
     title: "Book Title",
