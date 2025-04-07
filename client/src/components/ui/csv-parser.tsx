@@ -81,17 +81,30 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
   }, [headers]);
 
   const handleMapping = useCallback(() => {
-    // Check if all required fields are mapped
-    const missingFields = requiredFields.filter(field => !mappings[field]);
+    // Only title is truly required, the rest can use defaults
+    const essentialFields = ["title"];
+    const missingEssentialFields = essentialFields.filter(field => 
+      !mappings[field] || mappings[field].trim() === " ");
     
-    if (missingFields.length > 0) {
-      setError(`Please map the following required fields: ${missingFields.map(f => fieldLabels[f] || f).join(', ')}`);
+    if (missingEssentialFields.length > 0) {
+      setError(`Please map at least the Book Title field to continue`);
       return;
     }
     
+    // Warn about recommended fields
+    const recommendedFields = ["author", "price", "quantityBought"];
+    const missingRecommendedFields = recommendedFields.filter(field => 
+      !mappings[field] || mappings[field].trim() === " ");
+    
+    // Proceed with mapping
     mapHeaders(mappings);
     setStep('preview');
-  }, [mappings, requiredFields, fieldLabels, mapHeaders]);
+    
+    // Show warning toast for missing recommended fields
+    if (missingRecommendedFields.length > 0 && missingRecommendedFields.length < recommendedFields.length) {
+      setError(`Note: Some recommended fields are not mapped and will use default values.`);
+    }
+  }, [mappings, mapHeaders]);
 
   const handleFinish = useCallback(() => {
     onDataMapped(mappedData);
@@ -247,7 +260,7 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
           {Object.entries(fieldLabels).map(([fieldKey, fieldLabel]) => (
             <div key={fieldKey} className="flex items-center space-x-2">
               <div className="w-1/3 text-sm font-medium">
-                {fieldLabel} {requiredFields.includes(fieldKey) && <span className="text-red-500">*</span>}
+                {fieldLabel} {fieldKey === "title" && <span className="text-red-500">*</span>}
               </div>
               <div className="w-2/3">
                 <Select 

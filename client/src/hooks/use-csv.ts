@@ -110,7 +110,7 @@ export function useCsv(): UseCsvResult {
       // Create a reversed mapping from CSV header to field name
       const reverseMapping: Record<string, string> = {};
       Object.entries(mapping).forEach(([fieldName, csvHeader]) => {
-        if (csvHeader) {
+        if (csvHeader && csvHeader.trim() !== " ") {
           reverseMapping[csvHeader] = fieldName;
         }
       });
@@ -119,19 +119,35 @@ export function useCsv(): UseCsvResult {
       const mapped = csvData.map(row => {
         const newRow: Record<string, any> = {};
         
-        // Only include mapped fields
+        // Only include mapped fields and clean the data
         Object.entries(row).forEach(([csvHeader, value]) => {
           const fieldName = reverseMapping[csvHeader];
           if (fieldName) {
-            newRow[fieldName] = value;
+            // Clean and normalize the value
+            if (typeof value === 'string') {
+              // Trim whitespace
+              newRow[fieldName] = value.trim();
+            } else if (value === null || value === undefined) {
+              // Handle null/undefined values but don't set them as empty string
+              // to allow schema default values to work
+            } else {
+              // Keep other values as is
+              newRow[fieldName] = value;
+            }
           }
         });
         
         return newRow;
       });
       
-      setMappedData(mapped);
-      setPreviewData(mapped);
+      // Filter out completely empty rows (no values at all)
+      const filteredMapped = mapped.filter(row => {
+        return Object.values(row).some(value => 
+          value !== null && value !== undefined && value !== '');
+      });
+      
+      setMappedData(filteredMapped);
+      setPreviewData(filteredMapped.slice(0, 5)); // Only show first 5 for preview
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to map headers'));
     }
