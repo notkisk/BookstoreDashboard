@@ -73,47 +73,88 @@ export default function ImportCsv() {
         return;
       }
 
-      // Validate and transform data
-      const validBooks = [];
-      const invalidEntries = [];
+      // Process in smaller batches to avoid request size issues
+      const batchSize = 50; // Import 50 books at a time
+      const processBatches = async (allData: any[]) => {
+        // Validate and transform data
+        const validBooks = [];
+        const invalidEntries = [];
 
-      for (const book of data) {
-        try {
-          // Check if the book has minimal required data
-          if (!book.title && !book.author) {
+        for (const book of allData) {
+          try {
+            // Check if the book has minimal required data
+            if (!book.title && !book.author) {
+              invalidEntries.push(book);
+              continue;
+            }
+            
+            // Validate and transform
+            const validatedBook = bookSchema.parse(book);
+            validBooks.push(validatedBook);
+          } catch (error) {
             invalidEntries.push(book);
-            continue;
           }
-          
-          // Validate and transform
-          const validatedBook = bookSchema.parse(book);
-          validBooks.push(validatedBook);
-        } catch (error) {
-          invalidEntries.push(book);
         }
-      }
 
-      if (validBooks.length === 0) {
+        if (validBooks.length === 0) {
+          toast({
+            title: "Validation Error",
+            description: "No valid books found. Please check your CSV file format and try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        // Show warning if some entries were invalid
+        if (invalidEntries.length > 0) {
+          toast({
+            title: "Partial Import",
+            description: `${invalidEntries.length} entries had invalid data and were skipped. ${validBooks.length} valid books will be imported.`,
+          });
+        }
+
+        // Import books in batches
+        let importedCount = 0;
+        const totalBatches = Math.ceil(validBooks.length / batchSize);
+        
         toast({
-          title: "Validation Error",
-          description: "No valid books found. Please check your CSV file format and try again.",
-          variant: "destructive",
+          title: "Starting Import",
+          description: `Importing ${validBooks.length} books in ${totalBatches} batches...`,
         });
-        return;
-      }
-
-      // Show warning if some entries were invalid
-      if (invalidEntries.length > 0) {
-        toast({
-          title: "Partial Import",
-          description: `${invalidEntries.length} entries had invalid data and were skipped. ${validBooks.length} valid books will be imported.`,
-        });
-      }
-
-      // Import valid books
-      importBooks.mutate(validBooks);
+        
+        for (let i = 0; i < validBooks.length; i += batchSize) {
+          const batchNumber = Math.floor(i / batchSize) + 1;
+          const batch = validBooks.slice(i, i + batchSize);
+          
+          try {
+            await importBooks.mutateAsync(batch);
+            importedCount += batch.length;
+            
+            if (batchNumber < totalBatches) {
+              toast({
+                title: "Import Progress",
+                description: `Batch ${batchNumber}/${totalBatches} complete. Imported ${importedCount} of ${validBooks.length} books.`,
+              });
+            }
+          } catch (error) {
+            toast({
+              title: `Error in Batch ${batchNumber}`,
+              description: `Failed to import batch: ${(error as Error).message}`,
+              variant: "destructive",
+            });
+          }
+        }
+        
+        // Update successful import count and show final message
+        setImportedCount(importedCount);
+        setIsImported(true);
+        queryClient.invalidateQueries({ queryKey: ["/api/books"] });
+      };
+      
+      // Start the batch processing
+      processBatches(data);
     },
-    [importBooks, toast],
+    [importBooks, toast, queryClient],
   );
 
   // Required fields and their labels
