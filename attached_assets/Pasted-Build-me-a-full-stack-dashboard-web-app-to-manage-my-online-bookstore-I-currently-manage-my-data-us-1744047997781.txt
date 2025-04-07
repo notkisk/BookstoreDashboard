@@ -1,0 +1,102 @@
+Build me a full-stack dashboard web app to manage my online bookstore. I currently manage my data using an Excel sheet that includes book inventory, customer info, and orders. I want a modern and efficient dashboard where I can:
+
+✅ CSV Import & Smart Data Mapping
+Upload a .csv file (Excel format) containing book data
+
+Manually map columns (e.g., Column A = title, Column B = price)
+
+Automatically parse, validate, and display books in a styled interactive table
+
+📚 Book Inventory
+List all books with details: title, price, quantity bought, quantity left, author, publisher, and buy price
+
+Include filters, sort, and fuzzy search (e.g., via Fuse.js)
+
+Quantity bought & quantity left used to track stock and sales
+
+🛒 Order Creation (Facebook Orders)
+Input form for new orders:
+
+Customer info: name*, phone*, phone2 (optional), full address*, wilaya*, commune*, delivery type*
+
+Dropdowns with fuzzy search for:
+
+All 58 Algerian wilayas (numbered 01–58)
+
+Dynamic communes list per wilaya
+
+Books in order: select books, default quantity = 1, allow adjustments
+
+Order total auto-calculated
+
+Checkbox options for:
+
+Fragile
+
+Echange
+
+Pick up
+
+Recouvrement
+
+Stop Desk ✅ (mandatory checkbox)
+
+Auto-fill customer info when phone/name already exists (saved in DB)
+
+Save all orders and customer data to DB
+
+📤 Export Orders (Delivery CSV)
+Export order data to CSV in the following format and order:
+
+reference commande
+
+nom et prenom du destinataire*
+
+telephone*
+
+telephone 2
+
+code wilaya* (auto from wilaya selection)
+
+wilaya de livraison
+
+commune de livraison*
+
+adresse de livraison*
+
+produit* = "livres" (default)
+
+poids (kg) (optional, leave empty)
+
+montant du colis*
+
+remarque
+
+FRAGILE, ECHANGE, PICK UP, RECOUVREMENT, STOP DESK, Lien map
+
+Only starred fields are required when filling orders
+
+📊 Dashboard Analytics
+Show:
+
+Orders count per day/week/month
+
+Total sales
+
+Profit (based on buy price vs sale price)
+
+Filter by date range
+
+🎨 Design & Tech
+Modern responsive UI using ShadCN UI components
+
+Use Tailwind CSS with main color: #e4d1b3
+
+Clean, elegant layout with side nav, cards, and tables
+
+Stack: React + Node.js (or Flask) + PostgreSQL or SQLite
+
+Optional: use Prisma ORM or Sequelize if Node.js
+
+🧠 Prioritize fast order filling, smart search, clean UI, and export accuracy.
+🛠️ Feel free to be creative — make this feel like a high-end internal tool.
