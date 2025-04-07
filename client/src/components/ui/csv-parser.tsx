@@ -251,14 +251,14 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
               </div>
               <div className="w-2/3">
                 <Select 
-                  value={mappings[fieldKey] || ""}
+                  value={mappings[fieldKey] || " "}
                   onValueChange={(value) => setMappings({...mappings, [fieldKey]: value})}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a column..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">-- Select a column --</SelectItem>
+                    <SelectItem value=" ">-- Select a column --</SelectItem>
                     {headers?.map((header, idx) => (
                       <SelectItem key={idx} value={header}>
                         {header}

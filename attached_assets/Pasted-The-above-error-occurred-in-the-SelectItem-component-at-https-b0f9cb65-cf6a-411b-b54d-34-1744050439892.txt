@@ -1,0 +1,43 @@
+The above error occurred in the <SelectItem> component:
+
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-select.js?v=7610fafb:3046:7
+    at _c11 (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/src/components/ui/select.tsx:207:13)
+    at div
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-GPVWVTJC.js?v=0f23a00e:41:13
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TQG5UYZM.js?v=0f23a00e:52:11
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TQG5UYZM.js?v=0f23a00e:33:11
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-CUB6FUHO.js?v=0f23a00e:101:15
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-select.js?v=7610fafb:2957:13
+    at div
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TQG5UYZM.js?v=0f23a00e:52:11
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TQG5UYZM.js?v=0f23a00e:33:11
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-CUB6FUHO.js?v=0f23a00e:101:15
+    at Provider (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-MLRCWJEU.js?v=0f23a00e:38:15)
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-select.js?v=7610fafb:2501:59
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TQG5UYZM.js?v=0f23a00e:52:11
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-TQG5UYZM.js?v=0f23a00e:33:11
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-GPVWVTJC.js?v=0f23a00e:41:13
+    at https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-YZA6YQ4G.js?v=0f23a00e:258:22
+    at SelectPortal
+    at _c7 (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/src/components/ui/select.tsx:122:12)
+    at Provider (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-MLRCWJEU.js?v=0f23a00e:38:15)
+    at Provider (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-CUB6FUHO.js?v=0f23a00e:31:15)
+    at CollectionProvider (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-CUB6FUHO.js?v=0f23a00e:92:13)
+    at Provider (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-MLRCWJEU.js?v=0f23a00e:38:15)
+    at Provider (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-select.js?v=7610fafb:1954:15)
+    at Popper (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-select.js?v=7610fafb:2011:11)
+    at Select (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-select.js?v=7610fafb:2289:5)
+    at div
+    at div
+    at div
+    at div
+    at div
+    at CsvParser (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/src/components/ui/csv-parser.tsx:27:29)
+    at div
+    at _c9 (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/src/components/ui/card.tsx:114:12)
+    at div
+    at _c (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at ImportCsv (https://b0f9cb65-cf6a-411b-b54d-345c62a00697-00-2mwqwezyqeb3u.worf.replit.dev/src/pages/import-csv.tsx:39:39)
+    at Route…
+A  must have a value prop that is not an empty string. This is because the Select value can be set to an empty string to clear the selection and show the placeholder.

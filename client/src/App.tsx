@@ -6,6 +6,7 @@ import DashboardLayout from "@/layouts/dashboard-layout";
 import Dashboard from "@/pages/dashboard";
 import Inventory from "@/pages/inventory";
 import CreateOrder from "@/pages/create-order";
+import Customers from "@/pages/customers";
 import ImportCsv from "@/pages/import-csv";
 import ExportCsv from "@/pages/export-csv";
 import NotFound from "@/pages/not-found";
@@ -17,6 +18,7 @@ function Router() {
         <Route path="/" component={Dashboard} />
         <Route path="/inventory" component={Inventory} />
         <Route path="/orders" component={CreateOrder} />
+        <Route path="/customers" component={Customers} />
         <Route path="/import" component={ImportCsv} />
         <Route path="/export" component={ExportCsv} />
         <Route component={NotFound} />

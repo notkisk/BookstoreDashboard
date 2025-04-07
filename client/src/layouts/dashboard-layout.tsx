@@ -22,17 +22,17 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => (
-  <Link href={href}>
-    <a className={cn(
-      "flex items-center px-3 py-2 text-sm font-medium rounded-md",
-      isActive 
-        ? "bg-primary-50 text-primary-800" 
-        : "text-gray-600 hover:bg-gray-100"
-    )}>
-      <span className="mr-3 text-lg">{icon}</span>
+  <div className={cn(
+    "flex items-center px-3 py-2 text-sm font-medium rounded-md",
+    isActive 
+      ? "bg-primary-50 text-primary-800" 
+      : "text-gray-600 hover:bg-gray-100"
+  )}>
+    <span className="mr-3 text-lg">{icon}</span>
+    <Link href={href}>
       {children}
-    </a>
-  </Link>
+    </Link>
+  </div>
 );
 
 interface DashboardLayoutProps {
