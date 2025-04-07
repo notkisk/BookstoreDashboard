@@ -107,11 +107,12 @@ export default function CreateOrder() {
           customerId = newCustomer.id;
         }
 
-        // Calculate total amount
-        const totalAmount = orderData.items.reduce(
+        // Calculate total amount (including delivery price)
+        const itemsTotal = orderData.items.reduce(
           (sum, item) => sum + item.quantity * item.unitPrice,
-          0,
+          0
         );
+        const totalAmount = itemsTotal + orderData.deliveryPrice;
 
         // Create order
         const orderPayload = {
