@@ -15,6 +15,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Search,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,10 @@ interface DataTableProps<T> {
   pagination?: boolean;
   pageSize?: number;
   onRowClick?: (item: T) => void;
+  selectable?: boolean;
+  onSelectionChange?: (selectedItems: T[]) => void;
+  showRowNumbers?: boolean;
+  isLoading?: boolean;
 }
 
 export function DataTable<T>({
@@ -42,9 +47,15 @@ export function DataTable<T>({
   pagination = true,
   pageSize = 10,
   onRowClick,
+  selectable = false,
+  onSelectionChange,
+  showRowNumbers = false,
+  isLoading = false,
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItems, setSelectedItems] = useState<T[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   // Filter data based on search query
   const filteredData = searchable && searchQuery
@@ -86,6 +97,43 @@ export function DataTable<T>({
     ? filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     : filteredData;
 
+  // Handle item selection
+  const isItemSelected = (item: T) => selectedItems.some(
+    (selectedItem) => JSON.stringify(selectedItem) === JSON.stringify(item)
+  );
+
+  const toggleSelectItem = (item: T, event: React.MouseEvent) => {
+    event.stopPropagation();
+    const selected = isItemSelected(item);
+    
+    const newSelectedItems = selected
+      ? selectedItems.filter(i => JSON.stringify(i) !== JSON.stringify(item))
+      : [...selectedItems, item];
+    
+    setSelectedItems(newSelectedItems);
+    onSelectionChange?.(newSelectedItems);
+  };
+
+  const toggleSelectAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setSelectAll(checked);
+    
+    const newSelectedItems = checked ? paginatedData : [];
+    setSelectedItems(newSelectedItems);
+    onSelectionChange?.(newSelectedItems);
+  };
+
+  // Calculate actual row numbers
+  const getRowNumber = (index: number) => {
+    return pagination ? (currentPage - 1) * pageSize + index + 1 : index + 1;
+  };
+
+  // Effect to reset selection when data changes
+  React.useEffect(() => {
+    setSelectedItems([]);
+    setSelectAll(false);
+  }, [data, searchQuery, currentPage]);
+
   return (
     <div className="space-y-4">
       {searchable && (
@@ -104,24 +152,93 @@ export function DataTable<T>({
         </div>
       )}
 
+      {selectable && selectedItems.length > 0 && (
+        <div className="flex items-center space-x-2 bg-gray-50 p-2 rounded">
+          <span className="text-sm text-gray-600 font-medium">
+            {selectedItems.length} item{selectedItems.length !== 1 ? 's' : ''} selected
+          </span>
+          <Button 
+            variant="destructive" 
+            size="sm"
+            onClick={() => {
+              if (onSelectionChange) {
+                // Pass current selection to parent for processing
+                onSelectionChange(selectedItems);
+                
+                // Clear local selection after sending to parent
+                setSelectedItems([]);
+                setSelectAll(false);
+              }
+            }}
+            className="ml-2"
+          >
+            <Trash2 className="h-4 w-4 mr-1" /> Delete Selected
+          </Button>
+        </div>
+      )}
+
       <div className="rounded-lg border bg-white">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
+                {selectable && (
+                  <TableHead className="w-[40px]">
+                    <input
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={toggleSelectAll}
+                      className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    />
+                  </TableHead>
+                )}
+                {showRowNumbers && (
+                  <TableHead className="w-[50px] text-center">#</TableHead>
+                )}
                 {columns.map((column, index) => (
                   <TableHead key={index}>{column.header}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {paginatedData.length > 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length + (selectable ? 1 : 0) + (showRowNumbers ? 1 : 0)}
+                    className="h-24 text-center"
+                  >
+                    <div className="flex justify-center items-center">
+                      <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-600 border-t-transparent"></div>
+                      <span className="ml-2">Loading...</span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : paginatedData.length > 0 ? (
                 paginatedData.map((item, rowIndex) => (
                   <TableRow
                     key={rowIndex}
-                    className={onRowClick ? "cursor-pointer hover:bg-gray-50" : ""}
-                    onClick={() => onRowClick && onRowClick(item)}
+                    className={cn(
+                      onRowClick && !selectable ? "cursor-pointer hover:bg-gray-50" : "",
+                      isItemSelected(item) ? "bg-primary-50" : ""
+                    )}
+                    onClick={selectable ? undefined : () => onRowClick && onRowClick(item)}
                   >
+                    {selectable && (
+                      <TableCell className="w-[40px]">
+                        <input
+                          type="checkbox"
+                          checked={isItemSelected(item)}
+                          onChange={(e) => e.stopPropagation()}
+                          onClick={(e) => toggleSelectItem(item, e)}
+                          className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                        />
+                      </TableCell>
+                    )}
+                    {showRowNumbers && (
+                      <TableCell className="text-center text-gray-500 text-sm font-medium">
+                        {getRowNumber(rowIndex)}
+                      </TableCell>
+                    )}
                     {columns.map((column, cellIndex) => (
                       <TableCell key={cellIndex}>
                         {column.cell
@@ -134,7 +251,7 @@ export function DataTable<T>({
               ) : (
                 <TableRow>
                   <TableCell
-                    colSpan={columns.length}
+                    colSpan={columns.length + (selectable ? 1 : 0) + (showRowNumbers ? 1 : 0)}
                     className="h-24 text-center"
                   >
                     No results found.

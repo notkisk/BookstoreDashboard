@@ -83,6 +83,7 @@ export default function Inventory() {
   const [editBook, setEditBook] = useState<Book | null>(null);
   const [sortBy, setSortBy] = useState<string>("title-asc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -201,6 +202,30 @@ export default function Inventory() {
       deleteBook.mutate(id);
     }
   };
+  
+  // Handle bulk delete
+  const handleBulkDelete = async (books: Book[]) => {
+    if (window.confirm(`Are you sure you want to delete ${books.length} selected books?`)) {
+      try {
+        // Delete books one by one
+        for (const book of books) {
+          await deleteBook.mutateAsync(book.id);
+        }
+        
+        setSelectedBooks([]);
+        toast({
+          title: "Books deleted",
+          description: `Successfully deleted ${books.length} books`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error deleting books",
+          description: "There was an error deleting one or more books",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   // Handle form submission
   const onSubmit = (data: BookFormValues) => {
@@ -251,10 +276,12 @@ export default function Inventory() {
     },
     {
       header: "Sold",
+      accessorKey: "quantityBought" as const,
       cell: (book: Book) => book.quantityBought - book.quantityLeft,
     },
     {
       header: "Actions",
+      accessorKey: "id" as const,
       cell: (book: Book) => (
         <div className="flex space-x-2">
           <Button 
@@ -481,6 +508,9 @@ export default function Inventory() {
         data={filteredBooks || []}
         columns={columns}
         isLoading={isLoading}
+        selectable={true}
+        onSelectionChange={handleBulkDelete}
+        showRowNumbers={true}
       />
     </div>
   );
