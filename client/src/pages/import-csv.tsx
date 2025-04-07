@@ -82,8 +82,8 @@ export default function ImportCsv() {
 
         for (const book of allData) {
           try {
-            // Check if the book has minimal required data
-            if (!book.title && !book.author) {
+            // Check if the book has minimal required data - only title is truly required
+            if (!book.title) {
               invalidEntries.push(book);
               continue;
             }
@@ -92,6 +92,7 @@ export default function ImportCsv() {
             const validatedBook = bookSchema.parse(book);
             validBooks.push(validatedBook);
           } catch (error) {
+            console.error("Validation error:", error);
             invalidEntries.push(book);
           }
         }

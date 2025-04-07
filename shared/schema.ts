@@ -16,11 +16,34 @@ export const books = pgTable("books", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const insertBookSchema = createInsertSchema(books).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+// More flexible schema for imports with default values and transformations
+export const insertBookSchema = createInsertSchema(books)
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    // Only title is required, others have reasonable defaults
+    author: z.string().default(""),
+    publisher: z.string().default(""),
+    price: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0).default(0)
+    ),
+    buyPrice: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0).default(0)
+    ),
+    quantityBought: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0).default(0)
+    ),
+    quantityLeft: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0).default(0)
+    ),
+  });
 
 // Customer table
 export const customers = pgTable("customers", {

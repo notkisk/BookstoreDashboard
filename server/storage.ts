@@ -51,13 +51,42 @@ export class DatabaseStorage implements IStorage {
   }
 
   async searchBooks(query: string): Promise<Book[]> {
+    // Normalize Arabic characters for better searching
+    const normalizedQuery = this.normalizeArabicText(query);
+    
+    // Create SQL pattern for each search variation
+    const titlePattern = `%${query}%`;
+    const authorPattern = `%${query}%`;
+    const normalizedPattern = `%${normalizedQuery}%`;
+    
     return await db
       .select()
       .from(books)
       .where(
-        like(books.title, `%${query}%`)
+        sqlBuilder`
+          LOWER(${books.title}) LIKE LOWER(${titlePattern})
+          OR LOWER(${books.author}) LIKE LOWER(${authorPattern})
+          OR REPLACE(REPLACE(REPLACE(LOWER(${books.title}), 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا') LIKE LOWER(${normalizedPattern})
+          OR REPLACE(REPLACE(REPLACE(LOWER(${books.author}), 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا') LIKE LOWER(${normalizedPattern})
+        `
       )
       .orderBy(books.title);
+  }
+  
+  // Helper method to normalize Arabic text for searching
+  private normalizeArabicText(text: string): string {
+    if (!text) return '';
+    
+    // Normalize common Arabic character variations
+    return text
+      .toLowerCase()
+      .replace(/أ|إ|آ/g, 'ا')  // Normalize alif variations
+      .replace(/ة/g, 'ه')      // Ta marbuta to Ha
+      .replace(/ى/g, 'ي')      // Alif maksura to Ya
+      .replace(/ئ/g, 'ي')      // Hamza on Ya to Ya
+      .replace(/ؤ/g, 'و')      // Hamza on Waw to Waw
+      .replace(/ء/g, '')       // Remove standalone Hamza
+      .replace(/ـ/g, '');      // Remove Tatweel
   }
 
   async createBook(book: InsertBook): Promise<Book> {
@@ -143,7 +172,7 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
-  async createOrder(order: InsertOrder, orderItems: Omit<InsertOrderItem, "orderId">[]): Promise<Order> {
+  async createOrder(order: InsertOrder, items: Omit<InsertOrderItem, "orderId">[]): Promise<Order> {
     // Generate a unique reference number for the order
     const reference = `ORD-${nanoid(8).toUpperCase()}`;
     
@@ -154,14 +183,15 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     // Add the order items
-    if (orderItems.length > 0) {
-      await db.insert(orderItems)
-        .values(
-          orderItems.map(item => ({
-            ...item,
-            orderId: newOrder.id
-          }))
-        );
+    if (items.length > 0) {
+      // Convert items to InsertOrderItem objects with orderId
+      const orderItemsToInsert = items.map(item => ({
+        ...item,
+        orderId: newOrder.id
+      }));
+      
+      // Insert all order items
+      await db.insert(orderItems).values(orderItemsToInsert);
     }
     
     return newOrder;
@@ -178,12 +208,11 @@ export class DatabaseStorage implements IStorage {
 
   // Analytics
   async getOrdersCount(period?: 'day' | 'week' | 'month'): Promise<number> {
-    let dateFilter = {};
+    const now = new Date();
+    let fromDate: Date | undefined = undefined;
     
     if (period) {
-      const now = new Date();
-      let fromDate = new Date();
-      
+      fromDate = new Date();
       if (period === 'day') {
         fromDate.setDate(now.getDate() - 1);
       } else if (period === 'week') {
@@ -191,28 +220,30 @@ export class DatabaseStorage implements IStorage {
       } else if (period === 'month') {
         fromDate.setMonth(now.getMonth() - 1);
       }
-      
-      dateFilter = and(
-        sqlBuilder`${orders.createdAt} >= ${fromDate}`,
-        sqlBuilder`${orders.createdAt} <= ${now}`
+    }
+    
+    const query = db.select({ count: count() }).from(orders);
+    
+    // Add date filter if period is specified
+    if (fromDate) {
+      query.where(
+        and(
+          sqlBuilder`${orders.createdAt} >= ${fromDate}`,
+          sqlBuilder`${orders.createdAt} <= ${now}`
+        )
       );
     }
     
-    const result = await db
-      .select({ count: count() })
-      .from(orders)
-      .where(dateFilter);
-    
+    const result = await query;
     return result[0]?.count || 0;
   }
 
   async getTotalSales(period?: 'day' | 'week' | 'month'): Promise<number> {
-    let dateFilter = {};
+    const now = new Date();
+    let fromDate: Date | undefined = undefined;
     
     if (period) {
-      const now = new Date();
-      let fromDate = new Date();
-      
+      fromDate = new Date();
       if (period === 'day') {
         fromDate.setDate(now.getDate() - 1);
       } else if (period === 'week') {
@@ -220,28 +251,32 @@ export class DatabaseStorage implements IStorage {
       } else if (period === 'month') {
         fromDate.setMonth(now.getMonth() - 1);
       }
-      
-      dateFilter = and(
-        sqlBuilder`${orders.createdAt} >= ${fromDate}`,
-        sqlBuilder`${orders.createdAt} <= ${now}`
+    }
+    
+    const query = db
+      .select({ total: sqlBuilder`sum(${orders.totalAmount})` })
+      .from(orders);
+    
+    // Add date filter if period is specified
+    if (fromDate) {
+      query.where(
+        and(
+          sqlBuilder`${orders.createdAt} >= ${fromDate}`,
+          sqlBuilder`${orders.createdAt} <= ${now}`
+        )
       );
     }
     
-    const result = await db
-      .select({ total: sqlBuilder`sum(${orders.totalAmount})` })
-      .from(orders)
-      .where(dateFilter);
-    
+    const result = await query;
     return Number(result[0]?.total) || 0;
   }
 
   async getProfit(period?: 'day' | 'week' | 'month'): Promise<number> {
-    let dateFilter = {};
+    const now = new Date();
+    let fromDate: Date | undefined = undefined;
     
     if (period) {
-      const now = new Date();
-      let fromDate = new Date();
-      
+      fromDate = new Date();
       if (period === 'day') {
         fromDate.setDate(now.getDate() - 1);
       } else if (period === 'week') {
@@ -249,27 +284,37 @@ export class DatabaseStorage implements IStorage {
       } else if (period === 'month') {
         fromDate.setMonth(now.getMonth() - 1);
       }
-      
-      dateFilter = and(
-        sqlBuilder`${orders.createdAt} >= ${fromDate}`,
-        sqlBuilder`${orders.createdAt} <= ${now}`
+    }
+    
+    // Build the order IDs query
+    const orderIdsQuery = db.select({ id: orders.id }).from(orders);
+    
+    // Add date filter if period is specified
+    if (fromDate) {
+      orderIdsQuery.where(
+        and(
+          sqlBuilder`${orders.createdAt} >= ${fromDate}`,
+          sqlBuilder`${orders.createdAt} <= ${now}`
+        )
       );
     }
     
-    const orderIds = await db
-      .select({ id: orders.id })
-      .from(orders)
-      .where(dateFilter);
+    const orderIds = await orderIdsQuery;
     
     if (orderIds.length === 0) return 0;
     
     const orderIdList = orderIds.map(o => o.id);
     
-    // Calculate total sales
+    // Calculate total sales for delivered orders
     const salesResult = await db
       .select({ total: sqlBuilder`sum(${orders.totalAmount})` })
       .from(orders)
-      .where(and(eq(orders.id, sqlBuilder.placeholder('id')), eq(orders.status, 'delivered')));
+      .where(
+        and(
+          sqlBuilder`${orders.id} IN (${orderIdList.join(',')})`,
+          eq(orders.status, 'delivered')
+        )
+      );
     
     const salesTotal = Number(salesResult[0]?.total) || 0;
     
@@ -295,7 +340,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(orderItems)
       .groupBy(orderItems.bookId)
-      .orderBy(sqlBuilder`sum(${orderItems.quantity})`, 'desc')
+      .orderBy(desc(sqlBuilder`sum(${orderItems.quantity})`))
       .limit(limit);
     
     if (result.length === 0) return [];
