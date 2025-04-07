@@ -1,5 +1,8 @@
-import type { Express, Request, Response } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import { createServer, type Server } from "http";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { storage } from "./storage";
 import { insertBookSchema, insertCustomerSchema, insertOrderSchema, insertOrderItemSchema } from "@shared/schema";
 import { z } from "zod";
@@ -504,6 +507,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch analytics" });
     }
   });
+
+  // ==================== Location Data API ====================
+
+  // Set up multer for file uploads
+  const multerStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      const uploadDir = path.join(__dirname, '..', 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+      cb(null, `algeria_data_${Date.now()}${path.extname(file.originalname)}`);
+    },
+  });
+  
+  const upload = multer({ 
+    storage: multerStorage,
+    fileFilter: function (req, file, cb) {
+      // Accept only Excel files
+      if (file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+          file.mimetype === 'application/vnd.ms-excel') {
+        cb(null, true);
+      } else {
+        cb(new Error('Only Excel files are allowed'));
+      }
+    },
+    limits: {
+      fileSize: 10 * 1024 * 1024 // 10MB limit
+    }
+  });
+
+  // Upload Algeria location data file
+  app.post('/api/location/upload', upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+      
+      // File was successfully uploaded, respond with the path
+      res.status(200).json({ 
+        message: 'File uploaded successfully',
+        file: {
+          filename: req.file.filename,
+          path: req.file.path
+        }
+      });
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      res.status(500).json({ message: 'Failed to upload file' });
+    }
+  });
+  
+  // Provide a sample file for location data
+  app.get('/api/location/sample', (req, res) => {
+    try {
+      const xlsx = require('xlsx');
+      
+      // Create a sample workbook
+      const wb = xlsx.utils.book_new();
+      
+      // Sample data (commune name and wilaya code)
+      const sampleData = [
+        ['Adrar', '1'],
+        ['Tamantit', '1'],
+        ['In Zghmir', '1'],
+        ['Timimoun', '1'],
+        ['Chlef', '2'],
+        ['Abou El Hassan', '2'],
+        ['Bénairia', '2'],
+        ['Alger Centre', '16'],
+        ['Bab El Oued', '16'],
+        ['El Biar', '16'],
+        ['Hussein Dey', '16'],
+        ['Oran', '31'],
+        ['Bir El Djir', '31'],
+        ['Es Senia', '31'],
+        ['Arzew', '31']
+      ];
+      
+      // Create a worksheet
+      const ws = xlsx.utils.aoa_to_sheet(sampleData);
+      
+      // Add the worksheet to the workbook
+      xlsx.utils.book_append_sheet(wb, ws, 'Sample Data');
+      
+      // Set appropriate headers for an Excel download
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', 'attachment; filename="algeria_location_sample.xlsx"');
+      
+      // Send the workbook as a buffer
+      const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
+      res.send(buffer);
+    } catch (error) {
+      console.error('Error generating sample file:', error);
+      res.status(500).json({ message: 'Failed to generate sample file' });
+    }
+  });
+
+  // Serve static uploads
+  app.use('/uploads', (req, res, next) => {
+    // Add cache control headers
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // 24 hours
+    next();
+  }, express.static('uploads'));
 
   const httpServer = createServer(app);
   return httpServer;

@@ -9,6 +9,7 @@ import CreateOrder from "@/pages/create-order";
 import Customers from "@/pages/customers";
 import ImportCsv from "@/pages/import-csv";
 import ExportCsv from "@/pages/export-csv";
+import LocationData from "@/pages/location-data";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
         <Route path="/customers" component={Customers} />
         <Route path="/import" component={ImportCsv} />
         <Route path="/export" component={ExportCsv} />
+        <Route path="/location-data" component={LocationData} />
         <Route component={NotFound} />
       </Switch>
     </DashboardLayout>

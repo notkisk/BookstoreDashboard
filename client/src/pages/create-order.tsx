@@ -79,13 +79,25 @@ export default function CreateOrder() {
 
       try {
         // Try to get existing customer by phone
-        const customerResponse = await apiRequest(
-          "GET",
-          `/api/customers/phone/${orderData.customer.phone}`,
-        );
-
-        if (customerResponse.status === 404) {
-          // Create new customer
+        try {
+          const customerResponse = await apiRequest(
+            "GET",
+            `/api/customers/phone/${orderData.customer.phone}`,
+          );
+          
+          // If we get here, customer exists
+          const existingCustomer = await customerResponse.json();
+          customerId = existingCustomer.id;
+          
+          // Update customer info if needed
+          await apiRequest(
+            "PUT",
+            `/api/customers/${customerId}`,
+            orderData.customer,
+          );
+        } catch (error) {
+          // Customer not found or other error, create new customer
+          console.log("Creating new customer:", orderData.customer);
           const newCustomerResponse = await apiRequest(
             "POST",
             "/api/customers",
@@ -93,16 +105,6 @@ export default function CreateOrder() {
           );
           const newCustomer = await newCustomerResponse.json();
           customerId = newCustomer.id;
-        } else {
-          const existingCustomer = await customerResponse.json();
-          customerId = existingCustomer.id;
-
-          // Update customer info if needed
-          await apiRequest(
-            "PUT",
-            `/api/customers/${customerId}`,
-            orderData.customer,
-          );
         }
 
         // Calculate total amount
