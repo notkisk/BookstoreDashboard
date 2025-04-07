@@ -149,26 +149,7 @@ export default function Inventory() {
     },
   });
 
-  // Delete book mutation
-  const deleteBook = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/books/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/books'] });
-      toast({
-        title: "Book deleted",
-        description: "The book has been removed from inventory",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error deleting book",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  // We're using the bulkDeleteBooks mutation for all deletion operations (single and bulk)
 
   // Form for creating/editing books
   const form = useForm<BookFormValues>({
@@ -219,10 +200,15 @@ export default function Inventory() {
   };
   
   // Execute single book deletion
-  const executeSingleBookDeletion = () => {
+  const executeSingleBookDeletion = async () => {
     if (bookToDelete !== null) {
-      deleteBook.mutate(bookToDelete);
-      setBookToDelete(null);
+      try {
+        // Use the same bulk delete API for consistency and performance
+        await bulkDeleteBooks.mutateAsync([bookToDelete]);
+        setBookToDelete(null);
+      } catch (error) {
+        console.error("Error deleting single book:", error);
+      }
     }
     setSingleDeleteDialogOpen(false);
   };
@@ -248,48 +234,40 @@ export default function Inventory() {
     setIsDeleteAllConfirmOpen(true);
   };
   
+  // Add a bulk delete mutation
+  const bulkDeleteBooks = useMutation({
+    mutationFn: async (bookIds: number[]) => {
+      return apiRequest<{ success: number; failed: number; message: string }>('POST', '/api/books/bulk-delete', { ids: bookIds });
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/books'] });
+      toast({
+        title: "Books deleted",
+        description: `Successfully deleted ${data.success} books${data.failed > 0 ? `. Failed to delete ${data.failed} books.` : ''}`,
+        variant: data.failed > 0 ? "default" : "default",
+      });
+      setSelectedBooks([]);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error deleting books",
+        description: error.message || "There was an error processing your request",
+        variant: "destructive",
+      });
+    }
+  });
+
   // Execute the actual deletion after confirmation
   const executeBooksDeletion = async (booksToDelete: Book[]) => {
     setDeletionInProgress(true);
     
     try {
-      // Delete books one by one
-      let successCount = 0;
-      let errorCount = 0;
+      // Extract the book IDs for bulk deletion
+      const bookIds = booksToDelete.map(book => book.id);
       
-      for (const book of booksToDelete) {
-        try {
-          await deleteBook.mutateAsync(book.id);
-          successCount++;
-        } catch (error) {
-          console.error(`Error deleting book ID ${book.id}:`, error);
-          errorCount++;
-        }
-      }
+      // Use the bulk delete endpoint
+      await bulkDeleteBooks.mutateAsync(bookIds);
       
-      // Show appropriate toast based on results
-      if (errorCount === 0) {
-        toast({
-          title: "Books deleted",
-          description: `Successfully deleted ${successCount} books`,
-        });
-      } else if (successCount > 0) {
-        toast({
-          title: "Partial deletion",
-          description: `Deleted ${successCount} books. Failed to delete ${errorCount} books.`,
-          variant: "default",
-        });
-      } else {
-        toast({
-          title: "Deletion failed",
-          description: "Failed to delete any books. Please try again.",
-          variant: "destructive",
-        });
-      }
-      
-      // Clear selection and refresh the book list
-      setSelectedBooks([]);
-      queryClient.invalidateQueries({ queryKey: ['/api/books'] });
     } catch (error) {
       toast({
         title: "Error deleting books",

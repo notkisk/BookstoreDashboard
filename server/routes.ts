@@ -110,6 +110,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete book" });
     }
   });
+  
+  // Bulk delete books
+  app.post("/api/books/bulk-delete", async (req, res) => {
+    try {
+      const { ids } = req.body;
+      
+      // Validate ids is an array of numbers
+      if (!Array.isArray(ids)) {
+        return res.status(400).json({ 
+          message: "Invalid request body: 'ids' must be an array" 
+        });
+      }
+      
+      // Validate each ID is a number
+      const numericIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
+      
+      if (numericIds.length === 0) {
+        return res.status(400).json({ 
+          message: "No valid book IDs provided" 
+        });
+      }
+      
+      const result = await storage.bulkDeleteBooks(numericIds);
+      
+      res.json({
+        message: `Deleted ${result.success} books successfully. Failed to delete ${result.failed} books.`,
+        success: result.success,
+        failed: result.failed
+      });
+    } catch (error) {
+      console.error("Error bulk deleting books:", error);
+      res.status(500).json({ message: "Failed to bulk delete books" });
+    }
+  });
 
   // Import books from CSV (array of book objects) with error tolerance
   app.post("/api/books/import", async (req, res) => {

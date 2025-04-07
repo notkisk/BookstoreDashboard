@@ -17,6 +17,7 @@ export interface IStorage {
   createBook(book: InsertBook): Promise<Book>;
   updateBook(id: number, book: Partial<InsertBook>): Promise<Book | undefined>;
   deleteBook(id: number): Promise<boolean>;
+  bulkDeleteBooks(ids: number[]): Promise<{ success: number; failed: number }>;
   
   // Customer operations
   getCustomers(): Promise<Customer[]>;
@@ -106,6 +107,31 @@ export class DatabaseStorage implements IStorage {
   async deleteBook(id: number): Promise<boolean> {
     const result = await db.delete(books).where(eq(books.id, id));
     return true;
+  }
+  
+  async bulkDeleteBooks(ids: number[]): Promise<{ success: number; failed: number }> {
+    if (!ids.length) {
+      return { success: 0, failed: 0 };
+    }
+    
+    try {
+      // Use the IN operator for efficient bulk deletion
+      const result = await db
+        .delete(books)
+        .where(sqlBuilder`${books.id} IN (${ids.join(',')})`)
+        .returning({ id: books.id });
+      
+      // Return the success count based on how many records were actually deleted
+      const successCount = result.length;
+      
+      return {
+        success: successCount,
+        failed: ids.length - successCount
+      };
+    } catch (error) {
+      console.error("Error in bulk delete operation:", error);
+      return { success: 0, failed: ids.length };
+    }
   }
 
   // Customer operations
