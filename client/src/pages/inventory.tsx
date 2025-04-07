@@ -36,6 +36,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { 
+  AlertTriangle,
   BookOpen, 
   Plus, 
   Upload, 
@@ -43,6 +44,17 @@ import {
   Edit, 
   Trash2 
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { formatCurrency } from "@/lib/utils";
@@ -88,7 +100,7 @@ export default function Inventory() {
   const queryClient = useQueryClient();
 
   // Fetch books
-  const { data: books, isLoading } = useQuery({
+  const { data: books, isLoading } = useQuery<Book[]>({
     queryKey: ['/api/books'],
   });
 
@@ -196,34 +208,98 @@ export default function Inventory() {
     setDialogOpen(true);
   };
 
+  // State for single book deletion
+  const [bookToDelete, setBookToDelete] = useState<number | null>(null);
+  const [singleDeleteDialogOpen, setSingleDeleteDialogOpen] = useState(false);
+
   // Handle delete book
   const handleDeleteBook = (id: number) => {
-    if (window.confirm("Are you sure you want to delete this book?")) {
-      deleteBook.mutate(id);
+    setBookToDelete(id);
+    setSingleDeleteDialogOpen(true);
+  };
+  
+  // Execute single book deletion
+  const executeSingleBookDeletion = () => {
+    if (bookToDelete !== null) {
+      deleteBook.mutate(bookToDelete);
+      setBookToDelete(null);
+    }
+    setSingleDeleteDialogOpen(false);
+  };
+  
+  // State variables for deletion confirmation
+  const [booksToDelete, setBooksToDelete] = useState<Book[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleteAllConfirmOpen, setIsDeleteAllConfirmOpen] = useState(false);
+  const [deletionInProgress, setDeletionInProgress] = useState(false);
+  
+  // Handle bulk delete selection
+  const handleBulkDelete = (books: Book[]) => {
+    if (books.length > 0) {
+      // Store the books to be deleted and show the confirmation dialog
+      setBooksToDelete(books);
+      setDeleteDialogOpen(true);
     }
   };
   
-  // Handle bulk delete
-  const handleBulkDelete = async (books: Book[]) => {
-    if (window.confirm(`Are you sure you want to delete ${books.length} selected books?`)) {
-      try {
-        // Delete books one by one
-        for (const book of books) {
+  // Handle delete all books
+  const handleDeleteAllBooks = () => {
+    // Open the confirmation dialog for deleting all books
+    setIsDeleteAllConfirmOpen(true);
+  };
+  
+  // Execute the actual deletion after confirmation
+  const executeBooksDeletion = async (booksToDelete: Book[]) => {
+    setDeletionInProgress(true);
+    
+    try {
+      // Delete books one by one
+      let successCount = 0;
+      let errorCount = 0;
+      
+      for (const book of booksToDelete) {
+        try {
           await deleteBook.mutateAsync(book.id);
+          successCount++;
+        } catch (error) {
+          console.error(`Error deleting book ID ${book.id}:`, error);
+          errorCount++;
         }
-        
-        setSelectedBooks([]);
+      }
+      
+      // Show appropriate toast based on results
+      if (errorCount === 0) {
         toast({
           title: "Books deleted",
-          description: `Successfully deleted ${books.length} books`,
+          description: `Successfully deleted ${successCount} books`,
         });
-      } catch (error) {
+      } else if (successCount > 0) {
         toast({
-          title: "Error deleting books",
-          description: "There was an error deleting one or more books",
+          title: "Partial deletion",
+          description: `Deleted ${successCount} books. Failed to delete ${errorCount} books.`,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Deletion failed",
+          description: "Failed to delete any books. Please try again.",
           variant: "destructive",
         });
       }
+      
+      // Clear selection and refresh the book list
+      setSelectedBooks([]);
+      queryClient.invalidateQueries({ queryKey: ['/api/books'] });
+    } catch (error) {
+      toast({
+        title: "Error deleting books",
+        description: "There was an error processing your request",
+        variant: "destructive",
+      });
+    } finally {
+      setDeletionInProgress(false);
+      setDeleteDialogOpen(false);
+      setIsDeleteAllConfirmOpen(false);
     }
   };
 
@@ -306,7 +382,7 @@ export default function Inventory() {
   ];
 
   // Sort books
-  const sortedBooks = [...(books || [])].sort((a, b) => {
+  const sortedBooks = [...(books as Book[] || [])].sort((a, b) => {
     const [field, direction] = sortBy.split('-');
     const modifier = direction === 'asc' ? 1 : -1;
     
@@ -512,6 +588,127 @@ export default function Inventory() {
         onSelectionChange={handleBulkDelete}
         showRowNumbers={true}
       />
+
+      {/* Action buttons for bulk operations */}
+      <div className="mt-4 flex justify-end">
+        <Button 
+          variant="destructive" 
+          size="sm"
+          disabled={!books || books.length === 0}
+          onClick={() => {
+            if (books && books.length > 0) {
+              setBooksToDelete([...books]);
+              setIsDeleteAllConfirmOpen(true);
+            }
+          }}
+          className="ml-2"
+        >
+          <Trash2 className="h-4 w-4 mr-1" /> Delete All Books
+        </Button>
+      </div>
+      
+      {/* Confirmation dialog for bulk delete */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are about to delete {booksToDelete.length} selected books. 
+              This action cannot be undone. Are you sure you want to proceed?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletionInProgress}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deletionInProgress}
+              onClick={(e) => {
+                e.preventDefault();
+                executeBooksDeletion(booksToDelete);
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {deletionInProgress ? (
+                <>
+                  <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  Deleting...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4 mr-1" /> Delete Books
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Confirmation dialog for delete all */}
+      <AlertDialog open={isDeleteAllConfirmOpen} onOpenChange={setIsDeleteAllConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center text-red-600">
+              <AlertTriangle className="h-5 w-5 mr-2" />
+              Delete Entire Inventory
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              <p className="mb-2">
+                You are about to delete <strong>ALL {books ? books.length : 0} BOOKS</strong> from your inventory.
+              </p>
+              <p className="mb-2">
+                This is a destructive action and cannot be undone. All book records will be permanently deleted.
+              </p>
+              <p className="font-medium">
+                Are you absolutely sure you want to proceed?
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deletionInProgress}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deletionInProgress}
+              onClick={(e) => {
+                e.preventDefault();
+                if (books) {
+                  executeBooksDeletion([...books]);
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              {deletionInProgress ? (
+                <>
+                  <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  Deleting All Books...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="h-4 w-4 mr-1" /> Delete All Books
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Single book delete confirmation */}
+      <AlertDialog open={singleDeleteDialogOpen} onOpenChange={setSingleDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Book</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this book? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeSingleBookDeletion}
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              <Trash2 className="h-4 w-4 mr-1" /> Delete Book
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

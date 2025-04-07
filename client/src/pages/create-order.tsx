@@ -62,12 +62,12 @@ export default function CreateOrder() {
 
   // Fetch books for the order form
   const { data: books } = useQuery<Book[]>({
-    queryKey: ['/api/books'],
+    queryKey: ["/api/books"],
   });
 
   // Fetch customers for autocomplete
   const { data: customers } = useQuery<Customer[]>({
-    queryKey: ['/api/customers'],
+    queryKey: ["/api/customers"],
   });
 
   // Create order mutation
@@ -75,30 +75,41 @@ export default function CreateOrder() {
     mutationFn: async (orderData: OrderFormData) => {
       // First, check if customer exists or create new
       let customerId: number;
-      
+
       try {
         // Try to get existing customer by phone
-        const customerResponse = await apiRequest('GET', `/api/customers/phone/${orderData.customer.phone}`);
-        
+        const customerResponse = await apiRequest(
+          "GET",
+          `/api/customers/phone/${orderData.customer.phone}`,
+        );
+
         if (customerResponse.status === 404) {
           // Create new customer
-          const newCustomerResponse = await apiRequest('POST', '/api/customers', orderData.customer);
+          const newCustomerResponse = await apiRequest(
+            "POST",
+            "/api/customers",
+            orderData.customer,
+          );
           const newCustomer = await newCustomerResponse.json();
           customerId = newCustomer.id;
         } else {
           const existingCustomer = await customerResponse.json();
           customerId = existingCustomer.id;
-          
+
           // Update customer info if needed
-          await apiRequest('PUT', `/api/customers/${customerId}`, orderData.customer);
+          await apiRequest(
+            "PUT",
+            `/api/customers/${customerId}`,
+            orderData.customer,
+          );
         }
-        
+
         // Calculate total amount
         const totalAmount = orderData.items.reduce(
-          (sum, item) => sum + item.quantity * item.unitPrice, 
-          0
+          (sum, item) => sum + item.quantity * item.unitPrice,
+          0,
         );
-        
+
         // Create order
         const orderPayload = {
           order: {
@@ -113,19 +124,19 @@ export default function CreateOrder() {
             notes: orderData.notes,
             status: "pending",
           },
-          items: orderData.items.map(item => ({
+          items: orderData.items.map((item) => ({
             bookId: item.bookId,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
           })),
         };
-        
-        const response = await apiRequest('POST', '/api/orders', orderPayload);
+
+        const response = await apiRequest("POST", "/api/orders", orderPayload);
         const newOrder = await response.json();
-        
+
         setOrderReference(newOrder.reference);
         setOrderTotal(totalAmount);
-        
+
         return newOrder;
       } catch (error) {
         console.error("Order creation error:", error);
@@ -133,11 +144,11 @@ export default function CreateOrder() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/books'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/analytics/dashboard'] });
-      
+      queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/customers"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/books"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboard"] });
+
       setOrderSuccess(true);
       toast({
         title: "Order created successfully",
@@ -160,8 +171,12 @@ export default function CreateOrder() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-1">Create New Order</h2>
-        <p className="text-sm text-gray-500">Fill in the customer details and select books for the order</p>
+        <h2 className="text-xl font-semibold text-gray-800 mb-1">
+          Create New Order
+        </h2>
+        <p className="text-sm text-gray-500">
+          Fill in the customer details and select books for the order
+        </p>
       </div>
 
       <Card>
@@ -171,12 +186,18 @@ export default function CreateOrder() {
               <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Order Created Successfully!</h3>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Order Created Successfully!
+              </h3>
               <p className="text-center text-gray-600 mb-2">
-                Order reference: <span className="font-medium">{orderReference}</span>
+                Order reference:{" "}
+                <span className="font-medium">{orderReference}</span>
               </p>
               <p className="text-center text-gray-600 mb-6">
-                Total amount: <span className="font-medium">{formatCurrency(orderTotal)}</span>
+                Total amount:{" "}
+                <span className="font-medium">
+                  {formatCurrency(orderTotal)}
+                </span>
               </p>
               <div className="flex space-x-4">
                 <Link href="/export">
@@ -184,8 +205,8 @@ export default function CreateOrder() {
                     Export Order
                   </Button>
                 </Link>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setOrderSuccess(false)}
                 >
                   Create Another Order
@@ -193,9 +214,9 @@ export default function CreateOrder() {
               </div>
             </div>
           ) : (
-            <OrderForm 
-              books={books || []} 
-              customers={customers || []} 
+            <OrderForm
+              books={books || []}
+              customers={customers || []}
               onSubmit={handleCreateOrder}
               isSubmitting={createOrder.isPending}
             />
