@@ -44,6 +44,7 @@ interface OrderFormData {
     commune: string;
   };
   deliveryType: string;
+  deliveryPrice: number;
   fragile: boolean;
   echange: boolean;
   pickup: boolean;
@@ -116,6 +117,7 @@ export default function CreateOrder() {
             customerId,
             totalAmount,
             deliveryType: orderData.deliveryType,
+            deliveryPrice: orderData.deliveryPrice,
             fragile: orderData.fragile,
             echange: orderData.echange,
             pickup: orderData.pickup,

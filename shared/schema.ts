@@ -71,6 +71,7 @@ export const orders = pgTable("orders", {
   customerId: integer("customer_id").notNull().references(() => customers.id),
   totalAmount: integer("total_amount").notNull(), // in DA
   deliveryType: text("delivery_type").notNull(),
+  deliveryPrice: integer("delivery_price").default(0), // in DA
   fragile: boolean("fragile").default(false),
   echange: boolean("echange").default(false),
   pickup: boolean("pickup").default(false),

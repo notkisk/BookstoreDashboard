@@ -124,11 +124,11 @@ export default function ExportCsv() {
         "poids (kg)": "", // optional, leave empty
         "montant du colis": order.totalAmount,
         "remarque": remarks,
-        "FRAGILE": order.fragile ? "Oui" : "Non",
-        "ECHANGE": order.echange ? "Oui" : "Non",
-        "PICK UP": order.pickup ? "Oui" : "Non",
-        "RECOUVREMENT": order.recouvrement ? "Oui" : "Non",
-        "STOP DESK": order.stopDesk ? "Oui" : "Non",
+        "FRAGILE": order.fragile ? "OUI" : "",
+        "ECHANGE": order.echange ? "OUI" : "",
+        "PICK UP": order.pickup ? "OUI" : "",
+        "RECOUVREMENT": order.recouvrement ? "OUI" : "",
+        "STOP DESK": order.stopDesk ? "OUI" : "",
         "Lien map": "" // Optional map link
       };
     });
