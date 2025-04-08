@@ -1,0 +1,49 @@
+1. Missing Customer Info on “View All” Page
+When I click "View All", it takes me to a page with detailed order info. The issue is that customer phone numbers, names, and locations are missing—even though these are filled out correctly in the Orders tab. Meanwhile, order date, amount, and status are showing correctly.
+👉 Please make sure all customer details are being passed and rendered properly on the detailed view page.
+
+2. Icons Instead of Text (Phone & Books)
+Instead of showing the phone number and list of books as plain text in the table:
+
+Add an icon for the phone number. When clicked, it should reveal the phone number.
+
+Add an icon for the ordered books. Clicking it should show:
+
+Book title
+
+Price
+
+Quantity
+
+This will make the UI cleaner and more interactive.
+
+3. Order Status – Book Inventory Logic
+The current logic updates inventory only when the order is marked as "Delivered", which works. However:
+
+When the order status changes from:
+
+"Pending" → "Delivering"
+
+"Pending" → "Reactionary"
+👉 Nothing happens in the inventory, which is a problem.
+
+Here’s what should happen logically:
+
+Status Change	Action in Inventory
+Pending → Delivering	Reduce the available book stock (as the books are now being prepared for delivery). Increase the new "Delivering" column count.
+Pending → Reactionary	Same as above — books are being handled even if under special/reactive conditions.
+Delivering → Delivered	This can trigger final confirmation or just remove from the "Delivering" count if needed.
+Pending → Cancelled	Do nothing to inventory.
+📌 In short, any status other than "Pending" means the book is being processed or moved, so it should impact the inventory accordingly.
+
+4. Add “Delivering” Column in Book Inventory
+Please add a new column in the Book Inventory tab named "Delivering".
+
+This column should auto-calculate how many units of each book are currently associated with orders that are in:
+
+"Delivering"
+
+"Reactionary"
+
+This will help us track books that are not yet delivered but are on the way.
+Even if no data is available now, just add the column and wire it to auto-update when relevant status changes happen.
