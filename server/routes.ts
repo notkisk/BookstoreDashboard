@@ -155,22 +155,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const looseBookSchema = insertBookSchema.partial().extend({
         // Only title is truly required
         title: z.string().min(1, "Title is required"),
+        // Handle all possible data types for author and publisher
+        author: z.union([z.string(), z.number()]).transform(val => String(val)).default(""),
+        publisher: z.union([z.string(), z.number()]).transform(val => String(val)).default(""),
         // Make sure numbers are properly processed
         price: z.preprocess(
-          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
-          z.number().min(0).default(0)
+          (val) => {
+            // Handle different formats and types
+            if (val === null || val === undefined || val === "") return 0;
+            // Convert string with decimals to integer (remove decimal part)
+            if (typeof val === "string" && val.includes(".")) {
+              return Math.round(parseFloat(val));
+            }
+            return Math.round(Number(val));
+          },
+          z.number().int().min(0).default(0)
         ),
         buyPrice: z.preprocess(
-          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
-          z.number().min(0).default(0)
+          (val) => {
+            // Handle different formats and types
+            if (val === null || val === undefined || val === "") return 0;
+            // Convert string with decimals to integer (remove decimal part)
+            if (typeof val === "string" && val.includes(".")) {
+              return Math.round(parseFloat(val));
+            }
+            return Math.round(Number(val));
+          },
+          z.number().int().min(0).default(0)
         ),
         quantityBought: z.preprocess(
-          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
-          z.number().min(0).default(0)
+          (val) => {
+            if (val === null || val === undefined || val === "") return 0;
+            return Math.round(Number(val));
+          },
+          z.number().int().min(0).default(0)
         ),
         quantityLeft: z.preprocess(
-          (val) => val === null || val === undefined || val === "" ? 0 : Number(val),
-          z.number().min(0).default(0)
+          (val) => {
+            if (val === null || val === undefined || val === "") return 0;
+            return Math.round(Number(val));
+          },
+          z.number().int().min(0).default(0)
         ),
       });
 

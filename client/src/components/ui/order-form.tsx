@@ -156,14 +156,20 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
     }
   }, [selectedWilaya]);
 
-  // Calculate total amount when order items change
+  // Calculate total amount when order items or delivery price change
   useEffect(() => {
-    const total = orderItems.reduce(
+    const itemsTotal = orderItems.reduce(
       (sum, item) => sum + item.quantity * item.unitPrice,
       0
     );
+    
+    // Get delivery price from form
+    const deliveryPrice = Number(form.watch("deliveryPrice") || 0);
+    
+    // Add delivery price to total
+    const total = itemsTotal + deliveryPrice;
     setTotalAmount(total);
-  }, [orderItems]);
+  }, [orderItems, form.watch("deliveryPrice")]);
 
   // Handle wilaya selection
   const handleWilayaChange = (value: string) => {

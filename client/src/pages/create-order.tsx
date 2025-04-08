@@ -86,7 +86,8 @@ export default function CreateOrder() {
           );
           
           // If we get here, customer exists
-          const existingCustomer = await customerResponse.json();
+          // apiRequest already returns the parsed JSON
+          const existingCustomer = customerResponse;
           customerId = existingCustomer.id;
           
           // Update customer info if needed
@@ -103,7 +104,8 @@ export default function CreateOrder() {
             "/api/customers",
             orderData.customer,
           );
-          const newCustomer = await newCustomerResponse.json();
+          // apiRequest already returns the parsed JSON
+          const newCustomer = newCustomerResponse;
           customerId = newCustomer.id;
         }
 
@@ -136,9 +138,8 @@ export default function CreateOrder() {
           })),
         };
 
-        const response = await apiRequest("POST", "/api/orders", orderPayload);
-        const newOrder = await response.json();
-
+        const newOrder = await apiRequest("POST", "/api/orders", orderPayload);
+        // apiRequest already returns parsed JSON
         setOrderReference(newOrder.reference);
         setOrderTotal(totalAmount);
 
