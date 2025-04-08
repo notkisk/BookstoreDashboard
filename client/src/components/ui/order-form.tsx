@@ -65,11 +65,28 @@ const orderFormSchema = z.object({
     (val) => val === "" ? 0 : Number(val),
     z.number().min(0, "Delivery price must be a positive number").default(0)
   ),
+  // Discount Information
+  discountAmount: z.preprocess(
+    (val) => val === "" ? 0 : Number(val),
+    z.number().min(0, "Discount amount must be a positive number").default(0)
+  ),
+  discountPercentage: z.preprocess(
+    (val) => val === "" ? 0 : Number(val),
+    z.number().min(0).max(100, "Percentage must be between 0 and 100").default(0)
+  ),
   fragile: z.boolean().default(false),
   echange: z.boolean().default(false),
   pickup: z.boolean().default(false),
   recouvrement: z.boolean().default(false),
   stopDesk: z.boolean().default(true),
+  discountAmount: z.preprocess(
+    (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+    z.number().min(0).default(0)
+  ),
+  discountPercentage: z.preprocess(
+    (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+    z.number().min(0).max(100).default(0)
+  ),
   notes: z.string().optional(),
 });
 
@@ -93,6 +110,10 @@ interface OrderFormData {
   };
   deliveryType: string; // This will be derived from stopDesk value
   deliveryPrice: number;
+  discountAmount: number;
+  discountPercentage: number;
+  totalAmount: number; // Before discounts
+  finalAmount: number; // After discounts and with delivery fee
   fragile: boolean;
   echange: boolean;
   pickup: boolean;
@@ -129,6 +150,8 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       commune: "",
       address: "",
       deliveryPrice: 0,
+      discountAmount: 0,
+      discountPercentage: 0,
       fragile: false,
       echange: false,
       pickup: false,
@@ -162,20 +185,52 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
     }
   }, [selectedWilaya]);
 
-  // Calculate total amount when order items or delivery price change
+  // State for calculated values
+  const [itemsSubtotal, setItemsSubtotal] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
+  const [discountedAmount, setDiscountedAmount] = useState(0);
+
+  // Calculate total amount when order items, delivery price, or discounts change
   useEffect(() => {
+    // Calculate items subtotal
     const itemsTotal = orderItems.reduce(
       (sum, item) => sum + item.quantity * item.unitPrice,
       0
     );
+    setItemsSubtotal(itemsTotal);
     
-    // Get delivery price from form
+    // Get values from form
     const deliveryPrice = Number(form.watch("deliveryPrice") || 0);
+    const discountAmount = Number(form.watch("discountAmount") || 0);
+    const discountPercentage = Number(form.watch("discountPercentage") || 0);
     
-    // Add delivery price to total
-    const total = itemsTotal + deliveryPrice;
+    // Calculate discounts
+    let discounted = itemsTotal;
+    
+    // Apply percentage discount first
+    if (discountPercentage > 0) {
+      const percentDiscount = Math.round(discounted * (discountPercentage / 100));
+      discounted -= percentDiscount;
+    }
+    
+    // Then apply fixed amount discount
+    if (discountAmount > 0) {
+      discounted = Math.max(0, discounted - discountAmount);
+    }
+    
+    // Set the discounted amount (before delivery)
+    setDiscountedAmount(discounted);
+    
+    // Add delivery price to final amount
+    const total = discounted + deliveryPrice;
     setTotalAmount(total);
-  }, [orderItems, form.watch("deliveryPrice")]);
+    setFinalAmount(total);
+  }, [
+    orderItems, 
+    form.watch("deliveryPrice"), 
+    form.watch("discountAmount"), 
+    form.watch("discountPercentage")
+  ]);
 
   // Fetch delivery price based on wilaya and delivery type
   const fetchDeliveryPrice = async (wilayaId: string, isStopDesk: boolean) => {
@@ -316,6 +371,8 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       },
       deliveryType: deliveryType,
       deliveryPrice: values.deliveryPrice,
+      discountAmount: values.discountAmount,
+      discountPercentage: values.discountPercentage,
       fragile: values.fragile,
       echange: values.echange,
       pickup: values.pickup,
@@ -323,6 +380,8 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       stopDesk: values.stopDesk,
       notes: values.notes,
       items: orderItems,
+      totalAmount: itemsSubtotal,
+      finalAmount: finalAmount,
     };
     
     onSubmit(formData);
@@ -720,11 +779,85 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                     ))
                   )}
                 </div>
-                <div className="bg-gray-50 px-4 py-3 flex justify-between items-center">
-                  <span className="text-sm font-medium text-gray-700">Total:</span>
-                  <span className="text-base font-semibold text-gray-900">
-                    {formatCurrency(totalAmount)}
-                  </span>
+                {/* Discount Section */}
+                <div className="bg-gray-50 px-4 py-3 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-700">Items Subtotal:</span>
+                    <span className="text-sm text-gray-700">
+                      {formatCurrency(itemsSubtotal)}
+                    </span>
+                  </div>
+                  
+                  {/* Discount Fields */}
+                  <div className="grid grid-cols-1 gap-3 pt-2 border-t border-gray-200">
+                    <h4 className="text-sm font-medium text-gray-700">Discounts</h4>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <FormField
+                        control={form.control}
+                        name="discountPercentage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs">Percentage (%)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="0"
+                                max="100"
+                                step="1"
+                                placeholder="0"
+                                onChange={(e) => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
+                                value={field.value}
+                                className="h-8 text-sm"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="discountAmount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs">Fixed Amount (DZD)</FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="0"
+                                step="100"
+                                placeholder="0"
+                                onChange={(e) => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
+                                value={field.value}
+                                className="h-8 text-sm"
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="flex justify-between items-center pt-2 text-sm">
+                      <span className="font-medium text-gray-700">After Discounts:</span>
+                      <span className="text-gray-700">
+                        {formatCurrency(discountedAmount)}
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center pt-1 text-sm">
+                      <span className="font-medium text-gray-700">Delivery Fee:</span>
+                      <span className="text-gray-700">
+                        {formatCurrency(Number(form.watch("deliveryPrice") || 0))}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                    <span className="text-sm font-medium text-gray-700">Final Total:</span>
+                    <span className="text-base font-semibold text-gray-900">
+                      {formatCurrency(finalAmount)}
+                    </span>
+                  </div>
                 </div>
               </div>
 

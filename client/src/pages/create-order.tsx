@@ -45,6 +45,10 @@ interface OrderFormData {
   };
   deliveryType: string;
   deliveryPrice: number;
+  discountAmount: number;
+  discountPercentage: number;
+  totalAmount: number; // Before discounts
+  finalAmount: number; // After discounts and with delivery fee
   fragile: boolean;
   echange: boolean;
   pickup: boolean;
@@ -109,18 +113,17 @@ export default function CreateOrder() {
           customerId = newCustomer.id;
         }
 
-        // Calculate total amount (including delivery price)
-        const itemsTotal = orderData.items.reduce(
-          (sum, item) => sum + item.quantity * item.unitPrice,
-          0
-        );
-        const totalAmount = itemsTotal + orderData.deliveryPrice;
+        // Use the pre-calculated values from the form
+        const { totalAmount, finalAmount, discountAmount, discountPercentage } = orderData;
 
         // Create order
         const orderPayload = {
           order: {
             customerId,
-            totalAmount,
+            totalAmount,                       // Total before discounts
+            discountAmount,                    // Fixed amount discount
+            discountPercentage,                // Percentage discount
+            finalAmount,                       // Final amount after discounts and delivery
             deliveryType: orderData.deliveryType,
             deliveryPrice: orderData.deliveryPrice,
             fragile: orderData.fragile,
@@ -141,7 +144,7 @@ export default function CreateOrder() {
         const newOrder = await apiRequest("POST", "/api/orders", orderPayload);
         // apiRequest already returns parsed JSON
         setOrderReference(newOrder.reference);
-        setOrderTotal(totalAmount);
+        setOrderTotal(finalAmount); // Use final amount after discounts for the success message
 
         return newOrder;
       } catch (error) {
@@ -200,7 +203,7 @@ export default function CreateOrder() {
                 <span className="font-medium">{orderReference}</span>
               </p>
               <p className="text-center text-gray-600 mb-6">
-                Total amount:{" "}
+                Final amount:{" "}
                 <span className="font-medium">
                   {formatCurrency(orderTotal)}
                 </span>
