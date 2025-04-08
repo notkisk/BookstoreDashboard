@@ -103,10 +103,11 @@ export default function Dashboard() {
   // Create a mutation for updating order status
   const updateOrderStatus = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      return apiRequest(`/api/orders/${id}/status`, {
-        method: 'PATCH',
-        body: JSON.stringify({ status })
-      });
+      return apiRequest<any>(
+        'PATCH',
+        `/api/orders/${id}/status`,
+        { status }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
@@ -171,6 +172,7 @@ export default function Dashboard() {
     {
       header: "Actions",
       id: "actions",
+      accessorKey: "id" as keyof Order,
       cell: (order: Order) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -328,8 +330,8 @@ export default function Dashboard() {
                     </p>
                   )}
                 </div>
-                <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
-                  <TrendingUp className="text-purple-600" />
+                <div className="h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <TrendingUp className="text-blue-600" />
                 </div>
               </div>
               <div className="mt-2 flex items-center">
@@ -498,7 +500,7 @@ export default function Dashboard() {
                     data={salesData} 
                     categories={["sales"]}
                     index="name"
-                    colors={["#e4d1b3"]}
+                    colors={["#3b82f6"]}
                     valueFormatter={(value: number) => `${value} DA`}
                     yAxisWidth={65}
                   />
@@ -521,8 +523,8 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   {typedStats?.bestSellingBooks?.map((item, index) => (
                     <div key={index} className="flex items-center">
-                      <div className="h-10 w-10 bg-gray-200 rounded flex-shrink-0 flex items-center justify-center">
-                        <BookOpen className="h-5 w-5 text-gray-500" />
+                      <div className="h-10 w-10 bg-blue-100 rounded flex-shrink-0 flex items-center justify-center">
+                        <BookOpen className="h-5 w-5 text-blue-600" />
                       </div>
                       <div className="ml-3 flex-1">
                         <div className="flex justify-between">
@@ -535,7 +537,7 @@ export default function Dashboard() {
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                           <div 
-                            className="bg-primary-400 h-2 rounded-full" 
+                            className="bg-blue-500 h-2 rounded-full" 
                             style={{
                               width: `${Math.min(100, (item.soldCount / (typedStats?.bestSellingBooks?.[0]?.soldCount || 1)) * 100)}%`
                             }}
@@ -547,7 +549,7 @@ export default function Dashboard() {
                   
                   {(!typedStats?.bestSellingBooks || typedStats.bestSellingBooks.length === 0) && (
                     <div className="text-center py-6 text-gray-500">
-                      <BarChartIcon className="h-10 w-10 mx-auto text-gray-300 mb-2" />
+                      <BarChartIcon className="h-10 w-10 mx-auto text-blue-300 mb-2" />
                       <p>No sales data available</p>
                     </div>
                   )}
@@ -573,8 +575,8 @@ export default function Dashboard() {
               <div className="space-y-5">
                 {typedStats?.ordersByWilaya?.map((item, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                      <MapPin className="h-5 w-5 text-purple-600" />
+                    <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                      <MapPin className="h-5 w-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between mb-1">
@@ -587,7 +589,7 @@ export default function Dashboard() {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div 
-                          className="bg-purple-400 h-2 rounded-full" 
+                          className="bg-blue-500 h-2 rounded-full" 
                           style={{
                             width: `${Math.min(100, (item.count / (typedStats?.ordersByWilaya?.[0]?.count || 1)) * 100)}%`
                           }}
@@ -599,7 +601,7 @@ export default function Dashboard() {
                 
                 {(!typedStats?.ordersByWilaya || typedStats.ordersByWilaya.length === 0) && (
                   <div className="text-center py-6 text-gray-500">
-                    <MapPin className="h-10 w-10 mx-auto text-gray-300 mb-2" />
+                    <MapPin className="h-10 w-10 mx-auto text-blue-300 mb-2" />
                     <p>No orders by wilaya data available</p>
                   </div>
                 )}

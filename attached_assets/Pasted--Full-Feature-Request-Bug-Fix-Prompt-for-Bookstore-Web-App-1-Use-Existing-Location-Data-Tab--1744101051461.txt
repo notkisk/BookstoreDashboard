@@ -1,0 +1,95 @@
+🛠️ Full Feature Request & Bug Fix Prompt for Bookstore Web App
+✅ 1. Use Existing Location Data Tab for Delivery Fees
+In the existing Location Data tab (which already includes Wilaya numbers and Communes), add:
+
+A column for Desk Delivery Price
+
+A column for Doorstep Delivery Price
+
+These inputs should be editable manually.
+
+When placing an order:
+
+If I choose the Wilaya, Commune, and check/uncheck the "Stop Desk" box:
+
+The Delivery Fee field in the order form should be automatically filled using the data from the Location Data tab.
+
+✅ 2. Order Filtering & Auto-Calculation
+Add filter in the Orders Tab to filter orders by Wilaya.
+
+Recalculate and update the profit equation (consider book prices, delivery fee, and cost if applicable).
+
+In the Dashboard, stats should be interactive:
+
+The % changes (e.g., "18% increase") should be auto-calculated based on previous data periods.
+
+✅ 3. Book Inventory Logic Enhancement
+Add a new column in the Book Inventory Tab:
+
+📌 "Delivering Quantity" – shows how many copies of the book are currently being delivered (not delivered yet).
+
+This column is updated as follows:
+
+When order status changes from Pending → Delivering:
+
+Decrease the Stock
+
+Increase the Delivering Quantity
+
+When order status changes from Delivering → Delivered:
+
+Decrease the Delivering Quantity
+
+Increase the Sold count
+
+When order status changes from Delivering → Reactionary (مرتجع):
+
+Decrease Delivering Quantity
+
+Increase Stock
+
+📌 This logic must rely on the actual ordered books quantity per order.
+
+✅ 4. Order Status & Dashboard Fixes
+Fix the bug where changing order status gives this error:
+"Failed to update order status. Please try again."
+
+In the Dashboard, improve the order display:
+
+Show full Order Details:
+
+Books ordered
+
+Total order value
+
+Wilaya
+
+Delivery type (Desk / Doorstep)
+
+Customer Name (currently showing as "Unknown", should be fixed and linked to stored customer data)
+
+Add a way to change order status directly from Dashboard to:
+
+Pending → Delivering
+
+Delivering → Delivered
+
+Delivering → Reactionary
+
+✅ 5. Dashboard Stats & Visuals
+On the Dashboard, add:
+
+A graph showing the number of orders per Wilaya over a given time period
+
+Count of all orders by status:
+
+Pending
+
+Delivering
+
+Delivered
+
+Reactionary
+
+The best-selling book by order volume
+
