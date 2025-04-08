@@ -68,7 +68,11 @@ export default function ImportCsv() {
   // Import books mutation with improved error handling
   const importBooks = useMutation({
     mutationFn: async (books: any[]): Promise<ImportResponse> => {
-      const response = await apiRequest("POST", "/api/books/import", books);
+      const response = await apiRequest("/api/books/import", {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(books)
+      });
       return response as unknown as ImportResponse;
     },
     onSuccess: (data, variables) => {

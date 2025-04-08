@@ -109,11 +109,11 @@ export default function Dashboard() {
   // Create a mutation for updating order status
   const updateOrderStatus = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      return apiRequest<any>(
-        'PATCH',
-        `/api/orders/${id}/status`,
-        { status }
-      );
+      return apiRequest<any>(`/api/orders/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/orders'] });

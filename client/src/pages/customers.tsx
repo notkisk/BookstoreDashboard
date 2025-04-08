@@ -94,7 +94,11 @@ export default function Customers() {
   const updateCustomer = useMutation({
     mutationFn: async (data: CustomerFormValues & { id: number }) => {
       const { id, ...customerData } = data;
-      return apiRequest('PATCH', `/api/customers/${id}`, customerData);
+      return apiRequest(`/api/customers/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customerData)
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
@@ -116,7 +120,9 @@ export default function Customers() {
   // Delete customer mutation
   const deleteCustomer = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/customers/${id}`);
+      return apiRequest(`/api/customers/${id}`, {
+        method: 'DELETE'
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/customers'] });

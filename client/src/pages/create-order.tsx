@@ -85,8 +85,8 @@ export default function CreateOrder() {
         // Try to get existing customer by phone
         try {
           const customerResponse = await apiRequest(
-            "GET",
             `/api/customers/phone/${orderData.customer.phone}`,
+            { method: "GET" }
           );
           
           // If we get here, customer exists
@@ -96,17 +96,23 @@ export default function CreateOrder() {
           
           // Update customer info if needed
           await apiRequest(
-            "PUT",
             `/api/customers/${customerId}`,
-            orderData.customer,
+            {
+              method: "PUT",
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(orderData.customer)
+            },
           );
         } catch (error) {
           // Customer not found or other error, create new customer
           console.log("Creating new customer:", orderData.customer);
           const newCustomerResponse = await apiRequest(
-            "POST",
             "/api/customers",
-            orderData.customer,
+            {
+              method: "POST",
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(orderData.customer)
+            }
           );
           // apiRequest already returns the parsed JSON
           const newCustomer = newCustomerResponse;
@@ -141,7 +147,11 @@ export default function CreateOrder() {
           })),
         };
 
-        const newOrder = await apiRequest("POST", "/api/orders", orderPayload);
+        const newOrder = await apiRequest("/api/orders", {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
         // apiRequest already returns parsed JSON
         setOrderReference(newOrder.reference);
         setOrderTotal(finalAmount); // Use final amount after discounts for the success message
