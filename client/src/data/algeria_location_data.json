@@ -1,0 +1,7948 @@
+{
+  "communes": [
+    {
+      "id": "Adrar_1",
+      "name": "Adrar",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Akabli_1",
+      "name": "Akabli",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Aoulef_1",
+      "name": "Aoulef",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Bouda_1",
+      "name": "Bouda",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Fenoughil_1",
+      "name": "Fenoughil",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Zghmir_1",
+      "name": "Zghmir",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Timmi_1",
+      "name": "Timmi",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Reggane_1",
+      "name": "Reggane",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Sali_1",
+      "name": "Sali",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Sebaa_1",
+      "name": "Sebaa",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Tamantit_1",
+      "name": "Tamantit",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Tamest_1",
+      "name": "Tamest",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Timekten_1",
+      "name": "Timekten",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Tit_1",
+      "name": "Tit",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Tsabit_1",
+      "name": "Tsabit",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Kounta_1",
+      "name": "Kounta",
+      "wilayaId": "1"
+    },
+    {
+      "id": "Hassan_2",
+      "name": "Hassan",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Merane_2",
+      "name": "Merane",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Benairia_2",
+      "name": "Benairia",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Bouattab_2",
+      "name": "Bouattab",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Haoua_2",
+      "name": "Haoua",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Rached_2",
+      "name": "Rached",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Boukadir_2",
+      "name": "Boukadir",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Bouzeghaia_2",
+      "name": "Bouzeghaia",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Breira_2",
+      "name": "Breira",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Chettia_2",
+      "name": "Chettia",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Chlef_2",
+      "name": "Chlef",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Dahra_2",
+      "name": "Dahra",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Hadjadj_2",
+      "name": "Hadjadj",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Karimia_2",
+      "name": "Karimia",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Marsa_2",
+      "name": "Marsa",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Harchoun_2",
+      "name": "Harchoun",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Herenfa_2",
+      "name": "Herenfa",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Medjadja_2",
+      "name": "Medjadja",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Moussadek_2",
+      "name": "Moussadek",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Fodda_2",
+      "name": "Fodda",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Goussine_2",
+      "name": "Goussine",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Sly_2",
+      "name": "Sly",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Abbes_2",
+      "name": "Abbes",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Abdelkader_2",
+      "name": "Abdelkader",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Fares_2",
+      "name": "Fares",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Drou_2",
+      "name": "Drou",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Sendjas_2",
+      "name": "Sendjas",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Abderrahmane_2",
+      "name": "Abderrahmane",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Akkacha_2",
+      "name": "Akkacha",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Sobha_2",
+      "name": "Sobha",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Tadjena_2",
+      "name": "Tadjena",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Talassa_2",
+      "name": "Talassa",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Taougrite_2",
+      "name": "Taougrite",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Tenes_2",
+      "name": "Tenes",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Zeboudja_2",
+      "name": "Zeboudja",
+      "wilayaId": "2"
+    },
+    {
+      "id": "Aflou_3",
+      "name": "Aflou",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Mahdi_3",
+      "name": "Mahdi",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Ali_3",
+      "name": "Ali",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Beidha_3",
+      "name": "Beidha",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Benchohra_3",
+      "name": "Benchohra",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Brida_3",
+      "name": "Brida",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Assafia_3",
+      "name": "Assafia",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Ghicha_3",
+      "name": "Ghicha",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Haouaita_3",
+      "name": "Haouaita",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Saad_3",
+      "name": "Saad",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Mechri_3",
+      "name": "Mechri",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Delaa_3",
+      "name": "Delaa",
+      "wilayaId": "3"
+    },
+    {
+      "id": "R'mel_3",
+      "name": "R'mel",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Kheneg_3",
+      "name": "Kheneg",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Hirane_3",
+      "name": "Hirane",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Laghouat_3",
+      "name": "Laghouat",
+      "wilayaId": "3"
+    },
+    {
+      "id": "M'zi_3",
+      "name": "M'zi",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Morra_3",
+      "name": "Morra",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Sebgag_3",
+      "name": "Sebgag",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Bouzid_3",
+      "name": "Bouzid",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Makhlouf_3",
+      "name": "Makhlouf",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Tadjemout_3",
+      "name": "Tadjemout",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Tadjrouna_3",
+      "name": "Tadjrouna",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Taouiala_3",
+      "name": "Taouiala",
+      "wilayaId": "3"
+    },
+    {
+      "id": "Babouche_4",
+      "name": "Babouche",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Beida_4",
+      "name": "Beida",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Diss_4",
+      "name": "Diss",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Fekroune_4",
+      "name": "Fekroune",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Kercha_4",
+      "name": "Kercha",
+      "wilayaId": "4"
+    },
+    {
+      "id": "M'lila_4",
+      "name": "M'lila",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Zitoun_4",
+      "name": "Zitoun",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Chergui_4",
+      "name": "Chergui",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Berriche_4",
+      "name": "Berriche",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Chouhada_4",
+      "name": "Chouhada",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Dhala_4",
+      "name": "Dhala",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Amiria_4",
+      "name": "Amiria",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Belala_4",
+      "name": "Belala",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Djazia_4",
+      "name": "Djazia",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Sa_4",
+      "name": "Sa",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Harmilia_4",
+      "name": "Harmilia",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Fkirina_4",
+      "name": "Fkirina",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Toumghani_4",
+      "name": "Toumghani",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Sbahi_4",
+      "name": "Sbahi",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Meskiana_4",
+      "name": "Meskiana",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Nini_4",
+      "name": "Nini",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Gacem_4",
+      "name": "Gacem",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Hamla_4",
+      "name": "Hamla",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Zouai_4",
+      "name": "Zouai",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Bouaghi_4",
+      "name": "Bouaghi",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Rahia_4",
+      "name": "Rahia",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Sigus_4",
+      "name": "Sigus",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Naamane_4",
+      "name": "Naamane",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Zorg_4",
+      "name": "Zorg",
+      "wilayaId": "4"
+    },
+    {
+      "id": "Djasser_5",
+      "name": "Djasser",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Touta_5",
+      "name": "Touta",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Yagout_5",
+      "name": "Yagout",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Arris_5",
+      "name": "Arris",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Abedelkader_5",
+      "name": "Abedelkader",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Barika_5",
+      "name": "Barika",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Batna_5",
+      "name": "Batna",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Hakania_5",
+      "name": "Hakania",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Bitam_5",
+      "name": "Bitam",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Boulhilat_5",
+      "name": "Boulhilat",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Boumagueur_5",
+      "name": "Boumagueur",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Boumia_5",
+      "name": "Boumia",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Bouzina_5",
+      "name": "Bouzina",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Chemora_5",
+      "name": "Chemora",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Chir_5",
+      "name": "Chir",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Djerma_5",
+      "name": "Djerma",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Djezzar_5",
+      "name": "Djezzar",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Hassi_5",
+      "name": "Hassi",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Madher_5",
+      "name": "Madher",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Fesdis_5",
+      "name": "Fesdis",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Toub_5",
+      "name": "Toub",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Ghassira_5",
+      "name": "Ghassira",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Gosbat_5",
+      "name": "Gosbat",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Guigba_5",
+      "name": "Guigba",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Hidoussa_5",
+      "name": "Hidoussa",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Ichmoul_5",
+      "name": "Ichmoul",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Inoughissen_5",
+      "name": "Inoughissen",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Kimmel_5",
+      "name": "Kimmel",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Bellezma_5",
+      "name": "Bellezma",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Larbaa_5",
+      "name": "Larbaa",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Lazrou_5",
+      "name": "Lazrou",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Lemsane_5",
+      "name": "Lemsane",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Doukal_5",
+      "name": "Doukal",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Maafa_5",
+      "name": "Maafa",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Menaa_5",
+      "name": "Menaa",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Merouana_5",
+      "name": "Merouana",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Gaous_5",
+      "name": "Gaous",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Chaaba_5",
+      "name": "Chaaba",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Ma_5",
+      "name": "Ma",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Taga_5",
+      "name": "Taga",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Ammar_5",
+      "name": "Ammar",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Aouf_5",
+      "name": "Aouf",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Fadel_5",
+      "name": "Fadel",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Sellem_5",
+      "name": "Sellem",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Slimane_5",
+      "name": "Slimane",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Assafir_5",
+      "name": "Assafir",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Rahbat_5",
+      "name": "Rahbat",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Aioun_5",
+      "name": "Aioun",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Sefiane_5",
+      "name": "Sefiane",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Seggana_5",
+      "name": "Seggana",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Seriana_5",
+      "name": "Seriana",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Kout_5",
+      "name": "Kout",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Talkhamt_5",
+      "name": "Talkhamt",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Taxlent_5",
+      "name": "Taxlent",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Tazoult_5",
+      "name": "Tazoult",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Abed_5",
+      "name": "Abed",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Tighanimine_5",
+      "name": "Tighanimine",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Tigharghar_5",
+      "name": "Tigharghar",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Tilatou_5",
+      "name": "Tilatou",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Timgad_5",
+      "name": "Timgad",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Beida_5",
+      "name": "Beida",
+      "wilayaId": "5"
+    },
+    {
+      "id": "Adekar_6",
+      "name": "Adekar",
+      "wilayaId": "6"
+    },
+    {
+      "id": "R'zine_6",
+      "name": "R'zine",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Smail_6",
+      "name": "Smail",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Akbou_6",
+      "name": "Akbou",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Akfadou_6",
+      "name": "Akfadou",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Amalou_6",
+      "name": "Amalou",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Amizour_6",
+      "name": "Amizour",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Aokas_6",
+      "name": "Aokas",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Barbacha_6",
+      "name": "Barbacha",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Bejaia_6",
+      "name": "Bejaia",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Dejllil_6",
+      "name": "Dejllil",
+      "wilayaId": "6"
+    },
+    {
+      "id": "K'sila_6",
+      "name": "K'sila",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Mallikeche_6",
+      "name": "Mallikeche",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Benimaouche_6",
+      "name": "Benimaouche",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Boudjellil_6",
+      "name": "Boudjellil",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Bouhamza_6",
+      "name": "Bouhamza",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Boukhelifa_6",
+      "name": "Boukhelifa",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Chellata_6",
+      "name": "Chellata",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Chemini_6",
+      "name": "Chemini",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Darghina_6",
+      "name": "Darghina",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Caid_6",
+      "name": "Caid",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Kseur_6",
+      "name": "Kseur",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Maten_6",
+      "name": "Maten",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Feraoun_6",
+      "name": "Feraoun",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Ali_6",
+      "name": "Ali",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Ighram_6",
+      "name": "Ighram",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Kendira_6",
+      "name": "Kendira",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Kherrata_6",
+      "name": "Kherrata",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Leflaye_6",
+      "name": "Leflaye",
+      "wilayaId": "6"
+    },
+    {
+      "id": "M'cisna_6",
+      "name": "M'cisna",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Melbou_6",
+      "name": "Melbou",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Ghir_6",
+      "name": "Ghir",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Ouzellaguene_6",
+      "name": "Ouzellaguene",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Seddouk_6",
+      "name": "Seddouk",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Aich_6",
+      "name": "Aich",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Ayad_6",
+      "name": "Ayad",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Smaoun_6",
+      "name": "Smaoun",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tenine_6",
+      "name": "Tenine",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Oufella_6",
+      "name": "Oufella",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Hamza_6",
+      "name": "Hamza",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tamokra_6",
+      "name": "Tamokra",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tamridjet_6",
+      "name": "Tamridjet",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Ighil_6",
+      "name": "Ighil",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Taskriout_6",
+      "name": "Taskriout",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tazmalt_6",
+      "name": "Tazmalt",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tibane_6",
+      "name": "Tibane",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tichy_6",
+      "name": "Tichy",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tifra_6",
+      "name": "Tifra",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Timezrit_6",
+      "name": "Timezrit",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Tinebdar_6",
+      "name": "Tinebdar",
+      "wilayaId": "6"
+    },
+    {
+      "id": "N'berber_6",
+      "name": "N'berber",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Toudja_6",
+      "name": "Toudja",
+      "wilayaId": "6"
+    },
+    {
+      "id": "Naga_7",
+      "name": "Naga",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Zaatout_7",
+      "name": "Zaatout",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Biskra_7",
+      "name": "Biskra",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Azzouz_7",
+      "name": "Azzouz",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Bouchagroun_7",
+      "name": "Bouchagroun",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Branis_7",
+      "name": "Branis",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Chetma_7",
+      "name": "Chetma",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Djemorah_7",
+      "name": "Djemorah",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Feidh_7",
+      "name": "Feidh",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Ghrous_7",
+      "name": "Ghrous",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Hadjab_7",
+      "name": "Hadjab",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Haouch_7",
+      "name": "Haouch",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Kantara_7",
+      "name": "Kantara",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Outaya_7",
+      "name": "Outaya",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Foughala_7",
+      "name": "Foughala",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Nadji_7",
+      "name": "Nadji",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Lichana_7",
+      "name": "Lichana",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Lioua_7",
+      "name": "Lioua",
+      "wilayaId": "7"
+    },
+    {
+      "id": "M'chouneche_7",
+      "name": "M'chouneche",
+      "wilayaId": "7"
+    },
+    {
+      "id": "M'lili_7",
+      "name": "M'lili",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Mekhadma_7",
+      "name": "Mekhadma",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Meziraa_7",
+      "name": "Meziraa",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Oumache_7",
+      "name": "Oumache",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Ourlal_7",
+      "name": "Ourlal",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Okba_7",
+      "name": "Okba",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Tolga_7",
+      "name": "Tolga",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Oued_7",
+      "name": "Oued",
+      "wilayaId": "7"
+    },
+    {
+      "id": "Abadla_8",
+      "name": "Abadla",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Bechar_8",
+      "name": "Bechar",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Ounif_8",
+      "name": "Ounif",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Boukais_8",
+      "name": "Boukais",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Ferradj_8",
+      "name": "Ferradj",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Kenadsa_8",
+      "name": "Kenadsa",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Lahmar_8",
+      "name": "Lahmar",
+      "wilayaId": "8"
+    },
+    {
+      "id": "H.boumediene_8",
+      "name": "H.boumediene",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Meridja_8",
+      "name": "Meridja",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Mogheul_8",
+      "name": "Mogheul",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Taghit_8",
+      "name": "Taghit",
+      "wilayaId": "8"
+    },
+    {
+      "id": "Romana_9",
+      "name": "Romana",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Mered_9",
+      "name": "Mered",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Tamou_9",
+      "name": "Tamou",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Benkhelil_9",
+      "name": "Benkhelil",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Blida_9",
+      "name": "Blida",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Bouarfa_9",
+      "name": "Bouarfa",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Boufarik_9",
+      "name": "Boufarik",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Bougara_9",
+      "name": "Bougara",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Bouinan_9",
+      "name": "Bouinan",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Chebli_9",
+      "name": "Chebli",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Chiffa_9",
+      "name": "Chiffa",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Chrea_9",
+      "name": "Chrea",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Djebabra_9",
+      "name": "Djebabra",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Affroun_9",
+      "name": "Affroun",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Guerrouaou_9",
+      "name": "Guerrouaou",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Melouane_9",
+      "name": "Melouane",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Larbaa_9",
+      "name": "Larbaa",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Meftah_9",
+      "name": "Meftah",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Mouzaia_9",
+      "name": "Mouzaia",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Djer_9",
+      "name": "Djer",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Alleug_9",
+      "name": "Alleug",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Slama_9",
+      "name": "Slama",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Yaich_9",
+      "name": "Yaich",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Souhane_9",
+      "name": "Souhane",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Souma_9",
+      "name": "Souma",
+      "wilayaId": "9"
+    },
+    {
+      "id": "Aghbalou_10",
+      "name": "Aghbalou",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Ksar_10",
+      "name": "Ksar",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Bessem_10",
+      "name": "Bessem",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Hadjar_10",
+      "name": "Hadjar",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Laloui_10",
+      "name": "Laloui",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Turk_10",
+      "name": "Turk",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Laaziz_10",
+      "name": "Laaziz",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Aomar_10",
+      "name": "Aomar",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Bechloul_10",
+      "name": "Bechloul",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Ghbalou_10",
+      "name": "Ghbalou",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Okhriss_10",
+      "name": "Okhriss",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Bouderbala_10",
+      "name": "Bouderbala",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Bouira_10",
+      "name": "Bouira",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Boukram_10",
+      "name": "Boukram",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Chorfa_10",
+      "name": "Chorfa",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Dechmia_10",
+      "name": "Dechmia",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Dirah_10",
+      "name": "Dirah",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Djebahia_10",
+      "name": "Djebahia",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Adjiba_10",
+      "name": "Adjiba",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Asnam_10",
+      "name": "Asnam",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Hachimia_10",
+      "name": "Hachimia",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Hakimia_10",
+      "name": "Hakimia",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Khabouzia_10",
+      "name": "Khabouzia",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Mokrani_10",
+      "name": "Mokrani",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Guerrouma_10",
+      "name": "Guerrouma",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Zerga_10",
+      "name": "Zerga",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Haizer_10",
+      "name": "Haizer",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Hanif_10",
+      "name": "Hanif",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Kadiria_10",
+      "name": "Kadiria",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Lakhdaria_10",
+      "name": "Lakhdaria",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Chedallah_10",
+      "name": "Chedallah",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Maala_10",
+      "name": "Maala",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Mamora_10",
+      "name": "Mamora",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Mezdour_10",
+      "name": "Mezdour",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Berdi_10",
+      "name": "Berdi",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Rached_10",
+      "name": "Rached",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Raouraoua_10",
+      "name": "Raouraoua",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Ridane_10",
+      "name": "Ridane",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Saharidj_10",
+      "name": "Saharidj",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Khemis_10",
+      "name": "Khemis",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Ghozlane_10",
+      "name": "Ghozlane",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Taghzout_10",
+      "name": "Taghzout",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Taguedite_10",
+      "name": "Taguedite",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Taourirt_10",
+      "name": "Taourirt",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Z'barbar_10",
+      "name": "Z'barbar",
+      "wilayaId": "10"
+    },
+    {
+      "id": "Abalessa_11",
+      "name": "Abalessa",
+      "wilayaId": "11"
+    },
+    {
+      "id": "Amguel_11",
+      "name": "Amguel",
+      "wilayaId": "11"
+    },
+    {
+      "id": "Idles_11",
+      "name": "Idles",
+      "wilayaId": "11"
+    },
+    {
+      "id": "Tamanrasset_11",
+      "name": "Tamanrasset",
+      "wilayaId": "11"
+    },
+    {
+      "id": "Tazrouk_11",
+      "name": "Tazrouk",
+      "wilayaId": "11"
+    },
+    {
+      "id": "Zerga_12",
+      "name": "Zerga",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Bedjene_12",
+      "name": "Bedjene",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Bekkaria_12",
+      "name": "Bekkaria",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Dheheb_12",
+      "name": "Dheheb",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Ater_12",
+      "name": "Ater",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Mokkadem_12",
+      "name": "Mokkadem",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Boukhadra_12",
+      "name": "Boukhadra",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Dyr_12",
+      "name": "Dyr",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Cheria_12",
+      "name": "Cheria",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Aouinet_12",
+      "name": "Aouinet",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Houidjbet_12",
+      "name": "Houidjbet",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Kouif_12",
+      "name": "Kouif",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Malabiod_12",
+      "name": "Malabiod",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Meridj_12",
+      "name": "Meridj",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Mezeraa_12",
+      "name": "Mezeraa",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Ogla_12",
+      "name": "Ogla",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Malha_12",
+      "name": "Malha",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Ferkane_12",
+      "name": "Ferkane",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Guorriguer_12",
+      "name": "Guorriguer",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Hammamet_12",
+      "name": "Hammamet",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Morssot_12",
+      "name": "Morssot",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Negrine_12",
+      "name": "Negrine",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Ouenza_12",
+      "name": "Ouenza",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Ali_12",
+      "name": "Ali",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Ouesra_12",
+      "name": "Ouesra",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Guentis_12",
+      "name": "Guentis",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Tebessa_12",
+      "name": "Tebessa",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Telidjen_12",
+      "name": "Telidjen",
+      "wilayaId": "12"
+    },
+    {
+      "id": "Fettah_13",
+      "name": "Fettah",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Fezza_13",
+      "name": "Fezza",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Ghoraba_13",
+      "name": "Ghoraba",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Kebira_13",
+      "name": "Kebira",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Nehala_13",
+      "name": "Nehala",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Tallout_13",
+      "name": "Tallout",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Youcef_13",
+      "name": "Youcef",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Amieur_13",
+      "name": "Amieur",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Azails_13",
+      "name": "Azails",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Assa_13",
+      "name": "Assa",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Bahdel_13",
+      "name": "Bahdel",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Boussaid_13",
+      "name": "Boussaid",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Khaled_13",
+      "name": "Khaled",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Mester_13",
+      "name": "Mester",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Ouarsous_13",
+      "name": "Ouarsous",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Smiel_13",
+      "name": "Smiel",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Snous_13",
+      "name": "Snous",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Bensekrane_13",
+      "name": "Bensekrane",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Bouhlou_13",
+      "name": "Bouhlou",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Bouihi_13",
+      "name": "Bouihi",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Chetouane_13",
+      "name": "Chetouane",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Yaghmouracene_13",
+      "name": "Yaghmouracene",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Djebala_13",
+      "name": "Djebala",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Aricha_13",
+      "name": "Aricha",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Fehoul_13",
+      "name": "Fehoul",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Gor_13",
+      "name": "Gor",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Fellaoucene_13",
+      "name": "Fellaoucene",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Ghazaouet_13",
+      "name": "Ghazaouet",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Boughrara_13",
+      "name": "Boughrara",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Hennaya_13",
+      "name": "Hennaya",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Honaine_13",
+      "name": "Honaine",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Maghnia_13",
+      "name": "Maghnia",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Mansourah_13",
+      "name": "Mansourah",
+      "wilayaId": "13"
+    },
+    {
+      "id": "M'hidi_13",
+      "name": "M'hidi",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Fouaga_13",
+      "name": "Fouaga",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Nedroma_13",
+      "name": "Nedroma",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Chouly_13",
+      "name": "Chouly",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Mimoun_13",
+      "name": "Mimoun",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Riyah_13",
+      "name": "Riyah",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Remchi_13",
+      "name": "Remchi",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Sabra_13",
+      "name": "Sabra",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Chioukh_13",
+      "name": "Chioukh",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Sebdou_13",
+      "name": "Sebdou",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Abdelli_13",
+      "name": "Abdelli",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Djilali_13",
+      "name": "Djilali",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Medjahed_13",
+      "name": "Medjahed",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Souahlia_13",
+      "name": "Souahlia",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Souani_13",
+      "name": "Souani",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Tleta_13",
+      "name": "Tleta",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Hediel_13",
+      "name": "Hediel",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Tianet_13",
+      "name": "Tianet",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Tlemcen_13",
+      "name": "Tlemcen",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Zenata_13",
+      "name": "Zenata",
+      "wilayaId": "13"
+    },
+    {
+      "id": "Bouchekif_14",
+      "name": "Bouchekif",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Deheb_14",
+      "name": "Deheb",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Hadid_14",
+      "name": "Hadid",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Kermes_14",
+      "name": "Kermes",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Zarit_14",
+      "name": "Zarit",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Bougara_14",
+      "name": "Bougara",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Chehaima_14",
+      "name": "Chehaima",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Dahmouni_14",
+      "name": "Dahmouni",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Rosfa_14",
+      "name": "Rosfa",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Amar_14",
+      "name": "Amar",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Faidja_14",
+      "name": "Faidja",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Frenda_14",
+      "name": "Frenda",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Guertoufa_14",
+      "name": "Guertoufa",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Hamadia_14",
+      "name": "Hamadia",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Chellala_14",
+      "name": "Chellala",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Madna_14",
+      "name": "Madna",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Mahdia_14",
+      "name": "Mahdia",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Safa_14",
+      "name": "Safa",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Medrissa_14",
+      "name": "Medrissa",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Medroussa_14",
+      "name": "Medroussa",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Meghila_14",
+      "name": "Meghila",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Mellakou_14",
+      "name": "Mellakou",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Nadorah_14",
+      "name": "Nadorah",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Naima_14",
+      "name": "Naima",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Lilli_14",
+      "name": "Lilli",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Rahouia_14",
+      "name": "Rahouia",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Rechaiga_14",
+      "name": "Rechaiga",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Sebaine_14",
+      "name": "Sebaine",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Sebt_14",
+      "name": "Sebt",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Serghine_14",
+      "name": "Serghine",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Abdelghani_14",
+      "name": "Abdelghani",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Abderrahmane_14",
+      "name": "Abderrahmane",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Mellal_14",
+      "name": "Mellal",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Bakhti_14",
+      "name": "Bakhti",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Hosni_14",
+      "name": "Hosni",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Sougueur_14",
+      "name": "Sougueur",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Tagdemt_14",
+      "name": "Tagdemt",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Takhemaret_14",
+      "name": "Takhemaret",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Tiaret_14",
+      "name": "Tiaret",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Tidda_14",
+      "name": "Tidda",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Tousnina_14",
+      "name": "Tousnina",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Abdelkade_14",
+      "name": "Abdelkade",
+      "wilayaId": "14"
+    },
+    {
+      "id": "Youcef_15",
+      "name": "Youcef",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Aghribs_15",
+      "name": "Aghribs",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Gueghrane_15",
+      "name": "Gueghrane",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Hammam_15",
+      "name": "Hammam",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Zaouia_15",
+      "name": "Zaouia",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Aggouacha_15",
+      "name": "Aggouacha",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Bouaddou_15",
+      "name": "Bouaddou",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Boumehdi_15",
+      "name": "Boumehdi",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Chafaa_15",
+      "name": "Chafaa",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Khellili_15",
+      "name": "Khellili",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Mahmoud_15",
+      "name": "Mahmoud",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Oumalou_15",
+      "name": "Oumalou",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Toudert_15",
+      "name": "Toudert",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Yahia_15",
+      "name": "Yahia",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Moussa_15",
+      "name": "Moussa",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Akbil_15",
+      "name": "Akbil",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Akerrou_15",
+      "name": "Akerrou",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Youcef_15",
+      "name": "Youcef",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Azazga_15",
+      "name": "Azazga",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Azeffoun_15",
+      "name": "Azeffoun",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Aissi_15",
+      "name": "Aissi",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Douala_15",
+      "name": "Douala",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Yenni_15",
+      "name": "Yenni",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Zikki_15",
+      "name": "Zikki",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Zmenzer_15",
+      "name": "Zmenzer",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Boghni_15",
+      "name": "Boghni",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Boudjima_15",
+      "name": "Boudjima",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Bounouh_15",
+      "name": "Bounouh",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Bouzeguene_15",
+      "name": "Bouzeguene",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Mimoun_15",
+      "name": "Mimoun",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Khedda_15",
+      "name": "Khedda",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Mizan_15",
+      "name": "Mizan",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Freha_15",
+      "name": "Freha",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Frikat_15",
+      "name": "Frikat",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Iboudrarene_15",
+      "name": "Iboudrarene",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Idjeur_15",
+      "name": "Idjeur",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Iferhounene_15",
+      "name": "Iferhounene",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Ifigha_15",
+      "name": "Ifigha",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Iflissen_15",
+      "name": "Iflissen",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Illilten_15",
+      "name": "Illilten",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Oumalou_15",
+      "name": "Oumalou",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Imsouhal_15",
+      "name": "Imsouhal",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Irdjen_15",
+      "name": "Irdjen",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Irathen_15",
+      "name": "Irathen",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Irathen_15",
+      "name": "Irathen",
+      "wilayaId": "15"
+    },
+    {
+      "id": "M'kira_15",
+      "name": "M'kira",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Maatkas_15",
+      "name": "Maatkas",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Makouda_15",
+      "name": "Makouda",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Mechtras_15",
+      "name": "Mechtras",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Mekla_15",
+      "name": "Mekla",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Mizrana_15",
+      "name": "Mizrana",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Ouacif_15",
+      "name": "Ouacif",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Ouadhias_15",
+      "name": "Ouadhias",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Ouaguenoune_15",
+      "name": "Ouaguenoune",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Naamane_15",
+      "name": "Naamane",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Souamaa_15",
+      "name": "Souamaa",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Thenine_15",
+      "name": "Thenine",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Tadmait_15",
+      "name": "Tadmait",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Tigzirt_15",
+      "name": "Tigzirt",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Timizart_15",
+      "name": "Timizart",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Tirmitine_15",
+      "name": "Tirmitine",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Ghenif_15",
+      "name": "Ghenif",
+      "wilayaId": "15"
+    },
+    {
+      "id": "N'tleta_15",
+      "name": "N'tleta",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Ouzou_15",
+      "name": "Ouzou",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Rached_15",
+      "name": "Rached",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Yakourene_15",
+      "name": "Yakourene",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Yatafene_15",
+      "name": "Yatafene",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Zekri_15",
+      "name": "Zekri",
+      "wilayaId": "15"
+    },
+    {
+      "id": "Benian_16",
+      "name": "Benian",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Taya_16",
+      "name": "Taya",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Centre_16",
+      "name": "Centre",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Oued_16",
+      "name": "Oued",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Ezzouar_16",
+      "name": "Ezzouar",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Hesen_16",
+      "name": "Hesen",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Bachedjerah_16",
+      "name": "Bachedjerah",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Romains_16",
+      "name": "Romains",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Baraki_16",
+      "name": "Baraki",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Aknoun_16",
+      "name": "Aknoun",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Messous_16",
+      "name": "Messous",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Rais_16",
+      "name": "Rais",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Touta_16",
+      "name": "Touta",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Birkhadem_16",
+      "name": "Birkhadem",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Ziri_16",
+      "name": "Ziri",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Bahri_16",
+      "name": "Bahri",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Kiffan_16",
+      "name": "Kiffan",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Bourouba_16",
+      "name": "Bourouba",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Bouzareah_16",
+      "name": "Bouzareah",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Casbah_16",
+      "name": "Casbah",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Cheraga_16",
+      "name": "Cheraga",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Beida_16",
+      "name": "Beida",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Ibrahim_16",
+      "name": "Ibrahim",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Kasentina_16",
+      "name": "Kasentina",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Douira_16",
+      "name": "Douira",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Draria_16",
+      "name": "Draria",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Achour_16",
+      "name": "Achour",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Biar_16",
+      "name": "Biar",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Harrach_16",
+      "name": "Harrach",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Madania_16",
+      "name": "Madania",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Magharia_16",
+      "name": "Magharia",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Merssa_16",
+      "name": "Merssa",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Mouradia_16",
+      "name": "Mouradia",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Herraoua_16",
+      "name": "Herraoua",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Dey_16",
+      "name": "Dey",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Hydra_16",
+      "name": "Hydra",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Kheraisia_16",
+      "name": "Kheraisia",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Kouba_16",
+      "name": "Kouba",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Eucalyptus_16",
+      "name": "Eucalyptus",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Maalma_16",
+      "name": "Maalma",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Belouzdad_16",
+      "name": "Belouzdad",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Mohammadia_16",
+      "name": "Mohammadia",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Koriche_16",
+      "name": "Koriche",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Smar_16",
+      "name": "Smar",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Chebel_16",
+      "name": "Chebel",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Fayet_16",
+      "name": "Fayet",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Rahmania_16",
+      "name": "Rahmania",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Hamidou_16",
+      "name": "Hamidou",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Reghaia_16",
+      "name": "Reghaia",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Rouiba_16",
+      "name": "Rouiba",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Sehaoula_16",
+      "name": "Sehaoula",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Setaouali_16",
+      "name": "Setaouali",
+      "wilayaId": "16"
+    },
+    {
+      "id": "M'hamed_16",
+      "name": "M'hamed",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Moussa_16",
+      "name": "Moussa",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Souidania_16",
+      "name": "Souidania",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Merdja_16",
+      "name": "Merdja",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Zeralda_16",
+      "name": "Zeralda",
+      "wilayaId": "16"
+    },
+    {
+      "id": "Chouhada_17",
+      "name": "Chouhada",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Ibel_17",
+      "name": "Ibel",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Fekka_17",
+      "name": "Fekka",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Maabed_17",
+      "name": "Maabed",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Oussera_17",
+      "name": "Oussera",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Amourah_17",
+      "name": "Amourah",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Benhar_17",
+      "name": "Benhar",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Benyagoub_17",
+      "name": "Benyagoub",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Birine_17",
+      "name": "Birine",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Lahdab_17",
+      "name": "Lahdab",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Charef_17",
+      "name": "Charef",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Chioukh_17",
+      "name": "Chioukh",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Deldoul_17",
+      "name": "Deldoul",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Djelfa_17",
+      "name": "Djelfa",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Douis_17",
+      "name": "Douis",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Guedid_17",
+      "name": "Guedid",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Idrissia_17",
+      "name": "Idrissia",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Khemis_17",
+      "name": "Khemis",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Botma_17",
+      "name": "Botma",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Guernini_17",
+      "name": "Guernini",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Guettara_17",
+      "name": "Guettara",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Sahary_17",
+      "name": "Sahary",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Bahbah_17",
+      "name": "Bahbah",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Euch_17",
+      "name": "Euch",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Fedoul_17",
+      "name": "Fedoul",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Liliha_17",
+      "name": "Liliha",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Messaad_17",
+      "name": "Messaad",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Moudjebara_17",
+      "name": "Moudjebara",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Laadham_17",
+      "name": "Laadham",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Rahal_17",
+      "name": "Rahal",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Selmana_17",
+      "name": "Selmana",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Baizid_17",
+      "name": "Baizid",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Ladjel_17",
+      "name": "Ladjel",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Tadmit_17",
+      "name": "Tadmit",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Zaafrane_17",
+      "name": "Zaafrane",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Zaccar_17",
+      "name": "Zaccar",
+      "wilayaId": "17"
+    },
+    {
+      "id": "Tahar_18",
+      "name": "Tahar",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Beniyadjis_18",
+      "name": "Beniyadjis",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Belhadef_18",
+      "name": "Belhadef",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Askeur_18",
+      "name": "Askeur",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Chahna_18",
+      "name": "Chahna",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Chekfa_18",
+      "name": "Chekfa",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Habibi_18",
+      "name": "Habibi",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Djimla_18",
+      "name": "Djimla",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Ancer_18",
+      "name": "Ancer",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Aouana_18",
+      "name": "Aouana",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Nouchfi_18",
+      "name": "Nouchfi",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Milia_18",
+      "name": "Milia",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Abdelkader_18",
+      "name": "Abdelkader",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Erraguene_18",
+      "name": "Erraguene",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Ghebala_18",
+      "name": "Ghebala",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Jijel_18",
+      "name": "Jijel",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Adjoul_18",
+      "name": "Adjoul",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Kouas_18",
+      "name": "Kouas",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Oudjana_18",
+      "name": "Oudjana",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Rabah_18",
+      "name": "Rabah",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Khadrouch_18",
+      "name": "Khadrouch",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Benziada_18",
+      "name": "Benziada",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Settara_18",
+      "name": "Settara",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Abdelaziz_18",
+      "name": "Abdelaziz",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Marouf_18",
+      "name": "Marouf",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Taher_18",
+      "name": "Taher",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Texena_18",
+      "name": "Texena",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Mansouria_18",
+      "name": "Mansouria",
+      "wilayaId": "18"
+    },
+    {
+      "id": "Abessa_19",
+      "name": "Abessa",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Arnat_19",
+      "name": "Arnat",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Azel_19",
+      "name": "Azel",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Kebira_19",
+      "name": "Kebira",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Lahdjar_19",
+      "name": "Lahdjar",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Legradj_19",
+      "name": "Legradj",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Oulmane_19",
+      "name": "Oulmane",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Roua_19",
+      "name": "Roua",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Sebt_19",
+      "name": "Sebt",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Mezada_19",
+      "name": "Mezada",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Tizi_19",
+      "name": "Tizi",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Amoucha_19",
+      "name": "Amoucha",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Babor_19",
+      "name": "Babor",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Sakra_19",
+      "name": "Sakra",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Bordj_19",
+      "name": "Bordj",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Bellaa_19",
+      "name": "Bellaa",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Aziz_19",
+      "name": "Aziz",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Chebana_19",
+      "name": "Chebana",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Fouda_19",
+      "name": "Fouda",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Mouhli_19",
+      "name": "Mouhli",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Ouartilane_19",
+      "name": "Ouartilane",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Oussine_19",
+      "name": "Oussine",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Arch_19",
+      "name": "Arch",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Haddada_19",
+      "name": "Haddada",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Bouandas_19",
+      "name": "Bouandas",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Bougaa_19",
+      "name": "Bougaa",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Bousselam_19",
+      "name": "Bousselam",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Boutaleb_19",
+      "name": "Boutaleb",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Dehamcha_19",
+      "name": "Dehamcha",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Djemila_19",
+      "name": "Djemila",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Kebila_19",
+      "name": "Kebila",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Eulma_19",
+      "name": "Eulma",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Ouldja_19",
+      "name": "Ouldja",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Ouricia_19",
+      "name": "Ouricia",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Guellal_19",
+      "name": "Guellal",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Zerka_19",
+      "name": "Zerka",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Guenzet_19",
+      "name": "Guenzet",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Guidjel_19",
+      "name": "Guidjel",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Soukhna_19",
+      "name": "Soukhna",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Hamma_19",
+      "name": "Hamma",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Guergour_19",
+      "name": "Guergour",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Harbil_19",
+      "name": "Harbil",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Abtal_19",
+      "name": "Abtal",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Maaouia_19",
+      "name": "Maaouia",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Maouaklane_19",
+      "name": "Maouaklane",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Mezloug_19",
+      "name": "Mezloug",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Barad_19",
+      "name": "Barad",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Addouane_19",
+      "name": "Addouane",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Sabor_19",
+      "name": "Sabor",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Ahmed_19",
+      "name": "Ahmed",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Tebben_19",
+      "name": "Tebben",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Rosfa_19",
+      "name": "Rosfa",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Bey_19",
+      "name": "Bey",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Ghoul_19",
+      "name": "Ghoul",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Setif_19",
+      "name": "Setif",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Tachouda_19",
+      "name": "Tachouda",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Ifacene_19",
+      "name": "Ifacene",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Taya_19",
+      "name": "Taya",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Tella_19",
+      "name": "Tella",
+      "wilayaId": "19"
+    },
+    {
+      "id": "N'bechar_19",
+      "name": "N'bechar",
+      "wilayaId": "19"
+    },
+    {
+      "id": "Hadjar_20",
+      "name": "Hadjar",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Sekhouna_20",
+      "name": "Sekhouna",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Soltane_20",
+      "name": "Soltane",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Thabet_20",
+      "name": "Thabet",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Hassasna_20",
+      "name": "Hassasna",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Hounet_20",
+      "name": "Hounet",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Maamora_20",
+      "name": "Maamora",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Larbi_20",
+      "name": "Larbi",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Brahim_20",
+      "name": "Brahim",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Khaled_20",
+      "name": "Khaled",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Saida_20",
+      "name": "Saida",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Ahmed_20",
+      "name": "Ahmed",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Amar_20",
+      "name": "Amar",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Boubekeur_20",
+      "name": "Boubekeur",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Tircine_20",
+      "name": "Tircine",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Youb_20",
+      "name": "Youb",
+      "wilayaId": "20"
+    },
+    {
+      "id": "Bouziane_21",
+      "name": "Bouziane",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Charchar_21",
+      "name": "Charchar",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Kechera_21",
+      "name": "Kechera",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Zouit_21",
+      "name": "Zouit",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Azzaba_21",
+      "name": "Azzaba",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Lakhdar_21",
+      "name": "Lakhdar",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Azzouz_21",
+      "name": "Azzouz",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Bechir_21",
+      "name": "Bechir",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Oulbane_21",
+      "name": "Oulbane",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Zid_21",
+      "name": "Zid",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Ouiden_21",
+      "name": "Ouiden",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Bouchetata_21",
+      "name": "Bouchetata",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Cheraia_21",
+      "name": "Cheraia",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Collo_21",
+      "name": "Collo",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Mohamed_21",
+      "name": "Mohamed",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Arrouch_21",
+      "name": "Arrouch",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Ghedir_21",
+      "name": "Ghedir",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Hadaiek_21",
+      "name": "Hadaiek",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Marsa_21",
+      "name": "Marsa",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Edchich_21",
+      "name": "Edchich",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Sebt_21",
+      "name": "Sebt",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Filfila_21",
+      "name": "Filfila",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Krouma_21",
+      "name": "Krouma",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Kanoua_21",
+      "name": "Kanoua",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Kerkera_21",
+      "name": "Kerkera",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Mayoum_21",
+      "name": "Mayoum",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Zhour_21",
+      "name": "Zhour",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Boulbalout_21",
+      "name": "Boulbalout",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Attia_21",
+      "name": "Attia",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Habbeba_21",
+      "name": "Habbeba",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Toub_21",
+      "name": "Toub",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Djamel_21",
+      "name": "Djamel",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Bouchaour_21",
+      "name": "Bouchaour",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Mezghiche_21",
+      "name": "Mezghiche",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Skikda_21",
+      "name": "Skikda",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Tamalous_21",
+      "name": "Tamalous",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Zerdezas_21",
+      "name": "Zerdezas",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Zitouna_21",
+      "name": "Zitouna",
+      "wilayaId": "21"
+    },
+    {
+      "id": "Adden_22",
+      "name": "Adden",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Berd_22",
+      "name": "Berd",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Kada_22",
+      "name": "Kada",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Thrid_22",
+      "name": "Thrid",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Tindamine_22",
+      "name": "Tindamine",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Amarnas_22",
+      "name": "Amarnas",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Mokrani_22",
+      "name": "Mokrani",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Belarbi_22",
+      "name": "Belarbi",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Badis_22",
+      "name": "Badis",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Chelia_22",
+      "name": "Chelia",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Hammam_22",
+      "name": "Hammam",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Bordj_22",
+      "name": "Bordj",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Boukhanafis_22",
+      "name": "Boukhanafis",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Belaila_22",
+      "name": "Belaila",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Dhaya_22",
+      "name": "Dhaya",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Hacaiba_22",
+      "name": "Hacaiba",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Dahou_22",
+      "name": "Dahou",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Zahana_22",
+      "name": "Zahana",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Lamtar_22",
+      "name": "Lamtar",
+      "wilayaId": "22"
+    },
+    {
+      "id": "M'cid_22",
+      "name": "M'cid",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Makedra_22",
+      "name": "Makedra",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Marhoum_22",
+      "name": "Marhoum",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Merine_22",
+      "name": "Merine",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Mezaourou_22",
+      "name": "Mezaourou",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Brahim_22",
+      "name": "Brahim",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Slissen_22",
+      "name": "Slissen",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Sebaa_22",
+      "name": "Sebaa",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Sefioun_22",
+      "name": "Sefioun",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Taourira_22",
+      "name": "Taourira",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Ma_22",
+      "name": "Ma",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Demouche_22",
+      "name": "Demouche",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Thaoura_22",
+      "name": "Thaoura",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Sfissef_22",
+      "name": "Sfissef",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Benyoub_22",
+      "name": "Benyoub",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Boussidi_22",
+      "name": "Boussidi",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Abbes_22",
+      "name": "Abbes",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Brahim_22",
+      "name": "Brahim",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Chaib_22",
+      "name": "Chaib",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Zairs_22",
+      "name": "Zairs",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Hamadouche_22",
+      "name": "Hamadouche",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Khaled_22",
+      "name": "Khaled",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Lahcene_22",
+      "name": "Lahcene",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Yacoub_22",
+      "name": "Yacoub",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Tabia_22",
+      "name": "Tabia",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Tafissour_22",
+      "name": "Tafissour",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Taoudmout_22",
+      "name": "Taoudmout",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Teghalimet_22",
+      "name": "Teghalimet",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Telagh_22",
+      "name": "Telagh",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Tenira_22",
+      "name": "Tenira",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Tessala_22",
+      "name": "Tessala",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Tilmouni_22",
+      "name": "Tilmouni",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Zerouala_22",
+      "name": "Zerouala",
+      "wilayaId": "22"
+    },
+    {
+      "id": "Berda_23",
+      "name": "Berda",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Annaba_23",
+      "name": "Annaba",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Berrahel_23",
+      "name": "Berrahel",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Chetaibi_23",
+      "name": "Chetaibi",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Cheurfa_23",
+      "name": "Cheurfa",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Bouni_23",
+      "name": "Bouni",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Hadjar_23",
+      "name": "Hadjar",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Eulma_23",
+      "name": "Eulma",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Aneb_23",
+      "name": "Aneb",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Seraidi_23",
+      "name": "Seraidi",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Amar_23",
+      "name": "Amar",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Treat_23",
+      "name": "Treat",
+      "wilayaId": "23"
+    },
+    {
+      "id": "Beida_24",
+      "name": "Beida",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Hessania_24",
+      "name": "Hessania",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Larbi_24",
+      "name": "Larbi",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Makhlouf_24",
+      "name": "Makhlouf",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Reggada_24",
+      "name": "Reggada",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Belkheir_24",
+      "name": "Belkheir",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Djarah_24",
+      "name": "Djarah",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Mezline_24",
+      "name": "Mezline",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Sabat_24",
+      "name": "Sabat",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Hachana_24",
+      "name": "Hachana",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Hamdane_24",
+      "name": "Hamdane",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Mahmoud_24",
+      "name": "Mahmoud",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Bouchegouf_24",
+      "name": "Bouchegouf",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Ahmed_24",
+      "name": "Ahmed",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Dahouara_24",
+      "name": "Dahouara",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Khemissi_24",
+      "name": "Khemissi",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Fedjoudj_24",
+      "name": "Fedjoudj",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Sbaa_24",
+      "name": "Sbaa",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Guelma_24",
+      "name": "Guelma",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Debagh_24",
+      "name": "Debagh",
+      "wilayaId": "24"
+    },
+    {
+      "id": "N'bail_24",
+      "name": "N'bail",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Heliopolis_24",
+      "name": "Heliopolis",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Khezara_24",
+      "name": "Khezara",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Amar_24",
+      "name": "Amar",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Sfa_24",
+      "name": "Sfa",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Nechmaya_24",
+      "name": "Nechmaya",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Cheham_24",
+      "name": "Cheham",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Fragha_24",
+      "name": "Fragha",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Zenati_24",
+      "name": "Zenati",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Agba_24",
+      "name": "Agba",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Roknia_24",
+      "name": "Roknia",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Announa_24",
+      "name": "Announa",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Sandel_24",
+      "name": "Sandel",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Tamlouka_24",
+      "name": "Tamlouka",
+      "wilayaId": "24"
+    },
+    {
+      "id": "Abid_25",
+      "name": "Abid",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Smara_25",
+      "name": "Smara",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Badis_25",
+      "name": "Badis",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Hamidene_25",
+      "name": "Hamidene",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Constantine_25",
+      "name": "Constantine",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Mourad_25",
+      "name": "Mourad",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Khroub_25",
+      "name": "Khroub",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Bouziane_25",
+      "name": "Bouziane",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Ziad_25",
+      "name": "Ziad",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Boujeriou_25",
+      "name": "Boujeriou",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Rahmouni_25",
+      "name": "Rahmouni",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Youcef_25",
+      "name": "Youcef",
+      "wilayaId": "25"
+    },
+    {
+      "id": "Boucif_26",
+      "name": "Boucif",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Ouksir_26",
+      "name": "Ouksir",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Aissaouia_26",
+      "name": "Aissaouia",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Aziz_26",
+      "name": "Aziz",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Baata_26",
+      "name": "Baata",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Chicao_26",
+      "name": "Chicao",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Slimane_26",
+      "name": "Slimane",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Berrouaghia_26",
+      "name": "Berrouaghia",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Laabed_26",
+      "name": "Laabed",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Boghar_26",
+      "name": "Boghar",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Bouaiche_26",
+      "name": "Bouaiche",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Bouaichoune_26",
+      "name": "Bouaichoune",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Bouchrahil_26",
+      "name": "Bouchrahil",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Boughzoul_26",
+      "name": "Boughzoul",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Bouskene_26",
+      "name": "Bouskene",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Chabounia_26",
+      "name": "Chabounia",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Adhaoura_26",
+      "name": "Adhaoura",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Cheniguel_26",
+      "name": "Cheniguel",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Damiat_26",
+      "name": "Damiat",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Derrag_26",
+      "name": "Derrag",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Bassins_26",
+      "name": "Bassins",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Djouab_26",
+      "name": "Djouab",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Essamar_26",
+      "name": "Essamar",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Azizia_26",
+      "name": "Azizia",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Guelbelkebir_26",
+      "name": "Guelbelkebir",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Hamdania_26",
+      "name": "Hamdania",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Omaria_26",
+      "name": "Omaria",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Ouinet_26",
+      "name": "Ouinet",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Hannacha_26",
+      "name": "Hannacha",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Lakhdar_26",
+      "name": "Lakhdar",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Djouamaa_26",
+      "name": "Djouamaa",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Boukhari_26",
+      "name": "Boukhari",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Maghraoua_26",
+      "name": "Maghraoua",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Medea_26",
+      "name": "Medea",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Medjebar_26",
+      "name": "Medjebar",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Meftaha_26",
+      "name": "Meftaha",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Mezerana_26",
+      "name": "Mezerana",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Mihoub_26",
+      "name": "Mihoub",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Ouamri_26",
+      "name": "Ouamri",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Harbil_26",
+      "name": "Harbil",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Antar_26",
+      "name": "Antar",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Bouachra_26",
+      "name": "Bouachra",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Brahim_26",
+      "name": "Brahim",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Deid_26",
+      "name": "Deid",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Hellal_26",
+      "name": "Hellal",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Maaref_26",
+      "name": "Maaref",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Djellil_26",
+      "name": "Djellil",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Ouzera_26",
+      "name": "Ouzera",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Rebaia_26",
+      "name": "Rebaia",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Saneg_26",
+      "name": "Saneg",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Sedraya_26",
+      "name": "Sedraya",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Seghouane_26",
+      "name": "Seghouane",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Mahdjoub_26",
+      "name": "Mahdjoub",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Demed_26",
+      "name": "Demed",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Naamane_26",
+      "name": "Naamane",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Rabie_26",
+      "name": "Rabie",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Zahar_26",
+      "name": "Zahar",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Ziane_26",
+      "name": "Ziane",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Souagui_26",
+      "name": "Souagui",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Tablat_26",
+      "name": "Tablat",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Tafraout_26",
+      "name": "Tafraout",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Tamesguida_26",
+      "name": "Tamesguida",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Douair_26",
+      "name": "Douair",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Zoubiria_26",
+      "name": "Zoubiria",
+      "wilayaId": "26"
+    },
+    {
+      "id": "Achaacha_27",
+      "name": "Achaacha",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Boudinar_27",
+      "name": "Boudinar",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Nouissy_27",
+      "name": "Nouissy",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Cherif_27",
+      "name": "Cherif",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Tedles_27",
+      "name": "Tedles",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Ramdane_27",
+      "name": "Ramdane",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Bouguirat_27",
+      "name": "Bouguirat",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Fornaka_27",
+      "name": "Fornaka",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Hadjadj_27",
+      "name": "Hadjadj",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Mameche_27",
+      "name": "Mameche",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Hassiane_27",
+      "name": "Hassiane",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Khadra_27",
+      "name": "Khadra",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Eddine_27",
+      "name": "Eddine",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Mansourah_27",
+      "name": "Mansourah",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Mazagran_27",
+      "name": "Mazagran",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Mesra_27",
+      "name": "Mesra",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Mostaganem_27",
+      "name": "Mostaganem",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Nekmaria_27",
+      "name": "Nekmaria",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Kheir_27",
+      "name": "Kheir",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Boughalem_27",
+      "name": "Boughalem",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Maalah_27",
+      "name": "Maalah",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Safsaf_27",
+      "name": "Safsaf",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Sayada_27",
+      "name": "Sayada",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Ali_27",
+      "name": "Ali",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Belaattar_27",
+      "name": "Belaattar",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Lakhdar_27",
+      "name": "Lakhdar",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Sirat_27",
+      "name": "Sirat",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Souaflia_27",
+      "name": "Souaflia",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Sour_27",
+      "name": "Sour",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Stidia_27",
+      "name": "Stidia",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Tazgait_27",
+      "name": "Tazgait",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Touahria_27",
+      "name": "Touahria",
+      "wilayaId": "27"
+    },
+    {
+      "id": "Hadjel_28",
+      "name": "Hadjel",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Melh_28",
+      "name": "Melh",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Fares_28",
+      "name": "Fares",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Khadra_28",
+      "name": "Khadra",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Rich_28",
+      "name": "Rich",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Belaiba_28",
+      "name": "Belaiba",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Srour_28",
+      "name": "Srour",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Ilmane_28",
+      "name": "Ilmane",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Benzouh_28",
+      "name": "Benzouh",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Berhoum_28",
+      "name": "Berhoum",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Foda_28",
+      "name": "Foda",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Saada_28",
+      "name": "Saada",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Sayeh_28",
+      "name": "Sayeh",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Chellal_28",
+      "name": "Chellal",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Dehahna_28",
+      "name": "Dehahna",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Messaad_28",
+      "name": "Messaad",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Hamel_28",
+      "name": "Hamel",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Houamed_28",
+      "name": "Houamed",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Dalaa_28",
+      "name": "Dalaa",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Jir_28",
+      "name": "Jir",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Khoubana_28",
+      "name": "Khoubana",
+      "wilayaId": "28"
+    },
+    {
+      "id": "M'cif_28",
+      "name": "M'cif",
+      "wilayaId": "28"
+    },
+    {
+      "id": "M'sila_28",
+      "name": "M'sila",
+      "wilayaId": "28"
+    },
+    {
+      "id": "M'tarfa_28",
+      "name": "M'tarfa",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Maadid_28",
+      "name": "Maadid",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Maarif_28",
+      "name": "Maarif",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Magra_28",
+      "name": "Magra",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Medjedel_28",
+      "name": "Medjedel",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Menaa_28",
+      "name": "Menaa",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Boudiaf_28",
+      "name": "Boudiaf",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Ouanougha_28",
+      "name": "Ouanougha",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Guebala_28",
+      "name": "Guebala",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Derradj_28",
+      "name": "Derradj",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Madhi_28",
+      "name": "Madhi",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Mansour_28",
+      "name": "Mansour",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Brahim_28",
+      "name": "Brahim",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Slimane_28",
+      "name": "Slimane",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Oulteme_28",
+      "name": "Oulteme",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Aissa_28",
+      "name": "Aissa",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Ameur_28",
+      "name": "Ameur",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Hadjeres_28",
+      "name": "Hadjeres",
+      "wilayaId": "28"
+    },
+    {
+      "id": "M'hamed_28",
+      "name": "M'hamed",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Slim_28",
+      "name": "Slim",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Souamaa_28",
+      "name": "Souamaa",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Tamsa_28",
+      "name": "Tamsa",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Tarmount_28",
+      "name": "Tarmount",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Zarzour_28",
+      "name": "Zarzour",
+      "wilayaId": "28"
+    },
+    {
+      "id": "Fares_29",
+      "name": "Fares",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Fekan_29",
+      "name": "Fekan",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Ferah_29",
+      "name": "Ferah",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Frass_29",
+      "name": "Frass",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Alaimia_29",
+      "name": "Alaimia",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Aouf_29",
+      "name": "Aouf",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Benian_29",
+      "name": "Benian",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Henni_29",
+      "name": "Henni",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Bouhanifia_29",
+      "name": "Bouhanifia",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Chorfa_29",
+      "name": "Chorfa",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Bordj_29",
+      "name": "Bordj",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Gaada_29",
+      "name": "Gaada",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Ghomri_29",
+      "name": "Ghomri",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Gueitena_29",
+      "name": "Gueitena",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Hachem_29",
+      "name": "Hachem",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Keurt_29",
+      "name": "Keurt",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Mamounia_29",
+      "name": "Mamounia",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Menaouer_29",
+      "name": "Menaouer",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Ferraguig_29",
+      "name": "Ferraguig",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Froha_29",
+      "name": "Froha",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Gharrous_29",
+      "name": "Gharrous",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Ghriss_29",
+      "name": "Ghriss",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Guerdjoum_29",
+      "name": "Guerdjoum",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Hacine_29",
+      "name": "Hacine",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Khalouia_29",
+      "name": "Khalouia",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Makhda_29",
+      "name": "Makhda",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Maoussa_29",
+      "name": "Maoussa",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Mascara_29",
+      "name": "Mascara",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Matemore_29",
+      "name": "Matemore",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Douz_29",
+      "name": "Douz",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Mohammadia_29",
+      "name": "Mohammadia",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Nesmot_29",
+      "name": "Nesmot",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Oggaz_29",
+      "name": "Oggaz",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Abtal_29",
+      "name": "Abtal",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Taria_29",
+      "name": "Taria",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Amirouche_29",
+      "name": "Amirouche",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Sedjerara_29",
+      "name": "Sedjerara",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Sehailia_29",
+      "name": "Sehailia",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Abdeldjebar_29",
+      "name": "Abdeldjebar",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Abdelmoumene_29",
+      "name": "Abdelmoumene",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Boussaid_29",
+      "name": "Boussaid",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Kada_29",
+      "name": "Kada",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Sig_29",
+      "name": "Sig",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Tighennif_29",
+      "name": "Tighennif",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Tizi_29",
+      "name": "Tizi",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Zahana_29",
+      "name": "Zahana",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Zelamta_29",
+      "name": "Zelamta",
+      "wilayaId": "29"
+    },
+    {
+      "id": "Beida_30",
+      "name": "Beida",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Borma_30",
+      "name": "Borma",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Abdellah_30",
+      "name": "Abdellah",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Messaoud_30",
+      "name": "Messaoud",
+      "wilayaId": "30"
+    },
+    {
+      "id": "N'goussa_30",
+      "name": "N'goussa",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Ouargla_30",
+      "name": "Ouargla",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Rouissat_30",
+      "name": "Rouissat",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Khouiled_30",
+      "name": "Khouiled",
+      "wilayaId": "30"
+    },
+    {
+      "id": "Biya_31",
+      "name": "Biya",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Kerma_31",
+      "name": "Kerma",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Turk_31",
+      "name": "Turk",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Arzew_31",
+      "name": "Arzew",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Freha_31",
+      "name": "Freha",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Bethioua_31",
+      "name": "Bethioua",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Djir_31",
+      "name": "Djir",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Boufatis_31",
+      "name": "Boufatis",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Bousfer_31",
+      "name": "Bousfer",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Boutlelis_31",
+      "name": "Boutlelis",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Ancar_31",
+      "name": "Ancar",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Braya_31",
+      "name": "Braya",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Kerma_31",
+      "name": "Kerma",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Senia_31",
+      "name": "Senia",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Gdyel_31",
+      "name": "Gdyel",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Okba_31",
+      "name": "Okba",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Bounif_31",
+      "name": "Bounif",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Mefsoukh_31",
+      "name": "Mefsoukh",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Hadjadj_31",
+      "name": "Hadjadj",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Kebir_31",
+      "name": "Kebir",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Messerghin_31",
+      "name": "Messerghin",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Oran_31",
+      "name": "Oran",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Tlelat_31",
+      "name": "Tlelat",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Yebka_31",
+      "name": "Yebka",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Chami_31",
+      "name": "Chami",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Tafraoui_31",
+      "name": "Tafraoui",
+      "wilayaId": "31"
+    },
+    {
+      "id": "Orak_32",
+      "name": "Orak",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Arbaouat_32",
+      "name": "Arbaouat",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Boualem_32",
+      "name": "Boualem",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Bougtoub_32",
+      "name": "Bougtoub",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Boussemghoun_32",
+      "name": "Boussemghoun",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Brezina_32",
+      "name": "Brezina",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Cheguig_32",
+      "name": "Cheguig",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Chellala_32",
+      "name": "Chellala",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Bayadh_32",
+      "name": "Bayadh",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Cheikh_32",
+      "name": "Cheikh",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Bnoud_32",
+      "name": "Bnoud",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Kheither_32",
+      "name": "Kheither",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Mehara_32",
+      "name": "Mehara",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Ghassoul_32",
+      "name": "Ghassoul",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Ahmar_32",
+      "name": "Ahmar",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Krakda_32",
+      "name": "Krakda",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Rogassa_32",
+      "name": "Rogassa",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Ameur_32",
+      "name": "Ameur",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Slimane_32",
+      "name": "Slimane",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Tifour_32",
+      "name": "Tifour",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Stitten_32",
+      "name": "Stitten",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Tousmouline_32",
+      "name": "Tousmouline",
+      "wilayaId": "32"
+    },
+    {
+      "id": "Driss_33",
+      "name": "Driss",
+      "wilayaId": "33"
+    },
+    {
+      "id": "Debdeb_33",
+      "name": "Debdeb",
+      "wilayaId": "33"
+    },
+    {
+      "id": "Illizi_33",
+      "name": "Illizi",
+      "wilayaId": "33"
+    },
+    {
+      "id": "Amenas_33",
+      "name": "Amenas",
+      "wilayaId": "33"
+    },
+    {
+      "id": "Taghrout_34",
+      "name": "Taghrout",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Tesra_34",
+      "name": "Tesra",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Belimour_34",
+      "name": "Belimour",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Daoud_34",
+      "name": "Daoud",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Kasdali_34",
+      "name": "Kasdali",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Arreridj_34",
+      "name": "Arreridj",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Ghdir_34",
+      "name": "Ghdir",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Zemora_34",
+      "name": "Zemora",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Colla_34",
+      "name": "Colla",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Djaafra_34",
+      "name": "Djaafra",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Ach_34",
+      "name": "Ach",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Achir_34",
+      "name": "Achir",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Anseur_34",
+      "name": "Anseur",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Hamadia_34",
+      "name": "Hamadia",
+      "wilayaId": "34"
+    },
+    {
+      "id": "M'hir_34",
+      "name": "M'hir",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Main_34",
+      "name": "Main",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Ghilassa_34",
+      "name": "Ghilassa",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Haraza_34",
+      "name": "Haraza",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Hasnaoua_34",
+      "name": "Hasnaoua",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Khelil_34",
+      "name": "Khelil",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Ksour_34",
+      "name": "Ksour",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Mansoura_34",
+      "name": "Mansoura",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Medjana_34",
+      "name": "Medjana",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Brahem_34",
+      "name": "Brahem",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Dahmane_34",
+      "name": "Dahmane",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Brahim_34",
+      "name": "Brahim",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Rabta_34",
+      "name": "Rabta",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Oued_34",
+      "name": "Oued",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Embarek_34",
+      "name": "Embarek",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Tafreg_34",
+      "name": "Tafreg",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Taglait_34",
+      "name": "Taglait",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Nasr_34",
+      "name": "Nasr",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Tesmart_34",
+      "name": "Tesmart",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Tixter_34",
+      "name": "Tixter",
+      "wilayaId": "34"
+    },
+    {
+      "id": "Afir_35",
+      "name": "Afir",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Ammal_35",
+      "name": "Ammal",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Baghlia_35",
+      "name": "Baghlia",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Choud_35",
+      "name": "Choud",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Amrane_35",
+      "name": "Amrane",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Menaiel_35",
+      "name": "Menaiel",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Boudouaou_35",
+      "name": "Boudouaou",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Bahri_35",
+      "name": "Bahri",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Boumerdes_35",
+      "name": "Boumerdes",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Keddara_35",
+      "name": "Keddara",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Ameur_35",
+      "name": "Ameur",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Corso_35",
+      "name": "Corso",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Dellys_35",
+      "name": "Dellys",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Djinet_35",
+      "name": "Djinet",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Kharrouba_35",
+      "name": "Kharrouba",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Hammedi_35",
+      "name": "Hammedi",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Isser_35",
+      "name": "Isser",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Khechna_35",
+      "name": "Khechna",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Larbatache_35",
+      "name": "Larbatache",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Leghata_35",
+      "name": "Leghata",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Naciria_35",
+      "name": "Naciria",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Aissa_35",
+      "name": "Aissa",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Hedadj_35",
+      "name": "Hedadj",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Moussa_35",
+      "name": "Moussa",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Mustapha_35",
+      "name": "Mustapha",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Daoud_35",
+      "name": "Daoud",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Haad_35",
+      "name": "Haad",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Taourga_35",
+      "name": "Taourga",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Thenia_35",
+      "name": "Thenia",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Tidjelabine_35",
+      "name": "Tidjelabine",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Timezrit_35",
+      "name": "Timezrit",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Zemmouri_35",
+      "name": "Zemmouri",
+      "wilayaId": "35"
+    },
+    {
+      "id": "Assel_36",
+      "name": "Assel",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Kerma_36",
+      "name": "Kerma",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Asfour_36",
+      "name": "Asfour",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Hidi_36",
+      "name": "Hidi",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Berrihane_36",
+      "name": "Berrihane",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Besbes_36",
+      "name": "Besbes",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Bougous_36",
+      "name": "Bougous",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Bouhadjar_36",
+      "name": "Bouhadjar",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Bouteldja_36",
+      "name": "Bouteldja",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Mokhtar_36",
+      "name": "Mokhtar",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Chefia_36",
+      "name": "Chefia",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Chihani_36",
+      "name": "Chihani",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Drean_36",
+      "name": "Drean",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Echatt_36",
+      "name": "Echatt",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Aioun_36",
+      "name": "Aioun",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Kala_36",
+      "name": "Kala",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Tarf_36",
+      "name": "Tarf",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Salah_36",
+      "name": "Salah",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Oiseaux_36",
+      "name": "Oiseaux",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Zitoun_36",
+      "name": "Zitoun",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Souk_36",
+      "name": "Souk",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Souarekh_36",
+      "name": "Souarekh",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Zerizer_36",
+      "name": "Zerizer",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Zitouna_36",
+      "name": "Zitouna",
+      "wilayaId": "36"
+    },
+    {
+      "id": "Assel_37",
+      "name": "Assel",
+      "wilayaId": "37"
+    },
+    {
+      "id": "Tindouf_37",
+      "name": "Tindouf",
+      "wilayaId": "37"
+    },
+    {
+      "id": "Ammari_38",
+      "name": "Ammari",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Chaib_38",
+      "name": "Chaib",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Lahcene_38",
+      "name": "Lahcene",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Bounaama_38",
+      "name": "Bounaama",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Abdelkader_38",
+      "name": "Abdelkader",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Caid_38",
+      "name": "Caid",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Khemisti_38",
+      "name": "Khemisti",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Larbaa_38",
+      "name": "Larbaa",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Lardjem_38",
+      "name": "Lardjem",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Layoune_38",
+      "name": "Layoune",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Lazharia_38",
+      "name": "Lazharia",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Maacem_38",
+      "name": "Maacem",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Melaab_38",
+      "name": "Melaab",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Bessem_38",
+      "name": "Bessem",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Abed_38",
+      "name": "Abed",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Boutouchent_38",
+      "name": "Boutouchent",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Lantri_38",
+      "name": "Lantri",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Slimane_38",
+      "name": "Slimane",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Tamellalet_38",
+      "name": "Tamellalet",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Had_38",
+      "name": "Had",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Tissemsilt_38",
+      "name": "Tissemsilt",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Youssoufia_38",
+      "name": "Youssoufia",
+      "wilayaId": "38"
+    },
+    {
+      "id": "Bayadha_39",
+      "name": "Bayadha",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Guecha_39",
+      "name": "Guecha",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Debila_39",
+      "name": "Debila",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Maa_39",
+      "name": "Maa",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Ogla_39",
+      "name": "Ogla",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Oued_39",
+      "name": "Oued",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Guemar_39",
+      "name": "Guemar",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Hamraia_39",
+      "name": "Hamraia",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Abdelkrim_39",
+      "name": "Abdelkrim",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Khalifa_39",
+      "name": "Khalifa",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Kouinine_39",
+      "name": "Kouinine",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Magrane_39",
+      "name": "Magrane",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Ouansa_39",
+      "name": "Ouansa",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Nakhla_39",
+      "name": "Nakhla",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Alenda_39",
+      "name": "Alenda",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Ourmes_39",
+      "name": "Ourmes",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Reguiba_39",
+      "name": "Reguiba",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Robbah_39",
+      "name": "Robbah",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Aoun_39",
+      "name": "Aoun",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Taghzout_39",
+      "name": "Taghzout",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Larbi_39",
+      "name": "Larbi",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Trifaoui_39",
+      "name": "Trifaoui",
+      "wilayaId": "39"
+    },
+    {
+      "id": "Touila_40",
+      "name": "Touila",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Babar_40",
+      "name": "Babar",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Baghai_40",
+      "name": "Baghai",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Bouhmama_40",
+      "name": "Bouhmama",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Chelia_40",
+      "name": "Chelia",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Cherchar_40",
+      "name": "Cherchar",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Djellal_40",
+      "name": "Djellal",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Hamma_40",
+      "name": "Hamma",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Mahmal_40",
+      "name": "Mahmal",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Oueldja_40",
+      "name": "Oueldja",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Ensigha_40",
+      "name": "Ensigha",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Kais_40",
+      "name": "Kais",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Khenchela_40",
+      "name": "Khenchela",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Khirane_40",
+      "name": "Khirane",
+      "wilayaId": "40"
+    },
+    {
+      "id": "M'sara_40",
+      "name": "M'sara",
+      "wilayaId": "40"
+    },
+    {
+      "id": "M'toussa_40",
+      "name": "M'toussa",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Rechache_40",
+      "name": "Rechache",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Remila_40",
+      "name": "Remila",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Tamza_40",
+      "name": "Tamza",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Taouzianat_40",
+      "name": "Taouzianat",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Yabous_40",
+      "name": "Yabous",
+      "wilayaId": "40"
+    },
+    {
+      "id": "Soltane_41",
+      "name": "Soltane",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Zana_41",
+      "name": "Zana",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Bouhouche_41",
+      "name": "Bouhouche",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Drea_41",
+      "name": "Drea",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Haddada_41",
+      "name": "Haddada",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Hanencha_41",
+      "name": "Hanencha",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Khedara_41",
+      "name": "Khedara",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Khemissa_41",
+      "name": "Khemissa",
+      "wilayaId": "41"
+    },
+    {
+      "id": "M'daourouche_41",
+      "name": "M'daourouche",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Machroha_41",
+      "name": "Machroha",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Merahna_41",
+      "name": "Merahna",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Kebrit_41",
+      "name": "Kebrit",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Driss_41",
+      "name": "Driss",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Moumen_41",
+      "name": "Moumen",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Adhaim_41",
+      "name": "Adhaim",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Quillen_41",
+      "name": "Quillen",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Ragouba_41",
+      "name": "Ragouba",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Ouiden_41",
+      "name": "Ouiden",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Sedrata_41",
+      "name": "Sedrata",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Fredj_41",
+      "name": "Fredj",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Ahras_41",
+      "name": "Ahras",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Taoura_41",
+      "name": "Taoura",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Terraguelt_41",
+      "name": "Terraguelt",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Tiffech_41",
+      "name": "Tiffech",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Zaarouria_41",
+      "name": "Zaarouria",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Zouabi_41",
+      "name": "Zouabi",
+      "wilayaId": "41"
+    },
+    {
+      "id": "Aghbal_42",
+      "name": "Aghbal",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Ain_42",
+      "name": "Ain",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Tagourait_42",
+      "name": "Tagourait",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Attatba_42",
+      "name": "Attatba",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Mileuk_42",
+      "name": "Mileuk",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Haroun_42",
+      "name": "Haroun",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Ismail_42",
+      "name": "Ismail",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Bourkika_42",
+      "name": "Bourkika",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Chaiba_42",
+      "name": "Chaiba",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Cherchell_42",
+      "name": "Cherchell",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Damous_42",
+      "name": "Damous",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Douaouda_42",
+      "name": "Douaouda",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Fouka_42",
+      "name": "Fouka",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Gouraya_42",
+      "name": "Gouraya",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Hadjout_42",
+      "name": "Hadjout",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Ennous_42",
+      "name": "Ennous",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Khemisti_42",
+      "name": "Khemisti",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Kolea_42",
+      "name": "Kolea",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Larhat_42",
+      "name": "Larhat",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Menaceur_42",
+      "name": "Menaceur",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Merad_42",
+      "name": "Merad",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Messelmoun_42",
+      "name": "Messelmoun",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Nador_42",
+      "name": "Nador",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Amar_42",
+      "name": "Amar",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Ghiles_42",
+      "name": "Ghiles",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Rached_42",
+      "name": "Rached",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Semiane_42",
+      "name": "Semiane",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Tipaza_42",
+      "name": "Tipaza",
+      "wilayaId": "42"
+    },
+    {
+      "id": "Rachedi_43",
+      "name": "Rachedi",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Harriche_43",
+      "name": "Harriche",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Mellouk_43",
+      "name": "Mellouk",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Tine_43",
+      "name": "Tine",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Arres_43",
+      "name": "Arres",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Abderrahmane_43",
+      "name": "Abderrahmane",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Bouhatem_43",
+      "name": "Bouhatem",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Laid_43",
+      "name": "Laid",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Chigara_43",
+      "name": "Chigara",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Bousselah_43",
+      "name": "Bousselah",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Mechira_43",
+      "name": "Mechira",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Barbes_43",
+      "name": "Barbes",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Ferdjioua_43",
+      "name": "Ferdjioua",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Gouga_43",
+      "name": "Gouga",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Hamala_43",
+      "name": "Hamala",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Mila_43",
+      "name": "Mila",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Zarza_43",
+      "name": "Zarza",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Athmenia_43",
+      "name": "Athmenia",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Endja_43",
+      "name": "Endja",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Seguen_43",
+      "name": "Seguen",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Khalouf_43",
+      "name": "Khalouf",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Rouached_43",
+      "name": "Rouached",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Khelifa_43",
+      "name": "Khelifa",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Merouane_43",
+      "name": "Merouane",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Tadjenanet_43",
+      "name": "Tadjenanet",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Haddada_43",
+      "name": "Haddada",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Teleghma_43",
+      "name": "Teleghma",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Bainem_43",
+      "name": "Bainem",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Tessala_43",
+      "name": "Tessala",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Tiberguent_43",
+      "name": "Tiberguent",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Beniguecha_43",
+      "name": "Beniguecha",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Zeghaia_43",
+      "name": "Zeghaia",
+      "wilayaId": "43"
+    },
+    {
+      "id": "Benian_44",
+      "name": "Benian",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Bouyahia_44",
+      "name": "Bouyahia",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Defla_44",
+      "name": "Defla",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Lechiakh_44",
+      "name": "Lechiakh",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Soltane_44",
+      "name": "Soltane",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Tork_44",
+      "name": "Tork",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Arib_44",
+      "name": "Arib",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Barbouche_44",
+      "name": "Barbouche",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Bathia_44",
+      "name": "Bathia",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Belaas_44",
+      "name": "Belaas",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Allal_44",
+      "name": "Allal",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Khelifa_44",
+      "name": "Khelifa",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Khaled_44",
+      "name": "Khaled",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Boumedfaa_44",
+      "name": "Boumedfaa",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Bourached_44",
+      "name": "Bourached",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Djelida_44",
+      "name": "Djelida",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Cheikh_44",
+      "name": "Cheikh",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Djendel_44",
+      "name": "Djendel",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Abadia_44",
+      "name": "Abadia",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Amra_44",
+      "name": "Amra",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Attaf_44",
+      "name": "Attaf",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Maine_44",
+      "name": "Maine",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Righa_44",
+      "name": "Righa",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Hassania_44",
+      "name": "Hassania",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Hoceinia_44",
+      "name": "Hoceinia",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Miliana_44",
+      "name": "Miliana",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Mekhatria_44",
+      "name": "Mekhatria",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Miliana_44",
+      "name": "Miliana",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Chorfa_44",
+      "name": "Chorfa",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Djemaa_44",
+      "name": "Djemaa",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Rouina_44",
+      "name": "Rouina",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Lakhdar_44",
+      "name": "Lakhdar",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Zegagha_44",
+      "name": "Zegagha",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Ziad_44",
+      "name": "Ziad",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Tiberkanine_44",
+      "name": "Tiberkanine",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Zeddine_44",
+      "name": "Zeddine",
+      "wilayaId": "44"
+    },
+    {
+      "id": "Khelil_45",
+      "name": "Khelil",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Safra_45",
+      "name": "Safra",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Assela_45",
+      "name": "Assela",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Bourzeg_45",
+      "name": "Bourzeg",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Biod_45",
+      "name": "Biod",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Kasdir_45",
+      "name": "Kasdir",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Amer_45",
+      "name": "Amer",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Mecheria_45",
+      "name": "Mecheria",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Moghrar_45",
+      "name": "Moghrar",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Naama_45",
+      "name": "Naama",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Sfissifa_45",
+      "name": "Sfissifa",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Tiout_45",
+      "name": "Tiout",
+      "wilayaId": "45"
+    },
+    {
+      "id": "Aghlal_46",
+      "name": "Aghlal",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Arbaa_46",
+      "name": "Arbaa",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Kihal_46",
+      "name": "Kihal",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Temouchent_46",
+      "name": "Temouchent",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Tolba_46",
+      "name": "Tolba",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Aoubellil_46",
+      "name": "Aoubellil",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Saf_46",
+      "name": "Saf",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Bouzedjar_46",
+      "name": "Bouzedjar",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Ham_46",
+      "name": "Ham",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Chentouf_46",
+      "name": "Chentouf",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Amria_46",
+      "name": "Amria",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Malah_46",
+      "name": "Malah",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Messaid_46",
+      "name": "Messaid",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Abdelkader_46",
+      "name": "Abdelkader",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Bouhadjar_46",
+      "name": "Bouhadjar",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Hassasna_46",
+      "name": "Hassasna",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Ghella_46",
+      "name": "Ghella",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Berkeche_46",
+      "name": "Berkeche",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Sebbah_46",
+      "name": "Sebbah",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Boudjemaa_46",
+      "name": "Boudjemaa",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Kihal_46",
+      "name": "Kihal",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Gheraba_46",
+      "name": "Gheraba",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Adda_46",
+      "name": "Adda",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Boumediene_46",
+      "name": "Boumediene",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Ouriache_46",
+      "name": "Ouriache",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Safi_46",
+      "name": "Safi",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Tamzoura_46",
+      "name": "Tamzoura",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Terga_46",
+      "name": "Terga",
+      "wilayaId": "46"
+    },
+    {
+      "id": "Berriane_47",
+      "name": "Berriane",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Bounoura_47",
+      "name": "Bounoura",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Bendhahoua_47",
+      "name": "Bendhahoua",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Atteuf_47",
+      "name": "Atteuf",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Guerrara_47",
+      "name": "Guerrara",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Ghardaia_47",
+      "name": "Ghardaia",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Mansoura_47",
+      "name": "Mansoura",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Metlili_47",
+      "name": "Metlili",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Sebseb_47",
+      "name": "Sebseb",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Zelfana_47",
+      "name": "Zelfana",
+      "wilayaId": "47"
+    },
+    {
+      "id": "Rahma_48",
+      "name": "Rahma",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Tarek_48",
+      "name": "Tarek",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Moussa_48",
+      "name": "Moussa",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Bouzagza_48",
+      "name": "Bouzagza",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Bendaoud_48",
+      "name": "Bendaoud",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Dergoun_48",
+      "name": "Dergoun",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Zentis_48",
+      "name": "Zentis",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Abdelah_48",
+      "name": "Abdelah",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Djidiouia_48",
+      "name": "Djidiouia",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Guettar_48",
+      "name": "Guettar",
+      "wilayaId": "48"
+    },
+    {
+      "id": "H'madna_48",
+      "name": "H'madna",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Hassi_48",
+      "name": "Hassi",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Matmar_48",
+      "name": "Matmar",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Ouldja_48",
+      "name": "Ouldja",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Echkalla_48",
+      "name": "Echkalla",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Hamri_48",
+      "name": "Hamri",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Kalaa_48",
+      "name": "Kalaa",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Lahlef_48",
+      "name": "Lahlef",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Mazouna_48",
+      "name": "Mazouna",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Mediouna_48",
+      "name": "Mediouna",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Mendes_48",
+      "name": "Mendes",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Abed_48",
+      "name": "Abed",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Ouarizane_48",
+      "name": "Ouarizane",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Djemaa_48",
+      "name": "Djemaa",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Essalem_48",
+      "name": "Essalem",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Rhiou_48",
+      "name": "Rhiou",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Aiche_48",
+      "name": "Aiche",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Mihoub_48",
+      "name": "Mihoub",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Ramka_48",
+      "name": "Ramka",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Relizane_48",
+      "name": "Relizane",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Khettab_48",
+      "name": "Khettab",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Lazreg_48",
+      "name": "Lazreg",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Benali_48",
+      "name": "Benali",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Benaouda_48",
+      "name": "Benaouda",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Saada_48",
+      "name": "Saada",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Had_48",
+      "name": "Had",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Yellel_48",
+      "name": "Yellel",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Zemmoura_48",
+      "name": "Zemmoura",
+      "wilayaId": "48"
+    },
+    {
+      "id": "Aougrout_49",
+      "name": "Aougrout",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Charouine_49",
+      "name": "Charouine",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Deldoul_49",
+      "name": "Deldoul",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Kaddour_49",
+      "name": "Kaddour",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Metarfa_49",
+      "name": "Metarfa",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Aissa_49",
+      "name": "Aissa",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Said_49",
+      "name": "Said",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Talmine_49",
+      "name": "Talmine",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Timimoun_49",
+      "name": "Timimoun",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Tinerkouk_49",
+      "name": "Tinerkouk",
+      "wilayaId": "49"
+    },
+    {
+      "id": "Mokhtar_50",
+      "name": "Mokhtar",
+      "wilayaId": "50"
+    },
+    {
+      "id": "Timiaouine_50",
+      "name": "Timiaouine",
+      "wilayaId": "50"
+    },
+    {
+      "id": "Besbes_51",
+      "name": "Besbes",
+      "wilayaId": "51"
+    },
+    {
+      "id": "Chaiba_51",
+      "name": "Chaiba",
+      "wilayaId": "51"
+    },
+    {
+      "id": "Doucen_51",
+      "name": "Doucen",
+      "wilayaId": "51"
+    },
+    {
+      "id": "Djellal_51",
+      "name": "Djellal",
+      "wilayaId": "51"
+    },
+    {
+      "id": "Miad_51",
+      "name": "Miad",
+      "wilayaId": "51"
+    },
+    {
+      "id": "Khaled_51",
+      "name": "Khaled",
+      "wilayaId": "51"
+    },
+    {
+      "id": "Abbes_52",
+      "name": "Abbes",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Ikhlef_52",
+      "name": "Ikhlef",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Ouata_52",
+      "name": "Ouata",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Igli_52",
+      "name": "Igli",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Kerzaz_52",
+      "name": "Kerzaz",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Ksabi_52",
+      "name": "Ksabi",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Khoudir_52",
+      "name": "Khoudir",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Tabelbala_52",
+      "name": "Tabelbala",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Tamtert_52",
+      "name": "Tamtert",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Timoudi_52",
+      "name": "Timoudi",
+      "wilayaId": "52"
+    },
+    {
+      "id": "Azzaouia_53",
+      "name": "Azzaouia",
+      "wilayaId": "53"
+    },
+    {
+      "id": "Ghar_53",
+      "name": "Ghar",
+      "wilayaId": "53"
+    },
+    {
+      "id": "Salah_53",
+      "name": "Salah",
+      "wilayaId": "53"
+    },
+    {
+      "id": "Guezzam_54",
+      "name": "Guezzam",
+      "wilayaId": "54"
+    },
+    {
+      "id": "Zouatine_54",
+      "name": "Zouatine",
+      "wilayaId": "54"
+    },
+    {
+      "id": "Benaceur_55",
+      "name": "Benaceur",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Amor_55",
+      "name": "Amor",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Alia_55",
+      "name": "Alia",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Hadjira_55",
+      "name": "Hadjira",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Megarine_55",
+      "name": "Megarine",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Mnaguer_55",
+      "name": "Mnaguer",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Nezla_55",
+      "name": "Nezla",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Slimane_55",
+      "name": "Slimane",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Taibet_55",
+      "name": "Taibet",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Tebesbest_55",
+      "name": "Tebesbest",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Temacine_55",
+      "name": "Temacine",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Touggourt_55",
+      "name": "Touggourt",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Abidia_55",
+      "name": "Abidia",
+      "wilayaId": "55"
+    },
+    {
+      "id": "Haouasse_56",
+      "name": "Haouasse",
+      "wilayaId": "56"
+    },
+    {
+      "id": "Djanet_56",
+      "name": "Djanet",
+      "wilayaId": "56"
+    },
+    {
+      "id": "Djamaa_57",
+      "name": "Djamaa",
+      "wilayaId": "57"
+    },
+    {
+      "id": "M'ghair_57",
+      "name": "M'ghair",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Mrara_57",
+      "name": "Mrara",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Touyour_57",
+      "name": "Touyour",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Amrane_57",
+      "name": "Amrane",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Khelil_57",
+      "name": "Khelil",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Still_57",
+      "name": "Still",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Tenedla_57",
+      "name": "Tenedla",
+      "wilayaId": "57"
+    },
+    {
+      "id": "Meniaa_58",
+      "name": "Meniaa",
+      "wilayaId": "58"
+    },
+    {
+      "id": "Fehal_58",
+      "name": "Fehal",
+      "wilayaId": "58"
+    },
+    {
+      "id": "Gara_58",
+      "name": "Gara",
+      "wilayaId": "58"
+    }
+  ],
+  "wilayas": [
+    {
+      "id": "1",
+      "name": "Adrar"
+    },
+    {
+      "id": "2",
+      "name": "Chlef"
+    },
+    {
+      "id": "3",
+      "name": "Laghouat"
+    },
+    {
+      "id": "4",
+      "name": "Oum El Bouaghi"
+    },
+    {
+      "id": "5",
+      "name": "Batna"
+    },
+    {
+      "id": "6",
+      "name": "B\u00e9ja\u00efa"
+    },
+    {
+      "id": "7",
+      "name": "Biskra"
+    },
+    {
+      "id": "8",
+      "name": "B\u00e9char"
+    },
+    {
+      "id": "9",
+      "name": "Blida"
+    },
+    {
+      "id": "10",
+      "name": "Bouira"
+    },
+    {
+      "id": "11",
+      "name": "Tamanrasset"
+    },
+    {
+      "id": "12",
+      "name": "T\u00e9bessa"
+    },
+    {
+      "id": "13",
+      "name": "Tlemcen"
+    },
+    {
+      "id": "14",
+      "name": "Tiaret"
+    },
+    {
+      "id": "15",
+      "name": "Tizi Ouzou"
+    },
+    {
+      "id": "16",
+      "name": "Alger"
+    },
+    {
+      "id": "17",
+      "name": "Djelfa"
+    },
+    {
+      "id": "18",
+      "name": "Jijel"
+    },
+    {
+      "id": "19",
+      "name": "S\u00e9tif"
+    },
+    {
+      "id": "20",
+      "name": "Sa\u00efda"
+    },
+    {
+      "id": "21",
+      "name": "Skikda"
+    },
+    {
+      "id": "22",
+      "name": "Sidi Bel Abb\u00e8s"
+    },
+    {
+      "id": "23",
+      "name": "Annaba"
+    },
+    {
+      "id": "24",
+      "name": "Guelma"
+    },
+    {
+      "id": "25",
+      "name": "Constantine"
+    },
+    {
+      "id": "26",
+      "name": "M\u00e9d\u00e9a"
+    },
+    {
+      "id": "27",
+      "name": "Mostaganem"
+    },
+    {
+      "id": "28",
+      "name": "M'Sila"
+    },
+    {
+      "id": "29",
+      "name": "Mascara"
+    },
+    {
+      "id": "30",
+      "name": "Ouargla"
+    },
+    {
+      "id": "31",
+      "name": "Oran"
+    },
+    {
+      "id": "32",
+      "name": "El Bayadh"
+    },
+    {
+      "id": "33",
+      "name": "Illizi"
+    },
+    {
+      "id": "34",
+      "name": "Bordj Bou Arr\u00e9ridj"
+    },
+    {
+      "id": "35",
+      "name": "Boumerd\u00e8s"
+    },
+    {
+      "id": "36",
+      "name": "El Tarf"
+    },
+    {
+      "id": "37",
+      "name": "Tindouf"
+    },
+    {
+      "id": "38",
+      "name": "Tissemsilt"
+    },
+    {
+      "id": "39",
+      "name": "El Oued"
+    },
+    {
+      "id": "40",
+      "name": "Khenchela"
+    },
+    {
+      "id": "41",
+      "name": "Souk Ahras"
+    },
+    {
+      "id": "42",
+      "name": "Tipaza"
+    },
+    {
+      "id": "43",
+      "name": "Mila"
+    },
+    {
+      "id": "44",
+      "name": "A\u00efn Defla"
+    },
+    {
+      "id": "45",
+      "name": "Na\u00e2ma"
+    },
+    {
+      "id": "46",
+      "name": "A\u00efn T\u00e9mouchent"
+    },
+    {
+      "id": "47",
+      "name": "Gharda\u00efa"
+    },
+    {
+      "id": "48",
+      "name": "Relizane"
+    },
+    {
+      "id": "49",
+      "name": "El M'Ghair"
+    },
+    {
+      "id": "50",
+      "name": "El Meniaa"
+    },
+    {
+      "id": "51",
+      "name": "Ouled Djellal"
+    },
+    {
+      "id": "52",
+      "name": "Bordj Baji Mokhtar"
+    },
+    {
+      "id": "53",
+      "name": "B\u00e9ni Abb\u00e8s"
+    },
+    {
+      "id": "54",
+      "name": "Timimoun"
+    },
+    {
+      "id": "55",
+      "name": "Touggourt"
+    },
+    {
+      "id": "56",
+      "name": "Djanet"
+    },
+    {
+      "id": "57",
+      "name": "In Salah"
+    },
+    {
+      "id": "58",
+      "name": "In Guezzam"
+    }
+  ]
+}

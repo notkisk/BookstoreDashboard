@@ -1,8 +1,26 @@
 import { Wilaya, Commune } from './process-algeria-data';
+import algeriaDataFile from './algeria_location_data.json';
 
-// These will be populated by the data upload process
-export const wilayas: Wilaya[] = [];
-export const communes: Commune[] = [];
+// Define the types for our data
+interface LocationData {
+  wilayas: { id: string; name: string }[];
+  communes: { id: string; name: string; wilayaId: string }[];
+}
+
+// Import our complete location data
+const algeriaLocationData: LocationData = algeriaDataFile as LocationData;
+
+// Pre-populated lists of wilayas and communes
+export const wilayas: Wilaya[] = algeriaLocationData.wilayas.map(wilaya => ({
+  id: wilaya.id,
+  name: wilaya.name
+}));
+
+export const communes: Commune[] = algeriaLocationData.communes.map(commune => ({
+  id: commune.id,
+  name: commune.name,
+  wilayaId: commune.wilayaId
+}));
 
 // Helper functions using the populated data
 export const getCommunesByWilayaId = (wilayaId: string): Commune[] => {
@@ -17,12 +35,12 @@ export const getCommuneById = (communeId: string): Commune | undefined => {
   return communes.find(commune => commune.id === communeId);
 };
 
-// Check if location data is available
+// Check if location data is available - should always be true now
 export const isLocationDataAvailable = (): boolean => {
   return wilayas.length > 0 && communes.length > 0;
 };
 
-// Function to update the data
+// Function to update the data - kept for backward compatibility
 export const updateLocationData = (newWilayas: Wilaya[], newCommunes: Commune[]) => {
   // Clear existing arrays
   wilayas.length = 0;
