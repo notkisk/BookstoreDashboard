@@ -80,6 +80,9 @@ export const orders = pgTable("orders", {
   reference: text("reference").notNull().unique(), // Order reference number
   customerId: integer("customer_id").notNull().references(() => customers.id),
   totalAmount: integer("total_amount").notNull(), // in DA
+  discountAmount: integer("discount_amount").default(0), // Fixed amount discount in DA
+  discountPercentage: doublePrecision("discount_percentage").default(0), // Percentage discount (0-100)
+  finalAmount: integer("final_amount").default(0).notNull(), // Total after discounts
   deliveryType: text("delivery_type").notNull(),
   deliveryPrice: integer("delivery_price").default(0), // in DA
   fragile: boolean("fragile").default(false),
