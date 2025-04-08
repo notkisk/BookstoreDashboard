@@ -150,3 +150,23 @@ export const insertDeliveryPriceSchema = createInsertSchema(deliveryPrices).omit
 
 export type DeliveryPrice = typeof deliveryPrices.$inferSelect;
 export type InsertDeliveryPrice = z.infer<typeof insertDeliveryPriceSchema>;
+
+// User authentication table
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  fullName: text("full_name").notNull(),
+  role: text("role").notNull().default("user"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;

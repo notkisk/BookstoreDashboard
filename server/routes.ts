@@ -3,13 +3,17 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import session from "express-session";
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
 import { storage } from "./storage";
 import { 
   insertBookSchema, 
   insertCustomerSchema, 
   insertOrderSchema, 
   insertOrderItemSchema,
-  insertDeliveryPriceSchema 
+  insertDeliveryPriceSchema,
+  insertUserSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -897,6 +901,127 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.setHeader('Cache-Control', 'public, max-age=86400'); // 24 hours
     next();
   }, express.static('uploads'));
+
+  // ==================== Authentication Setup ====================
+  
+  // Session setup
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'bookstore-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+      secure: false, // Set to true in production with HTTPS
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+  
+  // Initialize Passport
+  app.use(passport.initialize());
+  app.use(passport.session());
+  
+  // Configure passport local strategy
+  passport.use(new LocalStrategy(
+    async (username, password, done) => {
+      try {
+        const user = await storage.validateUserCredentials(username, password);
+        if (!user) {
+          return done(null, false, { message: 'Invalid username or password' });
+        }
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  ));
+  
+  // Serialize user to session
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+  
+  // Deserialize user from session
+  passport.deserializeUser(async (id: number, done) => {
+    try {
+      const user = await storage.getUserByUsername(String(id));
+      if (!user) {
+        return done(null, false);
+      }
+      
+      // Return user without sensitive data
+      const { password, ...userWithoutPassword } = user;
+      done(null, userWithoutPassword);
+    } catch (error) {
+      done(error);
+    }
+  });
+  
+  // Middleware to check if user is authenticated
+  const isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.status(401).json({ message: 'Unauthorized' });
+  };
+  
+  // ==================== Authentication API ====================
+  
+  // Register a new user
+  app.post('/api/auth/register', async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(409).json({ message: 'Username already taken' });
+      }
+      
+      // Create new user
+      const newUser = await storage.createUser(userData);
+      
+      res.status(201).json({
+        message: 'User registered successfully',
+        user: newUser
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: 'Invalid user data', errors: error.errors });
+      }
+      console.error('Error registering user:', error);
+      res.status(500).json({ message: 'Failed to register user' });
+    }
+  });
+  
+  // Login
+  app.post('/api/auth/login', (req, res, next) => {
+    passport.authenticate('local', (err: any, user: any, info: any) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.status(401).json({ message: info?.message || 'Invalid username or password' });
+      }
+      
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          return next(loginErr);
+        }
+        return res.json({ message: 'Login successful', user });
+      });
+    })(req, res, next);
+  });
+  
+  // Get current user
+  app.get('/api/auth/me', isAuthenticated, (req, res) => {
+    res.json({ user: req.user });
+  });
+  
+  // Logout
+  app.post('/api/auth/logout', (req, res) => {
+    req.logout(() => {
+      res.json({ message: 'Logout successful' });
+    });
+  });
 
   const httpServer = createServer(app);
   return httpServer;

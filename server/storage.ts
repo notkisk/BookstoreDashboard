@@ -3,11 +3,13 @@ import {
   customers, type Customer, type InsertCustomer,
   orders, type Order, type InsertOrder,
   orderItems, type OrderItem, type InsertOrderItem,
-  deliveryPrices, type DeliveryPrice, type InsertDeliveryPrice 
+  deliveryPrices, type DeliveryPrice, type InsertDeliveryPrice,
+  users, type User, type InsertUser
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, like, desc, sql as sqlBuilder, count } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import bcrypt from "bcrypt";
 
 // Interface for all storage operations
 export interface IStorage {
@@ -49,6 +51,11 @@ export interface IStorage {
   getBestSellingBooks(limit?: number): Promise<{ book: Book; soldCount: number }[]>;
   getOrdersByStatus(): Promise<{ status: string; count: number }[]>;
   getOrdersByWilaya(limit?: number): Promise<{ wilayaId: string; wilayaName: string; count: number }[]>;
+  
+  // User operations
+  getUserByUsername(username: string): Promise<User | undefined>;
+  createUser(user: Omit<InsertUser, "password"> & { password: string }): Promise<Omit<User, "password">>;
+  validateUserCredentials(username: string, password: string): Promise<Omit<User, "password"> | null>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -730,6 +737,47 @@ export class DatabaseStorage implements IStorage {
       .where(eq(deliveryPrices.id, id))
       .returning();
     return updatedPrice;
+  }
+
+  // User operations
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const results = await db.select().from(users).where(eq(users.username, username));
+    return results[0];
+  }
+
+  async createUser(user: Omit<InsertUser, "password"> & { password: string }): Promise<Omit<User, "password">> {
+    // Hash the password before storing
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(user.password, salt);
+    
+    // Create user with hashed password
+    const [newUser] = await db
+      .insert(users)
+      .values({ ...user, password: hashedPassword })
+      .returning();
+    
+    // Exclude password from the returned user object
+    const { password, ...userWithoutPassword } = newUser;
+    return userWithoutPassword;
+  }
+
+  async validateUserCredentials(username: string, password: string): Promise<Omit<User, "password"> | null> {
+    const user = await this.getUserByUsername(username);
+    
+    if (!user) {
+      return null;
+    }
+    
+    // Compare the provided password with the stored hash
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (!isPasswordValid) {
+      return null;
+    }
+    
+    // Return user without password
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }
 

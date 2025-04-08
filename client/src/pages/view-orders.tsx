@@ -117,11 +117,11 @@ export default function ViewOrders() {
           (order.customer?.phone && order.customer.phone.includes(searchTerm)) ||
           (order.items?.some(item => item.book.title.toLowerCase().includes(searchTerm.toLowerCase())));
           
-        const matchesStatus = statusFilter ? order.status === statusFilter : true;
+        const matchesStatus = statusFilter === "all" || !statusFilter ? true : order.status === statusFilter;
         
-        const matchesWilaya = wilayaFilter ? (order.customer?.wilaya === wilayaFilter) : true;
+        const matchesWilaya = wilayaFilter === "all" || !wilayaFilter ? true : (order.customer?.wilaya === wilayaFilter);
         
-        const matchesDeliveryType = deliveryTypeFilter ? order.deliveryType === deliveryTypeFilter : true;
+        const matchesDeliveryType = deliveryTypeFilter === "all" || !deliveryTypeFilter ? true : order.deliveryType === deliveryTypeFilter;
         
         return matchesSearch && matchesStatus && matchesWilaya && matchesDeliveryType;
       })
@@ -286,7 +286,7 @@ export default function ViewOrders() {
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="delivering">Delivering</SelectItem>
                   <SelectItem value="delivered">Delivered</SelectItem>
@@ -300,7 +300,7 @@ export default function ViewOrders() {
                   <SelectValue placeholder="Wilaya" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Wilayas</SelectItem>
+                  <SelectItem value="all">All Wilayas</SelectItem>
                   {wilayas.map((wilaya) => (
                     <SelectItem key={wilaya.id} value={wilaya.id}>
                       {wilaya.name}
@@ -314,7 +314,7 @@ export default function ViewOrders() {
                   <SelectValue placeholder="Delivery Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Types</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="desk">Stop Desk</SelectItem>
                   <SelectItem value="home">Home Delivery</SelectItem>
                 </SelectContent>
