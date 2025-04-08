@@ -1,11 +1,46 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/ui/data-table";
-import { Plus, Search, Edit, Phone, Mail, MapPin } from "lucide-react";
+import { Plus, Search, Edit, Phone, MapPin, Trash2, MoreVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogFooter, 
+  DialogHeader, 
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { wilayas, getCommunesByWilayaId } from "@/data/algeria";
 
 interface Customer {
   id: number;
@@ -19,13 +54,74 @@ interface Customer {
   updatedAt: string;
 }
 
+// Define the form schema for customer editing
+const customerFormSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  phone: z.string().min(5, { message: "Phone number must be at least 5 characters." }),
+  phone2: z.string().optional(),
+  address: z.string().min(5, { message: "Address must be at least 5 characters." }),
+  wilaya: z.string().min(1, { message: "Wilaya is required." }),
+  commune: z.string().min(1, { message: "Commune is required." }),
+});
+
+type CustomerFormValues = z.infer<typeof customerFormSchema>;
+
 export default function Customers() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedWilaya, setSelectedWilaya] = useState<string>("");
   const { toast } = useToast();
 
   // Fetch customers
   const { data: customers, isLoading } = useQuery({
     queryKey: ['/api/customers'],
+  });
+
+  // Edit customer mutation
+  const updateCustomer = useMutation({
+    mutationFn: async (data: CustomerFormValues & { id: number }) => {
+      const { id, ...customerData } = data;
+      return apiRequest('PATCH', `/api/customers/${id}`, customerData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
+      toast({
+        title: "Customer updated",
+        description: "Customer information has been updated successfully.",
+      });
+      setIsEditDialogOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to update customer. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete customer mutation
+  const deleteCustomer = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest('DELETE', `/api/customers/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/customers'] });
+      toast({
+        title: "Customer deleted",
+        description: "Customer has been deleted successfully.",
+      });
+      setIsDeleteDialogOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to delete customer. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Filter customers based on search query
@@ -37,6 +133,46 @@ export default function Customers() {
         customer.address.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : typedCustomers;
+    
+  // Form for editing customer
+  const form = useForm<CustomerFormValues>({
+    resolver: zodResolver(customerFormSchema),
+    defaultValues: {
+      name: "",
+      phone: "",
+      phone2: "",
+      address: "",
+      wilaya: "",
+      commune: "",
+    },
+  });
+  
+  // Update form when selected customer changes
+  const handleEditCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setSelectedWilaya(customer.wilaya);
+    form.reset({
+      name: customer.name,
+      phone: customer.phone,
+      phone2: customer.phone2 || "",
+      address: customer.address,
+      wilaya: customer.wilaya,
+      commune: customer.commune,
+    });
+    setIsEditDialogOpen(true);
+  };
+  
+  const handleDeleteCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setIsDeleteDialogOpen(true);
+  };
+  
+  // Handle form submission
+  const onSubmit = (data: CustomerFormValues) => {
+    if (selectedCustomer) {
+      updateCustomer.mutate({ id: selectedCustomer.id, ...data });
+    }
+  };
 
   // Define columns for the table
   const columns = [
@@ -89,25 +225,34 @@ export default function Customers() {
       header: "Actions",
       accessorKey: "id" as const,
       cell: (customer: Customer) => (
-        <div className="flex space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="h-8 w-8 p-0" 
-            onClick={() => {
-              toast({
-                title: "Edit feature coming soon",
-                description: "This feature is not yet implemented",
-              });
-            }}
-          >
-            <Edit className="h-4 w-4" />
-          </Button>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleEditCustomer(customer)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem 
+              onClick={() => handleDeleteCustomer(customer)}
+              className="text-red-600"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
     },
   ];
 
+  // For commune selection based on selected wilaya
+  const communes = selectedWilaya ? getCommunesByWilayaId(selectedWilaya) : [];
+  
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -131,6 +276,210 @@ export default function Customers() {
           </Button>
         </div>
       </div>
+      
+      {/* Edit Customer Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Edit Customer</DialogTitle>
+            <DialogDescription>
+              Update customer information. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-2">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Customer Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Primary phone" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="phone2"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Alternative Phone (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Secondary phone" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Street address" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="wilaya"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Wilaya</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          setSelectedWilaya(value);
+                          // Reset commune if wilaya changes
+                          form.setValue('commune', '');
+                        }}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select wilaya" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {wilayas.map((wilaya) => (
+                            <SelectItem key={wilaya.id} value={wilaya.id}>
+                              {wilaya.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="commune"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Commune</FormLabel>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={!selectedWilaya}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select commune" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {communes.map((commune) => (
+                            <SelectItem key={commune.id} value={commune.id}>
+                              {commune.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <DialogFooter className="pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsEditDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit"
+                  disabled={updateCustomer.isPending}
+                >
+                  {updateCustomer.isPending ? "Saving..." : "Save Changes"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete Customer</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this customer? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="mt-4 mb-6">
+            {selectedCustomer && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center mb-2">
+                  <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+                    <span className="text-xs font-medium text-primary-700">
+                      {selectedCustomer.name.substring(0, 2).toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800">{selectedCustomer.name}</p>
+                    <p className="text-sm text-gray-500">{selectedCustomer.phone}</p>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 ml-11">{selectedCustomer.address}</p>
+                <p className="text-xs text-gray-500 ml-11">{selectedCustomer.commune}, {selectedCustomer.wilaya}</p>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="button"
+              variant="destructive"
+              disabled={deleteCustomer.isPending}
+              onClick={() => selectedCustomer && deleteCustomer.mutate(selectedCustomer.id)}
+            >
+              {deleteCustomer.isPending ? "Deleting..." : "Delete Customer"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Card>
         <CardHeader className="pb-2">
