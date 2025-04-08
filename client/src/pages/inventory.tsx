@@ -107,7 +107,11 @@ export default function Inventory() {
   // Create book mutation
   const createBook = useMutation({
     mutationFn: async (book: BookFormValues) => {
-      return apiRequest('POST', '/api/books', book);
+      return apiRequest('/api/books', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(book)
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/books'] });
@@ -129,7 +133,11 @@ export default function Inventory() {
   // Update book mutation
   const updateBook = useMutation({
     mutationFn: async ({ id, book }: { id: number; book: BookFormValues }) => {
-      return apiRequest('PUT', `/api/books/${id}`, book);
+      return apiRequest(`/api/books/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(book)
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/books'] });
@@ -237,7 +245,11 @@ export default function Inventory() {
   // Add a bulk delete mutation
   const bulkDeleteBooks = useMutation({
     mutationFn: async (bookIds: number[]) => {
-      return apiRequest<{ success: number; failed: number; message: string }>('POST', '/api/books/bulk-delete', { ids: bookIds });
+      return apiRequest<{ success: number; failed: number; message: string }>('/api/books/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: bookIds })
+      });
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['/api/books'] });
