@@ -1,0 +1,102 @@
+[
+  {
+    "id": "Adrar_1",
+    "name": "Adrar",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Akabli_1",
+    "name": "Akabli",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Aoulef_1",
+    "name": "Aoulef",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Bouda_1",
+    "name": "Bouda",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Fenoughil_1",
+    "name": "Fenoughil",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Zghmir_1",
+    "name": "Zghmir",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Timmi_1",
+    "name": "Timmi",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Reggane_1",
+    "name": "Reggane",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Sali_1",
+    "name": "Sali",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Sebaa_1",
+    "name": "Sebaa",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Tamantit_1",
+    "name": "Tamantit",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Tamest_1",
+    "name": "Tamest",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Timekten_1",
+    "name": "Timekten",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Tit_1",
+    "name": "Tit",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Tsabit_1",
+    "name": "Tsabit",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Kounta_1",
+    "name": "Kounta",
+    "wilayaId": "1"
+  },
+  {
+    "id": "Hassan_2",
+    "name": "Hassan",
+    "wilayaId": "2"
+  },
+  {
+    "id": "Merane_2",
+    "name": "Merane",
+    "wilayaId": "2"
+  },
+  {
+    "id": "Benairia_2",
+    "name": "Benairia",
+    "wilayaId": "2"
+  },
+  {
+    "id": "Bouattab_2",
+    "name": "Bouattab",
+    "wilayaId": "2"
+  }
+]
