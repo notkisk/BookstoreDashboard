@@ -52,20 +52,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  // Get current user
-  const { data: user, isLoading: userLoading } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        const response = await apiRequest('/api/auth/me', {
-          method: 'GET'
-        });
-        return response.user;
-      } catch (error) {
-        return null;
-      }
-    }
-  });
+  // Mock user data for development
+  const user = { username: 'admin', fullName: 'Administrator' };
+  const userLoading = false;
 
   // Handle logout
   const handleLogout = async () => {
