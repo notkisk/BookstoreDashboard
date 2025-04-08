@@ -399,6 +399,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update a customer with PATCH (partial update)
+  app.patch("/api/customers/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      const customerData = insertCustomerSchema.partial().parse(req.body);
+      const customer = await storage.updateCustomer(id, customerData);
+      
+      if (!customer) {
+        return res.status(404).json({ message: "Customer not found" });
+      }
+      
+      res.json(customer);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid customer data", errors: error.errors });
+      }
+      console.error("Error updating customer:", error);
+      res.status(500).json({ message: "Failed to update customer" });
+    }
+  });
+
+  // Delete a customer
+  app.delete("/api/customers/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      // Check if customer exists
+      const customer = await storage.getCustomerById(id);
+      if (!customer) {
+        return res.status(404).json({ message: "Customer not found" });
+      }
+      
+      // Delete the customer
+      const deleted = await storage.deleteCustomer(id);
+      
+      if (!deleted) {
+        return res.status(500).json({ message: "Failed to delete customer" });
+      }
+      
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting customer:", error);
+      res.status(500).json({ message: "Failed to delete customer" });
+    }
+  });
+
   // ==================== Orders API ====================
   
   // Get all orders

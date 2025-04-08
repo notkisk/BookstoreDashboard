@@ -21,8 +21,10 @@ import { cn } from "@/lib/utils";
 
 interface DataTableColumn<T> {
   header: string;
-  accessorKey: keyof T;
+  accessorKey?: keyof T;
+  id?: string;
   cell?: (item: T) => React.ReactNode;
+  sortable?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -243,7 +245,7 @@ export function DataTable<T>({
                       <TableCell key={cellIndex}>
                         {column.cell
                           ? column.cell(item)
-                          : item[column.accessorKey] as React.ReactNode}
+                          : column.accessorKey ? (item[column.accessorKey as keyof T] as React.ReactNode) : ''}
                       </TableCell>
                     ))}
                   </TableRow>

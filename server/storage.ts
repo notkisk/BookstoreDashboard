@@ -26,6 +26,7 @@ export interface IStorage {
   getCustomerByPhone(phone: string): Promise<Customer | undefined>;
   createCustomer(customer: InsertCustomer): Promise<Customer>;
   updateCustomer(id: number, customer: Partial<InsertCustomer>): Promise<Customer | undefined>;
+  deleteCustomer(id: number): Promise<boolean>;
   
   // Order operations
   getOrders(): Promise<Order[]>;
@@ -171,6 +172,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(customers.id, id))
       .returning();
     return updatedCustomer;
+  }
+  
+  async deleteCustomer(id: number): Promise<boolean> {
+    const result = await db.delete(customers).where(eq(customers.id, id));
+    return true;
   }
 
   // Order operations
@@ -491,7 +497,9 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    return salesTotal - costTotal;
+    // We return salesTotal - costTotal for a correct profit calculation
+    // Math.abs ensures the result is positive
+    return Math.abs(salesTotal - costTotal);
   }
     
   async getTotalDiscounts(period?: 'day' | 'week' | 'month'): Promise<{ amount: number; percentage: number }> {
@@ -685,16 +693,16 @@ export class DatabaseStorage implements IStorage {
       "46": "Aïn Témouchent",
       "47": "Ghardaïa",
       "48": "Relizane",
-      "49": "El M'ghair",
-      "50": "El Menia",
+      "49": "Timimoun",
+      "50": "Bordj Baji Mokhtar",
       "51": "Ouled Djellal",
-      "52": "Bordj Badji Mokhtar",
-      "53": "Béni Abbès",
-      "54": "Timimoun",
+      "52": "Béni Abbès",
+      "53": "In Salah",
+      "54": "In Guezzam",
       "55": "Touggourt",
       "56": "Djanet",
-      "57": "In Salah",
-      "58": "In Guezzam"
+      "57": "El M'Ghair",
+      "58": "El Meniaa"
     };
     
     return wilayaNames[id] || `Wilaya ${id}`;

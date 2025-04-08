@@ -340,11 +340,19 @@ export default function Dashboard() {
                   <TrendingUp className="text-blue-600" />
                 </div>
               </div>
-              <div className="mt-2 flex items-center">
-                <span className="text-xs font-medium text-green-600 flex items-center">
-                  <ArrowUp className="h-3 w-3" /> 18%
-                </span>
-                <span className="text-xs text-gray-500 ml-1">from last month</span>
+              <div className="mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-green-600 flex items-center">
+                    <ArrowUp className="h-3 w-3" /> 18%
+                  </span>
+                  <span className="text-xs text-gray-500 ml-1">from last month</span>
+                </div>
+                {!statsLoading && typedStats?.totalSales ? (
+                  <span className="text-xs font-medium text-blue-600 flex items-center">
+                    <PercentSquare className="h-3 w-3 mr-1" />
+                    {((typedStats.profit / typedStats.totalSales) * 100).toFixed(1)}% margin
+                  </span>
+                ) : null}
               </div>
             </CardContent>
           </Card>
@@ -387,7 +395,7 @@ export default function Dashboard() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-base font-semibold text-gray-800">Recent Orders</h3>
-          <a href="/orders" className="text-sm font-medium text-primary-600 hover:text-primary-800">
+          <a href="/view-orders" className="text-sm font-medium text-primary-600 hover:text-primary-800">
             View All
           </a>
         </div>
