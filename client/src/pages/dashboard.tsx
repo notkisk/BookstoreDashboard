@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -396,15 +396,11 @@ export default function Dashboard() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-base font-semibold text-gray-800">Recent Orders</h3>
-          <Button 
-            variant="link"
-            onClick={() => {
-              window.location.href = '/view-orders';
-            }}
-            className="text-sm font-medium text-primary-600 hover:text-primary-800 p-0 h-auto"
-          >
-            View All
-          </Button>
+          <Link href="/view-orders">
+            <span className="text-sm font-medium text-primary-600 hover:text-primary-800 cursor-pointer">
+              View All
+            </span>
+          </Link>
         </div>
         
         {ordersLoading ? (

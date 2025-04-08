@@ -45,6 +45,7 @@ function useAuth() {
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
   // Temporarily bypass authentication checks for development
   return <>{children}</>;
 }
@@ -85,7 +86,18 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <DashboardLayout>
-        <Dashboard />
+        <Switch>
+          <Route path="/" component={Dashboard} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/inventory" component={Inventory} />
+          <Route path="/orders" component={CreateOrder} />
+          <Route path="/view-orders" component={ViewOrders} />
+          <Route path="/customers" component={Customers} />
+          <Route path="/import" component={ImportCsv} />
+          <Route path="/export" component={ExportCsv} />
+          <Route path="/location-data" component={LocationData} />
+          <Route component={NotFound} />
+        </Switch>
       </DashboardLayout>
       <Toaster />
     </QueryClientProvider>
