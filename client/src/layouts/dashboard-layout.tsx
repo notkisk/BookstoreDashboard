@@ -12,9 +12,14 @@ import {
   X, 
   Menu,
   FileText,
-  MapPin
+  MapPin,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 interface NavLinkProps {
   href: string;
@@ -42,8 +47,53 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  // Get current user
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      try {
+        const response = await apiRequest('/api/auth/me', {
+          method: 'GET'
+        });
+        return response.user;
+      } catch (error) {
+        return null;
+      }
+    }
+  });
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      await apiRequest('/api/auth/logout', {
+        method: 'POST'
+      });
+      
+      // Clear all queries from cache
+      queryClient.clear();
+      
+      // Show success message
+      toast({
+        title: "Logged out successfully",
+        description: "You have been logged out of the system."
+      });
+      
+      // Redirect to login
+      setLocation('/login');
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        variant: "destructive",
+        title: "Logout failed",
+        description: "There was a problem logging out. Please try again."
+      });
+    }
+  };
 
   const routes = [
     { path: "/", label: "Dashboard", icon: <LayoutDashboard /> },
@@ -90,17 +140,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           
           {/* User Profile */}
           <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center">
+            <div className="flex items-center mb-3">
               <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">Admin User</p>
-                <a href="#settings" className="text-xs font-medium text-primary-600 hover:text-primary-800">
-                  Settings
-                </a>
+              <div className="ml-3 flex-1 truncate">
+                <p className="text-sm font-medium text-gray-700 truncate">
+                  {userLoading ? "Loading..." : user?.fullName || "User"}
+                </p>
+                <p className="text-xs text-gray-500 truncate">
+                  {user?.username || ""}
+                </p>
               </div>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full flex items-center justify-center gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span>Logout</span>
+            </Button>
           </div>
         </div>
       </aside>
@@ -162,17 +223,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           
           {/* User Profile */}
           <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center">
+            <div className="flex items-center mb-3">
               <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">Admin User</p>
-                <a href="#settings" className="text-xs font-medium text-primary-600 hover:text-primary-800">
-                  Settings
-                </a>
+              <div className="ml-3 flex-1 truncate">
+                <p className="text-sm font-medium text-gray-700 truncate">
+                  {userLoading ? "Loading..." : user?.fullName || "User"}
+                </p>
+                <p className="text-xs text-gray-500 truncate">
+                  {user?.username || ""}
+                </p>
               </div>
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full flex items-center justify-center gap-2"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span>Logout</span>
+            </Button>
           </div>
         </div>
       </aside>

@@ -586,28 +586,31 @@ export default function LocationData() {
                         </TableHeader>
                         <TableBody>
                           {deliveryPrices.length > 0 ? (
-                            deliveryPrices.map((price) => {
-                              return (
-                                <TableRow key={price.id}>
-                                  <TableCell>
-                                    <div className="font-medium">{price.wilayaName}</div>
-                                    <div className="text-xs text-gray-500">Code: {price.wilayaId}</div>
-                                  </TableCell>
-                                  <TableCell>{price.deskPrice.toLocaleString()} DZD</TableCell>
-                                  <TableCell>{price.doorstepPrice.toLocaleString()} DZD</TableCell>
-                                  <TableCell className="text-right">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => startEditingDeliveryPrice(price)}
-                                    >
-                                      <Pencil className="h-4 w-4" />
-                                      <span className="sr-only">Edit</span>
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })
+                            // Sort by wilaya ID (numeric order)
+                            [...deliveryPrices]
+                              .sort((a, b) => parseInt(a.wilayaId) - parseInt(b.wilayaId))
+                              .map((price) => {
+                                return (
+                                  <TableRow key={price.id}>
+                                    <TableCell>
+                                      <div className="font-medium">{price.wilayaName}</div>
+                                      <div className="text-xs text-gray-500">Code: {price.wilayaId}</div>
+                                    </TableCell>
+                                    <TableCell>{price.deskPrice.toLocaleString()} DZD</TableCell>
+                                    <TableCell>{price.doorstepPrice.toLocaleString()} DZD</TableCell>
+                                    <TableCell className="text-right">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => startEditingDeliveryPrice(price)}
+                                      >
+                                        <Pencil className="h-4 w-4" />
+                                        <span className="sr-only">Edit</span>
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })
                           ) : (
                             <TableRow>
                               <TableCell colSpan={4} className="text-center py-8 text-gray-500">

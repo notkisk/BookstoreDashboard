@@ -4,7 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/ui/data-table";
-import { Plus, Search, Edit, Phone, MapPin, Trash2, MoreVertical } from "lucide-react";
+import { 
+  Plus, 
+  Search, 
+  Edit, 
+  Phone, 
+  MapPin, 
+  Trash2, 
+  MoreVertical,
+  ArrowUp,
+  ArrowDown
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Dialog, 
@@ -72,6 +82,7 @@ export default function Customers() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedWilaya, setSelectedWilaya] = useState<string>("");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // for first to last or last to first
   const { toast } = useToast();
 
   // Fetch customers
@@ -126,13 +137,26 @@ export default function Customers() {
 
   // Filter customers based on search query
   const typedCustomers = customers as Customer[] | undefined;
-  const filteredCustomers = typedCustomers && searchQuery
+  
+  // First filter by search query
+  const filtered = typedCustomers && searchQuery
     ? typedCustomers.filter((customer: Customer) => 
         customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         customer.phone.includes(searchQuery) ||
         customer.address.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : typedCustomers;
+    
+  // Then sort by name in the chosen order
+  const filteredCustomers = filtered
+    ? [...filtered].sort((a, b) => {
+        if (sortOrder === "asc") {
+          return a.name.localeCompare(b.name); // A to Z
+        } else {
+          return b.name.localeCompare(a.name); // Z to A
+        }
+      })
+    : [];
     
   // Form for editing customer
   const form = useForm<CustomerFormValues>({
@@ -484,7 +508,27 @@ export default function Customers() {
       <Card>
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg">Customer List</CardTitle>
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-lg">Customer List</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1 h-8"
+                onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              >
+                {sortOrder === "asc" ? (
+                  <>
+                    <ArrowUp className="h-4 w-4" />
+                    <span className="text-xs font-medium">A-Z</span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowDown className="h-4 w-4" />
+                    <span className="text-xs font-medium">Z-A</span>
+                  </>
+                )}
+              </Button>
+            </div>
             <div className="w-full max-w-sm ml-4">
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
