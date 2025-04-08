@@ -73,6 +73,8 @@ interface Book {
   buyPrice: number;
   quantityBought: number;
   quantityLeft: number;
+  deliveringStock: number;
+  soldStock: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -341,9 +343,14 @@ export default function Inventory() {
       accessorKey: "quantityLeft" as const,
     },
     {
+      header: "Delivering",
+      accessorKey: "deliveringStock" as const,
+      cell: (book: Book) => book.deliveringStock || 0,
+    },
+    {
       header: "Sold",
-      accessorKey: "quantityBought" as const,
-      cell: (book: Book) => book.quantityBought - book.quantityLeft,
+      accessorKey: "soldStock" as const,
+      cell: (book: Book) => book.soldStock || 0,
     },
     {
       header: "Actions",

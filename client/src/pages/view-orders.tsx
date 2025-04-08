@@ -72,8 +72,10 @@ export default function ViewOrders() {
   const [deliveryTypeFilter, setDeliveryTypeFilter] = useState("");
   
   // Fetch orders with customer and item details
-  const { data: orders, isLoading } = useQuery({
+  const { data: orders, isLoading, isError } = useQuery({
     queryKey: ['/api/orders'],
+    staleTime: 60000, // 1 minute (optional)
+    refetchOnWindowFocus: true // Refresh data when window gets focus
   });
   
   const queryClient = useQueryClient();
@@ -108,9 +110,27 @@ export default function ViewOrders() {
   // Safe type casting
   const typedOrders = orders as Order[] | undefined;
   
+  // Add error handling for missing data
+  if (isError) {
+    toast({
+      title: "Error fetching orders",
+      description: "There was a problem loading the orders. Please try again.",
+      variant: "destructive",
+    });
+  }
+  
+  // Check for missing customer details
+  const ordersWithCustomers = typedOrders ? typedOrders.map(order => {
+    // Ensure order has customer property
+    if (!order.customer) {
+      console.warn(`Order ${order.id} (${order.reference}) is missing customer information`);
+    }
+    return order;
+  }) : [];
+  
   // Filter orders based on search term and filters
-  const filteredOrders = typedOrders
-    ? typedOrders.filter((order) => {
+  const filteredOrders = ordersWithCustomers
+    ? ordersWithCustomers.filter((order) => {
         const matchesSearch = 
           order.reference.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (order.customer?.name && order.customer.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
