@@ -17,9 +17,26 @@ import NotFound from "@/pages/not-found";
 
 // Custom hook to check if user is authenticated
 function useAuth() {
-  // Temporarily bypass authentication
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['currentUser'],
+    queryFn: async () => {
+      try {
+        const response = await apiRequest('/api/auth/me', {
+          method: 'GET'
+        });
+        return response.user;
+      } catch (error) {
+        if ((error as Response)?.status === 401) {
+          return null;
+        }
+        throw error;
+      }
+    }
+  });
+
+  // Temporarily bypass authentication for development
   return {
-    user: { id: 1, username: 'admin' }, // Mock user
+    user: data || { id: 1, username: 'admin' },
     isLoading: false,
     isAuthenticated: true,
     error: null
@@ -28,7 +45,7 @@ function useAuth() {
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // Temporarily bypass authentication checks
+  // Temporarily bypass authentication checks for development
   return <>{children}</>;
 }
 
@@ -67,10 +84,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div>
-        <h1 className="text-2xl p-4">Test Page</h1>
-        <Dashboard />
-      </div>
+      <Router />
       <Toaster />
     </QueryClientProvider>
   );
