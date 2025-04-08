@@ -67,11 +67,11 @@ const orderFormSchema = z.object({
   ),
   // Discount Information
   discountAmount: z.preprocess(
-    (val) => val === "" ? 0 : Number(val),
+    (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
     z.number().min(0, "Discount amount must be a positive number").default(0)
   ),
   discountPercentage: z.preprocess(
-    (val) => val === "" ? 0 : Number(val),
+    (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
     z.number().min(0).max(100, "Percentage must be between 0 and 100").default(0)
   ),
   fragile: z.boolean().default(false),
@@ -79,14 +79,6 @@ const orderFormSchema = z.object({
   pickup: z.boolean().default(false),
   recouvrement: z.boolean().default(false),
   stopDesk: z.boolean().default(true),
-  discountAmount: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
-    z.number().min(0).default(0)
-  ),
-  discountPercentage: z.preprocess(
-    (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
-    z.number().min(0).max(100).default(0)
-  ),
   notes: z.string().optional(),
 });
 

@@ -17,50 +17,18 @@ import NotFound from "@/pages/not-found";
 
 // Custom hook to check if user is authenticated
 function useAuth() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['currentUser'],
-    queryFn: async () => {
-      try {
-        const response = await apiRequest('/api/auth/me', {
-          method: 'GET'
-        });
-        return response.user;
-      } catch (error) {
-        if ((error as Response)?.status === 401) {
-          return null;
-        }
-        throw error;
-      }
-    }
-  });
-
+  // Temporarily bypass authentication
   return {
-    user: data,
-    isLoading,
-    isAuthenticated: !!data,
-    error
+    user: { id: 1, username: 'admin' }, // Mock user
+    isLoading: false,
+    isAuthenticated: true,
+    error: null
   };
 }
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
-  const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      setLocation('/login');
-    }
-  }, [isAuthenticated, isLoading, setLocation]);
-
-  if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    return null; // Will redirect to login via the useEffect
-  }
-
+  // Temporarily bypass authentication checks
   return <>{children}</>;
 }
 
@@ -99,7 +67,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
+      <div>
+        <h1 className="text-2xl p-4">Test Page</h1>
+        <Dashboard />
+      </div>
       <Toaster />
     </QueryClientProvider>
   );
