@@ -281,11 +281,13 @@ export class DatabaseStorage implements IStorage {
           // Move from regular stock to delivering stock
           const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
           const newDeliveringStock = book.deliveringStock + itemQuantity;
+          const newQuantityLeft = Math.max(0, book.quantityLeft - itemQuantity);
           
           await db
             .update(books)
             .set({ 
               deliveringStock: newDeliveringStock,
+              quantityLeft: newQuantityLeft,
               updatedAt: new Date()
             })
             .where(eq(books.id, item.bookId));
@@ -305,7 +307,7 @@ export class DatabaseStorage implements IStorage {
             })
             .where(eq(books.id, item.bookId));
         } 
-        else if ((oldStatus === "pending" || oldStatus === "delivering") && newStatus === "returned") {
+        else if ((oldStatus === "pending" || oldStatus === "delivering") && (newStatus === "returned" || newStatus === "reactionary")) {
           // Return books to available stock
           const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
           const newQuantityLeft = book.quantityLeft + itemQuantity;
@@ -425,65 +427,76 @@ export class DatabaseStorage implements IStorage {
     
     if (orderIds.length === 0) return 0;
     
-    const orderIdList = orderIds.map(o => o.id);
+    // Process each order ID individually to avoid array parameter issues
+    let salesTotal = 0;
+    let costTotal = 0;
     
-    // Calculate total sales for delivered orders using direct IN query
-    const salesResult = await db
-      .select({ total: sqlBuilder`sum(${orders.totalAmount})` })
-      .from(orders)
-      .where(
-        and(
-          sqlBuilder`${orders.id} IN (${orderIdList.map(id => id).join(',')})`,
-          eq(orders.status, 'delivered')
-        )
-      );
-    
-    const salesTotal = Number(salesResult[0]?.total) || 0;
-    
-    // Calculate total cost (buy price) using direct IN query
-    const costResult = await db
-      .select({ 
-        total: sqlBuilder`sum(${orderItems.quantity} * ${books.buyPrice})` 
-      })
-      .from(orderItems)
-      .innerJoin(books, eq(orderItems.bookId, books.id))
-      .where(sqlBuilder`${orderItems.orderId} IN (${orderIdList.map(id => id).join(',')})`);
-    
-    const costTotal = Number(costResult[0]?.total) || 0;
+    // Process orders one by one instead of with a list
+    for (const orderIdObj of orderIds) {
+      const id = orderIdObj.id;
+      
+      // Get order details
+      const orderResult = await db
+        .select({ total: orders.totalAmount, status: orders.status })
+        .from(orders)
+        .where(eq(orders.id, id));
+        
+      if (orderResult.length > 0 && orderResult[0].status === 'delivered') {
+        salesTotal += Number(orderResult[0].total) || 0;
+      }
+      
+      // Get order items and calculate costs
+      const itemsResult = await db
+        .select({ 
+          quantity: orderItems.quantity,
+          bookId: orderItems.bookId
+        })
+        .from(orderItems)
+        .where(eq(orderItems.orderId, id));
+        
+      for (const item of itemsResult) {
+        const bookResult = await db
+          .select({ buyPrice: books.buyPrice })
+          .from(books)
+          .where(eq(books.id, item.bookId));
+          
+        if (bookResult.length > 0) {
+          costTotal += (Number(item.quantity) || 0) * (Number(bookResult[0].buyPrice) || 0);
+        }
+      }
+    }
     
     return salesTotal - costTotal;
   }
 
   async getBestSellingBooks(limit: number = 5): Promise<{ book: Book; soldCount: number }[]> {
-    const result = await db
-      .select({
-        bookId: orderItems.bookId,
-        soldCount: sqlBuilder`sum(${orderItems.quantity})`
-      })
-      .from(orderItems)
-      .groupBy(orderItems.bookId)
-      .orderBy(desc(sqlBuilder`sum(${orderItems.quantity})`))
-      .limit(limit);
+    // Use a different approach to avoid IN clause with multiple IDs
+    // First, get all books
+    const allBooks = await db.select().from(books);
     
-    if (result.length === 0) return [];
+    // For each book, calculate the sold count
+    const results: { book: Book; soldCount: number }[] = [];
     
-    const bookIds = result.map(r => r.bookId);
+    for (const book of allBooks) {
+      const soldItems = await db
+        .select({
+          quantity: orderItems.quantity
+        })
+        .from(orderItems)
+        .where(eq(orderItems.bookId, book.id));
+        
+      const soldCount = soldItems.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+      
+      results.push({
+        book,
+        soldCount
+      });
+    }
     
-    // Use direct IN query with literal values
-    const booksResult = await db
-      .select()
-      .from(books)
-      .where(sqlBuilder`${books.id} IN (${bookIds.map(id => id).join(',')})`);
-    
-    const booksMap = new Map<number, Book>();
-    booksResult.forEach(book => booksMap.set(book.id, book));
-    
-    return result
-      .map(r => ({
-        book: booksMap.get(r.bookId)!,
-        soldCount: Number(r.soldCount)
-      }))
-      .filter(item => item.book !== undefined);
+    // Sort by sold count and limit
+    return results
+      .sort((a, b) => b.soldCount - a.soldCount)
+      .slice(0, limit);
   }
   
   async getOrdersByStatus(): Promise<{ status: string; count: number }[]> {
