@@ -2,7 +2,8 @@ import {
   books, type Book, type InsertBook,
   customers, type Customer, type InsertCustomer,
   orders, type Order, type InsertOrder,
-  orderItems, type OrderItem, type InsertOrderItem 
+  orderItems, type OrderItem, type InsertOrderItem,
+  deliveryPrices, type DeliveryPrice, type InsertDeliveryPrice 
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, like, desc, sql as sqlBuilder, count } from "drizzle-orm";
@@ -33,11 +34,19 @@ export interface IStorage {
   createOrder(order: InsertOrder, items: Omit<InsertOrderItem, "orderId">[]): Promise<Order>;
   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
   
+  // Delivery price operations
+  getDeliveryPrices(): Promise<DeliveryPrice[]>;
+  getDeliveryPriceByWilayaId(wilayaId: string): Promise<DeliveryPrice | undefined>;
+  createDeliveryPrice(price: InsertDeliveryPrice): Promise<DeliveryPrice>;
+  updateDeliveryPrice(id: number, price: Partial<InsertDeliveryPrice>): Promise<DeliveryPrice | undefined>;
+  
   // Analytics
   getOrdersCount(period?: 'day' | 'week' | 'month'): Promise<number>;
   getTotalSales(period?: 'day' | 'week' | 'month'): Promise<number>;
   getProfit(period?: 'day' | 'week' | 'month'): Promise<number>;
   getBestSellingBooks(limit?: number): Promise<{ book: Book; soldCount: number }[]>;
+  getOrdersByStatus(): Promise<{ status: string; count: number }[]>;
+  getOrdersByWilaya(limit?: number): Promise<{ wilayaId: string; wilayaName: string; count: number }[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -202,10 +211,10 @@ export class DatabaseStorage implements IStorage {
     // Generate a unique reference number for the order
     const reference = `ORD-${nanoid(8).toUpperCase()}`;
     
-    // Create the order
+    // Create the order with initial "pending" status
     const [newOrder] = await db
       .insert(orders)
-      .values({ ...order, reference })
+      .values({ ...order, status: "pending", reference })
       .returning();
     
     // Add the order items
@@ -218,17 +227,104 @@ export class DatabaseStorage implements IStorage {
       
       // Insert all order items
       await db.insert(orderItems).values(orderItemsToInsert);
+      
+      // Update inventory quantities (reduce available stock)
+      for (const item of items) {
+        // Get current book data
+        const bookResult = await db.select().from(books).where(eq(books.id, item.bookId));
+        if (bookResult.length === 0) continue;
+        
+        const book = bookResult[0];
+        const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
+        const newQuantityLeft = Math.max(0, book.quantityLeft - itemQuantity);
+        
+        // Update the book inventory
+        await db
+          .update(books)
+          .set({ 
+            quantityLeft: newQuantityLeft,
+            updatedAt: new Date()
+          })
+          .where(eq(books.id, item.bookId));
+      }
     }
     
     return newOrder;
   }
 
   async updateOrderStatus(id: number, status: string): Promise<Order | undefined> {
+    // Get current order data with items
+    const orderData = await this.getOrderWithItems(id);
+    if (!orderData) return undefined;
+    
+    const oldStatus = orderData.order.status;
+    const newStatus = status;
+    
+    // Update order status
     const [updatedOrder] = await db
       .update(orders)
-      .set({ status, updatedAt: new Date() })
+      .set({ status: newStatus, updatedAt: new Date() })
       .where(eq(orders.id, id))
       .returning();
+    
+    // Update inventory based on status change
+    if (orderData.items.length > 0) {
+      for (const item of orderData.items) {
+        // Get current book data
+        const bookResult = await db.select().from(books).where(eq(books.id, item.bookId));
+        if (bookResult.length === 0) continue;
+        
+        const book = bookResult[0];
+        
+        // Handle status transitions
+        if (oldStatus === "pending" && newStatus === "delivering") {
+          // Move from regular stock to delivering stock
+          const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
+          const newDeliveringStock = book.deliveringStock + itemQuantity;
+          
+          await db
+            .update(books)
+            .set({ 
+              deliveringStock: newDeliveringStock,
+              updatedAt: new Date()
+            })
+            .where(eq(books.id, item.bookId));
+        } 
+        else if (oldStatus === "delivering" && newStatus === "delivered") {
+          // Move from delivering stock to sold stock
+          const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
+          const newDeliveringStock = Math.max(0, book.deliveringStock - itemQuantity);
+          const newSoldStock = book.soldStock + itemQuantity;
+          
+          await db
+            .update(books)
+            .set({ 
+              deliveringStock: newDeliveringStock,
+              soldStock: newSoldStock,
+              updatedAt: new Date()
+            })
+            .where(eq(books.id, item.bookId));
+        } 
+        else if ((oldStatus === "pending" || oldStatus === "delivering") && newStatus === "returned") {
+          // Return books to available stock
+          const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
+          const newQuantityLeft = book.quantityLeft + itemQuantity;
+          const newDeliveringStock = oldStatus === "delivering" 
+            ? Math.max(0, book.deliveringStock - itemQuantity)
+            : book.deliveringStock;
+          
+          await db
+            .update(books)
+            .set({ 
+              quantityLeft: newQuantityLeft,
+              deliveringStock: newDeliveringStock,
+              updatedAt: new Date()
+            })
+            .where(eq(books.id, item.bookId));
+        }
+      }
+    }
+    
     return updatedOrder;
   }
 
@@ -388,6 +484,154 @@ export class DatabaseStorage implements IStorage {
         soldCount: Number(r.soldCount)
       }))
       .filter(item => item.book !== undefined);
+  }
+  
+  async getOrdersByStatus(): Promise<{ status: string; count: number }[]> {
+    return await db
+      .select({
+        status: orders.status,
+        count: count(),
+      })
+      .from(orders)
+      .groupBy(orders.status)
+      .orderBy(desc(count()));
+  }
+  
+  async getOrdersByWilaya(limit: number = 10): Promise<{ wilayaId: string; wilayaName: string; count: number }[]> {
+    // Get customer wilaya information
+    const customersTable = customers;
+    const customerInfo = await db
+      .select({
+        id: customersTable.id,
+        wilaya: customersTable.wilaya,
+      })
+      .from(customersTable);
+    
+    const customerMap = new Map<number, string>();
+    customerInfo.forEach((c: { id: number, wilaya: string }) => customerMap.set(c.id, c.wilaya));
+    
+    // Get counts by customer ID
+    const orderCounts = await db
+      .select({
+        customerId: orders.customerId,
+        count: count(),
+      })
+      .from(orders)
+      .groupBy(orders.customerId);
+    
+    // Group by wilaya
+    const wilayaCountMap = new Map<string, number>();
+    
+    for (const order of orderCounts) {
+      const wilayaId = customerMap.get(order.customerId);
+      if (wilayaId) {
+        const currentCount = wilayaCountMap.get(wilayaId) || 0;
+        wilayaCountMap.set(wilayaId, currentCount + order.count);
+      }
+    }
+    
+    // Convert to array, sort, and limit
+    const result = Array.from(wilayaCountMap.entries())
+      .map(([wilayaId, count]) => ({
+        wilayaId,
+        wilayaName: this.getWilayaName(wilayaId),
+        count,
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, limit);
+    
+    return result;
+  }
+  
+  // Helper method to get wilaya name from ID
+  private getWilayaName(id: string): string {
+    // Map of wilaya IDs to names - this could be expanded to a full list
+    const wilayaNames: Record<string, string> = {
+      "1": "Adrar",
+      "2": "Chlef",
+      "3": "Laghouat",
+      "4": "Oum El Bouaghi",
+      "5": "Batna",
+      "6": "Béjaïa",
+      "7": "Biskra",
+      "8": "Béchar",
+      "9": "Blida",
+      "10": "Bouira",
+      "11": "Tamanrasset",
+      "12": "Tébessa",
+      "13": "Tlemcen",
+      "14": "Tiaret",
+      "15": "Tizi Ouzou",
+      "16": "Alger",
+      "17": "Djelfa",
+      "18": "Jijel",
+      "19": "Sétif",
+      "20": "Saïda",
+      "21": "Skikda",
+      "22": "Sidi Bel Abbès",
+      "23": "Annaba",
+      "24": "Guelma",
+      "25": "Constantine",
+      "26": "Médéa",
+      "27": "Mostaganem",
+      "28": "M'Sila",
+      "29": "Mascara",
+      "30": "Ouargla",
+      "31": "Oran",
+      "32": "El Bayadh",
+      "33": "Illizi",
+      "34": "Bordj Bou Arréridj",
+      "35": "Boumerdès",
+      "36": "El Tarf",
+      "37": "Tindouf",
+      "38": "Tissemsilt",
+      "39": "El Oued",
+      "40": "Khenchela",
+      "41": "Souk Ahras",
+      "42": "Tipaza",
+      "43": "Mila",
+      "44": "Aïn Defla",
+      "45": "Naâma",
+      "46": "Aïn Témouchent",
+      "47": "Ghardaïa",
+      "48": "Relizane",
+      "49": "El M'ghair",
+      "50": "El Menia",
+      "51": "Ouled Djellal",
+      "52": "Bordj Badji Mokhtar",
+      "53": "Béni Abbès",
+      "54": "Timimoun",
+      "55": "Touggourt",
+      "56": "Djanet",
+      "57": "In Salah",
+      "58": "In Guezzam"
+    };
+    
+    return wilayaNames[id] || `Wilaya ${id}`;
+  }
+  
+  // Delivery price operations
+  async getDeliveryPrices(): Promise<DeliveryPrice[]> {
+    return await db.select().from(deliveryPrices).orderBy(deliveryPrices.wilayaId);
+  }
+  
+  async getDeliveryPriceByWilayaId(wilayaId: string): Promise<DeliveryPrice | undefined> {
+    const results = await db.select().from(deliveryPrices).where(eq(deliveryPrices.wilayaId, wilayaId));
+    return results[0];
+  }
+  
+  async createDeliveryPrice(price: InsertDeliveryPrice): Promise<DeliveryPrice> {
+    const [newPrice] = await db.insert(deliveryPrices).values(price).returning();
+    return newPrice;
+  }
+  
+  async updateDeliveryPrice(id: number, price: Partial<InsertDeliveryPrice>): Promise<DeliveryPrice | undefined> {
+    const [updatedPrice] = await db
+      .update(deliveryPrices)
+      .set({ ...price, updatedAt: new Date() })
+      .where(eq(deliveryPrices.id, id))
+      .returning();
+    return updatedPrice;
   }
 }
 
