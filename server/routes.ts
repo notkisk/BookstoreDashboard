@@ -4,7 +4,13 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { storage } from "./storage";
-import { insertBookSchema, insertCustomerSchema, insertOrderSchema, insertOrderItemSchema } from "@shared/schema";
+import { 
+  insertBookSchema, 
+  insertCustomerSchema, 
+  insertOrderSchema, 
+  insertOrderItemSchema,
+  insertDeliveryPriceSchema 
+} from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -191,6 +197,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           z.number().int().min(0).default(0)
         ),
         quantityLeft: z.preprocess(
+          (val) => {
+            if (val === null || val === undefined || val === "") return 0;
+            return Math.round(Number(val));
+          },
+          z.number().int().min(0).default(0)
+        ),
+        deliveringStock: z.preprocess(
+          (val) => {
+            if (val === null || val === undefined || val === "") return 0;
+            return Math.round(Number(val));
+          },
+          z.number().int().min(0).default(0)
+        ),
+        soldStock: z.preprocess(
           (val) => {
             if (val === null || val === undefined || val === "") return 0;
             return Math.round(Number(val));
@@ -452,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid status" });
       }
       
-      const allowedStatuses = ['pending', 'processing', 'delivered', 'cancelled'];
+      const allowedStatuses = ['pending', 'delivering', 'delivered', 'returned'];
       if (!allowedStatuses.includes(status)) {
         return res.status(400).json({ 
           message: "Invalid status value",
@@ -513,23 +533,191 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ordersCount,
         totalSales,
         profit,
-        bestSellingBooks
+        bestSellingBooks,
+        ordersByStatus,
+        ordersByWilaya
       ] = await Promise.all([
         storage.getOrdersCount(period),
         storage.getTotalSales(period),
         storage.getProfit(period),
-        storage.getBestSellingBooks(5)
+        storage.getBestSellingBooks(5),
+        storage.getOrdersByStatus(),
+        storage.getOrdersByWilaya(5)
       ]);
       
       res.json({
         ordersCount,
         totalSales,
         profit,
-        bestSellingBooks
+        bestSellingBooks,
+        ordersByStatus,
+        ordersByWilaya
       });
     } catch (error) {
       console.error("Error fetching analytics:", error);
       res.status(500).json({ message: "Failed to fetch analytics" });
+    }
+  });
+
+  // ==================== Enhanced Analytics API ====================
+
+  // Get orders by status
+  app.get("/api/analytics/orders-by-status", async (req, res) => {
+    try {
+      const ordersByStatus = await storage.getOrdersByStatus();
+      res.json(ordersByStatus);
+    } catch (error) {
+      console.error("Error fetching orders by status:", error);
+      res.status(500).json({ message: "Failed to fetch orders by status" });
+    }
+  });
+
+  // Get orders by wilaya
+  app.get("/api/analytics/orders-by-wilaya", async (req, res) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 10;
+      const ordersByWilaya = await storage.getOrdersByWilaya(limit);
+      res.json(ordersByWilaya);
+    } catch (error) {
+      console.error("Error fetching orders by wilaya:", error);
+      res.status(500).json({ message: "Failed to fetch orders by wilaya" });
+    }
+  });
+
+  // ==================== Delivery Prices API ====================
+  
+  // Get all delivery prices
+  app.get("/api/delivery-prices", async (req, res) => {
+    try {
+      const prices = await storage.getDeliveryPrices();
+      res.json(prices);
+    } catch (error) {
+      console.error("Error fetching delivery prices:", error);
+      res.status(500).json({ message: "Failed to fetch delivery prices" });
+    }
+  });
+
+  // Get delivery price by wilaya ID
+  app.get("/api/delivery-prices/:wilayaId", async (req, res) => {
+    try {
+      const wilayaId = req.params.wilayaId;
+      const price = await storage.getDeliveryPriceByWilayaId(wilayaId);
+      
+      if (!price) {
+        return res.status(404).json({ message: "Delivery price not found for this wilaya" });
+      }
+      
+      res.json(price);
+    } catch (error) {
+      console.error("Error fetching delivery price:", error);
+      res.status(500).json({ message: "Failed to fetch delivery price" });
+    }
+  });
+
+  // Create a new delivery price
+  app.post("/api/delivery-prices", async (req, res) => {
+    try {
+      const priceData = insertDeliveryPriceSchema.parse(req.body);
+      
+      // Check if price for this wilaya already exists
+      const existingPrice = await storage.getDeliveryPriceByWilayaId(priceData.wilayaId);
+      if (existingPrice) {
+        return res.status(409).json({ 
+          message: "Delivery price for this wilaya already exists",
+          price: existingPrice
+        });
+      }
+      
+      const price = await storage.createDeliveryPrice(priceData);
+      res.status(201).json(price);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid price data", errors: error.errors });
+      }
+      console.error("Error creating delivery price:", error);
+      res.status(500).json({ message: "Failed to create delivery price" });
+    }
+  });
+
+  // Update a delivery price
+  app.put("/api/delivery-prices/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid delivery price ID" });
+      }
+      
+      const priceData = insertDeliveryPriceSchema.partial().parse(req.body);
+      const price = await storage.updateDeliveryPrice(id, priceData);
+      
+      if (!price) {
+        return res.status(404).json({ message: "Delivery price not found" });
+      }
+      
+      res.json(price);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid price data", errors: error.errors });
+      }
+      console.error("Error updating delivery price:", error);
+      res.status(500).json({ message: "Failed to update delivery price" });
+    }
+  });
+
+  // Bulk create/update delivery prices (initialize all wilayas)
+  app.post("/api/delivery-prices/bulk", async (req, res) => {
+    try {
+      const { prices } = req.body;
+      
+      if (!Array.isArray(prices)) {
+        return res.status(400).json({ message: "Invalid request body: 'prices' must be an array" });
+      }
+      
+      const results = {
+        created: 0,
+        updated: 0,
+        failed: 0,
+        errors: [] as string[]
+      };
+      
+      for (const priceData of prices) {
+        try {
+          const validData = insertDeliveryPriceSchema.parse(priceData);
+          
+          // Check if price for this wilaya already exists
+          const existingPrice = await storage.getDeliveryPriceByWilayaId(validData.wilayaId);
+          
+          if (existingPrice) {
+            // Update existing
+            const updated = await storage.updateDeliveryPrice(existingPrice.id, validData);
+            if (updated) {
+              results.updated++;
+            } else {
+              results.failed++;
+              results.errors.push(`Failed to update price for wilaya ${validData.wilayaId}`);
+            }
+          } else {
+            // Create new
+            await storage.createDeliveryPrice(validData);
+            results.created++;
+          }
+        } catch (error) {
+          results.failed++;
+          results.errors.push(
+            error instanceof z.ZodError 
+              ? `Validation error for wilaya ${priceData.wilayaId}: ${error.errors.map(e => e.message).join(', ')}` 
+              : `Error processing wilaya ${priceData.wilayaId}: ${error instanceof Error ? error.message : "Unknown error"}`
+          );
+        }
+      }
+      
+      res.json({
+        message: `Processed ${prices.length} delivery prices: created ${results.created}, updated ${results.updated}, failed ${results.failed}`,
+        results
+      });
+    } catch (error) {
+      console.error("Error in bulk delivery price operation:", error);
+      res.status(500).json({ message: "Failed to process delivery prices" });
     }
   });
 

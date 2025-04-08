@@ -12,6 +12,8 @@ export const books = pgTable("books", {
   buyPrice: integer("buy_price").notNull(), // cost price
   quantityBought: integer("quantity_bought").notNull(),
   quantityLeft: integer("quantity_left").notNull(),
+  deliveringStock: integer("delivering_stock").default(0).notNull(), // Books in delivering status
+  soldStock: integer("sold_stock").default(0).notNull(), // Books sold successfully
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -40,6 +42,14 @@ export const insertBookSchema = createInsertSchema(books)
       z.number().min(0).default(0)
     ),
     quantityLeft: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0).default(0)
+    ),
+    deliveringStock: z.preprocess(
+      (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
+      z.number().min(0).default(0)
+    ),
+    soldStock: z.preprocess(
       (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
       z.number().min(0).default(0)
     ),
@@ -117,3 +127,23 @@ export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+
+// Delivery prices table
+export const deliveryPrices = pgTable("delivery_prices", {
+  id: serial("id").primaryKey(),
+  wilayaId: text("wilaya_id").notNull().unique(), // wilaya code (1-58)
+  wilayaName: text("wilaya_name").notNull(),
+  deskPrice: integer("desk_price").default(0).notNull(), // Price for stop desk delivery
+  doorstepPrice: integer("doorstep_price").default(0).notNull(), // Price for home delivery
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertDeliveryPriceSchema = createInsertSchema(deliveryPrices).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type DeliveryPrice = typeof deliveryPrices.$inferSelect;
+export type InsertDeliveryPrice = z.infer<typeof insertDeliveryPriceSchema>;
