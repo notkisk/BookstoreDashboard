@@ -19,8 +19,31 @@ import {
 import { wilayas, communes } from '@/data/algeria';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Download } from 'lucide-react';
+import { Search, Download, Save, Pencil, AlertTriangle, Plus } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { apiRequest } from '@/lib/queryClient';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+// Define the delivery price interface
+interface DeliveryPrice {
+  id: number;
+  wilayaId: string;
+  wilayaName: string;
+  deskPrice: number;
+  doorstepPrice: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface EditableDeliveryPrice {
+  id: number | null;
+  wilayaId: string;
+  deskPrice: number;
+  doorstepPrice: number;
+}
 
 export default function LocationData() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -28,6 +51,110 @@ export default function LocationData() {
   const [filteredCommunes, setFilteredCommunes] = useState<typeof communes>([]); // Too many to show all
   const [selectedWilaya, setSelectedWilaya] = useState<string | null>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+  
+  // Delivery prices state
+  const [editingDeliveryPrice, setEditingDeliveryPrice] = useState<EditableDeliveryPrice | null>(null);
+  const [editMode, setEditMode] = useState(false);
+  
+  // Query client for cache invalidation
+  const queryClient = useQueryClient();
+  
+  // Query to fetch delivery prices
+  const { 
+    data: deliveryPrices = [], 
+    isLoading: isLoadingDeliveryPrices, 
+    error: deliveryPricesError 
+  } = useQuery<DeliveryPrice[]>({
+    queryKey: ['/api/delivery-prices'],
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+  
+  // Mutation to create a new delivery price
+  const createDeliveryPriceMutation = useMutation({
+    mutationFn: async (priceData: Omit<EditableDeliveryPrice, 'id'>) => {
+      const wilaya = wilayas.find(w => w.id === priceData.wilayaId);
+      if (!wilaya) throw new Error('Wilaya not found');
+      
+      const data = {
+        wilayaId: priceData.wilayaId,
+        wilayaName: wilaya.name,
+        deskPrice: priceData.deskPrice,
+        doorstepPrice: priceData.doorstepPrice
+      };
+      
+      const response = await fetch('/api/delivery-prices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || response.statusText);
+      }
+      
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/delivery-prices'] });
+      toast({
+        title: 'Success',
+        description: 'Delivery price has been created.',
+        variant: 'default',
+      });
+      setEditMode(false);
+      setEditingDeliveryPrice(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to create delivery price',
+        variant: 'destructive',
+      });
+    }
+  });
+  
+  // Mutation to update an existing delivery price
+  const updateDeliveryPriceMutation = useMutation({
+    mutationFn: async (priceData: EditableDeliveryPrice) => {
+      if (priceData.id === null) throw new Error('Invalid delivery price ID');
+      
+      const response = await fetch(`/api/delivery-prices/${priceData.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          deskPrice: priceData.deskPrice,
+          doorstepPrice: priceData.doorstepPrice
+        }),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || response.statusText);
+      }
+      
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/delivery-prices'] });
+      toast({
+        title: 'Success',
+        description: 'Delivery price has been updated.',
+        variant: 'default',
+      });
+      setEditMode(false);
+      setEditingDeliveryPrice(null);
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update delivery price',
+        variant: 'destructive',
+      });
+    }
+  });
   
   // Effect to check for data
   useEffect(() => {
@@ -81,6 +208,63 @@ export default function LocationData() {
   
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
+  };
+  
+  // Start editing a delivery price
+  const startEditingDeliveryPrice = (price: DeliveryPrice) => {
+    setEditingDeliveryPrice({
+      id: price.id,
+      wilayaId: price.wilayaId,
+      deskPrice: price.deskPrice,
+      doorstepPrice: price.doorstepPrice
+    });
+    setEditMode(true);
+  };
+  
+  // Start creating a new delivery price
+  const startCreatingDeliveryPrice = (wilayaId: string) => {
+    setEditingDeliveryPrice({
+      id: null,
+      wilayaId,
+      deskPrice: 0,
+      doorstepPrice: 0
+    });
+    setEditMode(true);
+  };
+  
+  // Cancel editing
+  const cancelEditing = () => {
+    setEditingDeliveryPrice(null);
+    setEditMode(false);
+  };
+  
+  // Save delivery price (create or update)
+  const saveDeliveryPrice = () => {
+    if (!editingDeliveryPrice) return;
+    
+    if (editingDeliveryPrice.id === null) {
+      // Create new
+      createDeliveryPriceMutation.mutate({
+        wilayaId: editingDeliveryPrice.wilayaId,
+        deskPrice: editingDeliveryPrice.deskPrice,
+        doorstepPrice: editingDeliveryPrice.doorstepPrice
+      });
+    } else {
+      // Update existing
+      updateDeliveryPriceMutation.mutate(editingDeliveryPrice);
+    }
+  };
+  
+  // Handle price input change
+  const handlePriceChange = (field: 'deskPrice' | 'doorstepPrice', value: string) => {
+    if (!editingDeliveryPrice) return;
+    
+    const numericValue = value === '' ? 0 : Number(value);
+    
+    setEditingDeliveryPrice({
+      ...editingDeliveryPrice,
+      [field]: numericValue
+    });
   };
   
   return (
@@ -183,6 +367,7 @@ export default function LocationData() {
               <TabsList className="mb-4">
                 <TabsTrigger value="wilayas">Wilayas</TabsTrigger>
                 <TabsTrigger value="communes">Communes</TabsTrigger>
+                <TabsTrigger value="deliveryPrices">Delivery Prices</TabsTrigger>
               </TabsList>
               
               <TabsContent value="wilayas">
@@ -266,6 +451,190 @@ export default function LocationData() {
                   <div className="mt-2 text-sm text-gray-500 italic">
                     Showing {filteredCommunes.length} communes. Please select a wilaya or refine your search to see more specific results.
                   </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="deliveryPrices">
+                {isLoadingDeliveryPrices ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-32 w-full" />
+                  </div>
+                ) : deliveryPricesError ? (
+                  <Alert variant="destructive" className="mb-4">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    <AlertDescription>
+                      Failed to load delivery prices. Please try again later.
+                    </AlertDescription>
+                  </Alert>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-center mb-4">
+                      <div>
+                        <h3 className="text-lg font-medium">Delivery Prices</h3>
+                        <p className="text-sm text-gray-500">
+                          Set custom delivery prices for each wilaya. Prices will be automatically used when creating orders.
+                        </p>
+                      </div>
+                      
+                      {!editMode && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => startCreatingDeliveryPrice(selectedWilaya || filteredWilayas[0]?.id)}
+                          disabled={!dataLoaded || wilayas.length === 0}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Price
+                        </Button>
+                      )}
+                    </div>
+                    
+                    {editMode ? (
+                      <div className="bg-primary-50 p-4 border border-primary-200 rounded-md mb-4">
+                        <h4 className="text-primary-800 font-medium mb-3">
+                          {editingDeliveryPrice?.id ? 'Edit Delivery Price' : 'Add New Delivery Price'}
+                        </h4>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Wilaya
+                            </label>
+                            <select
+                              className="w-full p-2 border border-gray-300 rounded-md"
+                              value={editingDeliveryPrice?.wilayaId || ''}
+                              disabled={!!editingDeliveryPrice?.id}
+                              onChange={(e) => {
+                                if (!editingDeliveryPrice) return;
+                                setEditingDeliveryPrice({
+                                  ...editingDeliveryPrice,
+                                  wilayaId: e.target.value
+                                });
+                              }}
+                            >
+                              {wilayas.map(wilaya => (
+                                <option key={wilaya.id} value={wilaya.id}>
+                                  {wilaya.name} ({wilaya.id})
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Desk Price (DZD)
+                              </label>
+                              <Input
+                                type="number"
+                                min="0"
+                                value={editingDeliveryPrice?.deskPrice ?? 0}
+                                onChange={(e) => handlePriceChange('deskPrice', e.target.value)}
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Doorstep Price (DZD)
+                              </label>
+                              <Input
+                                type="number"
+                                min="0"
+                                value={editingDeliveryPrice?.doorstepPrice ?? 0}
+                                onChange={(e) => handlePriceChange('doorstepPrice', e.target.value)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-end space-x-2">
+                          <Button
+                            variant="outline"
+                            onClick={cancelEditing}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={saveDeliveryPrice}
+                            disabled={createDeliveryPriceMutation.isPending || updateDeliveryPriceMutation.isPending}
+                          >
+                            {(createDeliveryPriceMutation.isPending || updateDeliveryPriceMutation.isPending) ? (
+                              <div className="flex items-center">
+                                <span className="mr-2">Saving...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <Save className="h-4 w-4 mr-2" />
+                                Save
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    ) : null}
+                    
+                    <div className="border rounded-md">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Wilaya</TableHead>
+                            <TableHead>Desk Delivery Price</TableHead>
+                            <TableHead>Doorstep Delivery Price</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {deliveryPrices.length > 0 ? (
+                            deliveryPrices.map((price) => {
+                              return (
+                                <TableRow key={price.id}>
+                                  <TableCell>
+                                    <div className="font-medium">{price.wilayaName}</div>
+                                    <div className="text-xs text-gray-500">Code: {price.wilayaId}</div>
+                                  </TableCell>
+                                  <TableCell>{price.deskPrice.toLocaleString()} DZD</TableCell>
+                                  <TableCell>{price.doorstepPrice.toLocaleString()} DZD</TableCell>
+                                  <TableCell className="text-right">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => startEditingDeliveryPrice(price)}
+                                    >
+                                      <Pencil className="h-4 w-4" />
+                                      <span className="sr-only">Edit</span>
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })
+                          ) : (
+                            <TableRow>
+                              <TableCell colSpan={4} className="text-center py-8 text-gray-500">
+                                <div className="flex flex-col items-center justify-center space-y-2">
+                                  <div className="bg-gray-100 p-3 rounded-full">
+                                    <AlertTriangle className="h-6 w-6 text-amber-500" />
+                                  </div>
+                                  <h3 className="font-medium">No delivery prices set</h3>
+                                  <p className="text-sm text-gray-500 max-w-md">
+                                    Delivery prices have not been configured yet. Click the "Add Price" button to set delivery prices for wilayas.
+                                  </p>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    
+                    {!editMode && deliveryPrices.length > 0 && (
+                      <div className="mt-4 flex justify-between items-center">
+                        <p className="text-sm text-gray-500">
+                          <span className="font-medium">{deliveryPrices.length}</span> delivery prices configured
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
               </TabsContent>
             </Tabs>

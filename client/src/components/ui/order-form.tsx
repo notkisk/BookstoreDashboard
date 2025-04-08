@@ -24,9 +24,11 @@ import {
 } from "@/components/ui/select";
 import { wilayas, communes, getCommunesByWilayaId, updateLocationData, isLocationDataAvailable } from "@/data/algeria";
 import { useFuzzySearch } from "@/hooks/use-fuzzy-search";
-import { Plus, Minus, Trash2, Search, AlertTriangle } from "lucide-react";
+import { Plus, Minus, Trash2, Search, AlertTriangle, Loader2 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
 
 // Define the book type
 interface Book {
@@ -151,6 +153,10 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
   useEffect(() => {
     if (selectedWilaya) {
       setAvailableCommunes(getCommunesByWilayaId(selectedWilaya));
+      
+      // Fetch delivery price when wilaya changes
+      const isStopDesk = form.getValues("stopDesk");
+      fetchDeliveryPrice(selectedWilaya, isStopDesk);
     } else {
       setAvailableCommunes(communes);
     }
@@ -171,11 +177,41 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
     setTotalAmount(total);
   }, [orderItems, form.watch("deliveryPrice")]);
 
+  // Fetch delivery price based on wilaya and delivery type
+  const fetchDeliveryPrice = async (wilayaId: string, isStopDesk: boolean) => {
+    if (!wilayaId) return;
+    
+    try {
+      const response = await fetch(`/api/delivery-prices/${wilayaId}`);
+      if (!response.ok) {
+        console.error('Failed to fetch delivery price');
+        return;
+      }
+      
+      const data = await response.json();
+      if (data) {
+        // Set the appropriate price based on delivery type
+        const price = isStopDesk ? data.deskPrice : data.doorstepPrice;
+        form.setValue("deliveryPrice", price);
+      } else {
+        // No price data found, set default to 0
+        form.setValue("deliveryPrice", 0);
+      }
+    } catch (error) {
+      console.error('Error fetching delivery price:', error);
+      form.setValue("deliveryPrice", 0);
+    }
+  };
+
   // Handle wilaya selection
   const handleWilayaChange = (value: string) => {
     form.setValue("wilaya", value);
     setSelectedWilaya(value);
     form.setValue("commune", ""); // Reset commune when wilaya changes
+    
+    // Fetch delivery price when wilaya changes
+    const isStopDesk = form.getValues("stopDesk");
+    fetchDeliveryPrice(value, isStopDesk);
   };
 
   // Handle phone search
@@ -574,7 +610,14 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                         <FormControl>
                           <Checkbox
                             checked={field.value}
-                            onCheckedChange={field.onChange}
+                            onCheckedChange={(checked) => {
+                              field.onChange(checked);
+                              // Update delivery price when stopDesk changes
+                              const wilayaId = form.getValues("wilaya");
+                              if (wilayaId) {
+                                fetchDeliveryPrice(wilayaId, !!checked);
+                              }
+                            }}
                           />
                         </FormControl>
                         <FormLabel className="!mt-0">Stop Desk ✅</FormLabel>
