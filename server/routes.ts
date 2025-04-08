@@ -472,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid status" });
       }
       
-      const allowedStatuses = ['pending', 'delivering', 'delivered', 'returned'];
+      const allowedStatuses = ['pending', 'delivering', 'delivered', 'returned', 'reactionary'];
       if (!allowedStatuses.includes(status)) {
         return res.status(400).json({ 
           message: "Invalid status value",
@@ -480,7 +480,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const order = await storage.updateOrderStatus(id, status);
+      // Map 'reactionary' to 'returned' for backward compatibility
+      const normalizedStatus = status === 'reactionary' ? 'returned' : status;
+      
+      const order = await storage.updateOrderStatus(id, normalizedStatus);
       
       if (!order) {
         return res.status(404).json({ message: "Order not found" });
