@@ -396,9 +396,15 @@ export default function Dashboard() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-base font-semibold text-gray-800">Recent Orders</h3>
-          <Link href="/view-orders" className="text-sm font-medium text-primary-600 hover:text-primary-800">
+          <Button 
+            variant="link"
+            onClick={() => {
+              window.location.href = '/view-orders';
+            }}
+            className="text-sm font-medium text-primary-600 hover:text-primary-800 p-0 h-auto"
+          >
             View All
-          </Link>
+          </Button>
         </div>
         
         {ordersLoading ? (
