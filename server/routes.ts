@@ -536,6 +536,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ordersCount,
         totalSales,
         profit,
+        discounts,
         bestSellingBooks,
         ordersByStatus,
         ordersByWilaya
@@ -543,6 +544,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         storage.getOrdersCount(period),
         storage.getTotalSales(period),
         storage.getProfit(period),
+        storage.getTotalDiscounts(period),
         storage.getBestSellingBooks(5),
         storage.getOrdersByStatus(),
         storage.getOrdersByWilaya(5)
@@ -552,6 +554,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ordersCount,
         totalSales,
         profit,
+        discounts,
         bestSellingBooks,
         ordersByStatus,
         ordersByWilaya
@@ -584,6 +587,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching orders by wilaya:", error);
       res.status(500).json({ message: "Failed to fetch orders by wilaya" });
+    }
+  });
+  
+  // Get total discounts
+  app.get("/api/analytics/discounts", async (req, res) => {
+    try {
+      const period = req.query.period as 'day' | 'week' | 'month' | undefined;
+      const discounts = await storage.getTotalDiscounts(period);
+      res.json(discounts);
+    } catch (error) {
+      console.error("Error fetching discount statistics:", error);
+      res.status(500).json({ message: "Failed to fetch discount statistics" });
     }
   });
 

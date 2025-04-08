@@ -16,7 +16,9 @@ import {
   Truck,
   Clock,
   RefreshCcw,
-  MapPin
+  MapPin,
+  PercentSquare,
+  Tag
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { DataTable } from "@/components/ui/data-table";
@@ -30,6 +32,10 @@ interface DashboardStats {
   ordersCount: number;
   totalSales: number;
   profit: number;
+  discounts: {
+    amount: number;
+    percentage: number;
+  };
   bestSellingBooks: {
     book: {
       id: number;
@@ -234,7 +240,7 @@ export default function Dashboard() {
       {/* Overview Cards */}
       <div className="mb-8">
         <h3 className="text-base font-semibold text-gray-800 mb-4">Overview</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Total Books Card */}
           <Card>
             <CardContent className="p-5">
@@ -339,6 +345,38 @@ export default function Dashboard() {
                   <ArrowUp className="h-3 w-3" /> 18%
                 </span>
                 <span className="text-xs text-gray-500 ml-1">from last month</span>
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Discounts Card */}
+          <Card>
+            <CardContent className="p-5">
+              <div className="flex justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500">Discounts</p>
+                  {statsLoading ? (
+                    <Skeleton className="h-8 w-24 mt-1" />
+                  ) : (
+                    <p className="text-2xl font-semibold text-gray-800">
+                      {formatCurrency(typedStats?.discounts?.amount || 0)}
+                    </p>
+                  )}
+                </div>
+                <div className="h-12 w-12 bg-purple-100 rounded-full flex items-center justify-center">
+                  <Tag className="text-purple-600" />
+                </div>
+              </div>
+              <div className="mt-2 flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-purple-600 flex items-center">
+                    <PercentSquare className="h-3 w-3 mr-1" />
+                    {typedStats?.discounts?.percentage 
+                      ? (typedStats.discounts.percentage * 100).toFixed(1) + '%' 
+                      : '0%'}
+                  </span>
+                  <span className="text-xs text-gray-500 ml-1">of total sales</span>
+                </div>
               </div>
             </CardContent>
           </Card>
