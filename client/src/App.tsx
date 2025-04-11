@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient, apiRequest } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -31,22 +31,44 @@ function useAuth() {
         }
         throw error;
       }
-    }
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false
   });
 
-  // Temporarily bypass authentication for development
   return {
-    user: data || { id: 1, username: 'admin' },
-    isLoading: false,
-    isAuthenticated: true,
-    error: null
+    user: data,
+    isLoading,
+    isAuthenticated: !!data,
+    error
   };
 }
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const [location] = useLocation();
-  // Temporarily bypass authentication checks for development
+  const [location, setLocation] = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && location !== "/login") {
+      setLocation("/login");
+    }
+  }, [isAuthenticated, isLoading, location, setLocation]);
+
+  // Show loading indicator or redirect while checking auth
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary-300 border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  // If not authenticated, don't render children
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return <>{children}</>;
 }
 
@@ -64,6 +86,8 @@ function AuthenticatedRouter() {
           <Route path="/import" component={ImportCsv} />
           <Route path="/export" component={ExportCsv} />
           <Route path="/location-data" component={LocationData} />
+          <Route path="/historical-sales" component={() => <div>Historical Sales Coming Soon</div>} />
+          <Route path="/cost-management" component={() => <div>Cost Management Coming Soon</div>} />
           <Route component={NotFound} />
         </Switch>
       </DashboardLayout>
@@ -71,34 +95,15 @@ function AuthenticatedRouter() {
   );
 }
 
-function Router() {
-  return (
-    <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/:rest*">
-        <AuthenticatedRouter />
-      </Route>
-    </Switch>
-  );
-}
-
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <DashboardLayout>
-        <Switch>
-          <Route path="/" component={Dashboard} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/inventory" component={Inventory} />
-          <Route path="/orders" component={CreateOrder} />
-          <Route path="/view-orders" component={ViewOrders} />
-          <Route path="/customers" component={Customers} />
-          <Route path="/import" component={ImportCsv} />
-          <Route path="/export" component={ExportCsv} />
-          <Route path="/location-data" component={LocationData} />
-          <Route component={NotFound} />
-        </Switch>
-      </DashboardLayout>
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Route path="/:rest*">
+          <AuthenticatedRouter />
+        </Route>
+      </Switch>
       <Toaster />
     </QueryClientProvider>
   );
