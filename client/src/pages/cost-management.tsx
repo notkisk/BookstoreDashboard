@@ -69,18 +69,41 @@ export default function CostManagement() {
   // For per-order costs
   const [orderCount, setOrderCount] = useState<number>(0);
   
-  // Fetch orders count for reference
-  const { data: ordersData } = useQuery({
-    queryKey: ['ordersCount'],
+  // Fetch orders data, including delivered orders only for revenue
+  const { data: dashboardData } = useQuery({
+    queryKey: ['dashboardData'],
     queryFn: async () => {
       try {
         const response = await apiRequest('/api/analytics/dashboard', {
           method: 'GET'
         });
-        return response.ordersCount || 0;
+        return response || { ordersCount: 0, totalSales: 0, profit: 0 };
       } catch (error) {
-        console.error("Error fetching orders count:", error);
-        return 0;
+        console.error("Error fetching dashboard data:", error);
+        return { ordersCount: 0, totalSales: 0, profit: 0 };
+      }
+    }
+  });
+  
+  // Fetch all orders to get delivered count
+  const { data: ordersData } = useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => {
+      try {
+        const response = await apiRequest('/api/orders', {
+          method: 'GET'
+        });
+        // Filter for delivered orders
+        const deliveredOrders = Array.isArray(response) 
+          ? response.filter(order => order.status === 'delivered')
+          : [];
+        return {
+          total: Array.isArray(response) ? response.length : 0,
+          delivered: deliveredOrders.length
+        };
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        return { total: 0, delivered: 0 };
       }
     }
   });
@@ -209,13 +232,13 @@ export default function CostManagement() {
         </div>
         <div className="mt-4 sm:mt-0">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-            <TabsList className="grid grid-cols-2 w-[300px]">
-              <TabsTrigger value="all" className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2" />
+            <TabsList className="grid grid-cols-2 w-[250px]">
+              <TabsTrigger value="all" className="flex items-center text-sm">
+                <Calendar className="h-3.5 w-3.5 mr-1.5" />
                 All Time
               </TabsTrigger>
-              <TabsTrigger value="month" className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2" />
+              <TabsTrigger value="month" className="flex items-center text-sm">
+                <Calendar className="h-3.5 w-3.5 mr-1.5" />
                 By Month
               </TabsTrigger>
             </TabsList>
@@ -225,7 +248,7 @@ export default function CostManagement() {
                   type="month"
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="w-full"
+                  className="w-full h-9 text-sm"
                 />
               </div>
             )}
@@ -388,31 +411,33 @@ export default function CostManagement() {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="costName">Cost Name</Label>
+                  <Label htmlFor="costName" className="text-sm">Cost Name</Label>
                   <Input 
                     id="costName" 
                     placeholder="Rent, Utilities, etc."
+                    className="h-9 text-sm"
                     value={newCost.name}
                     onChange={(e) => setNewCost({...newCost, name: e.target.value})}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="costAmount">Amount (DZD)</Label>
+                  <Label htmlFor="costAmount" className="text-sm">Amount (DZD)</Label>
                   <Input 
                     id="costAmount" 
                     type="number"
                     placeholder="0.00"
+                    className="h-9 text-sm"
                     value={newCost.amount || ""}
                     onChange={(e) => setNewCost({...newCost, amount: parseFloat(e.target.value) || 0})}
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="costType">Cost Type</Label>
+                  <Label htmlFor="costType" className="text-sm">Cost Type</Label>
                   <select
                     id="costType"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newCost.type}
                     onChange={(e) => setNewCost({...newCost, type: e.target.value as "fixed" | "variable" | "per-order"})}
                   >
@@ -425,41 +450,44 @@ export default function CostManagement() {
                 {/* Show order count input only for per-order costs */}
                 {newCost.type === "per-order" && (
                   <div>
-                    <Label htmlFor="orderCount">Number of Orders</Label>
+                    <Label htmlFor="orderCount" className="text-sm">Number of Orders</Label>
                     <div className="flex items-center space-x-2">
                       <Input 
                         id="orderCount" 
                         type="number"
                         placeholder="Number of orders"
+                        className="h-9 text-sm"
                         value={orderCount || ""}
                         onChange={(e) => setOrderCount(parseInt(e.target.value) || 0)}
                       />
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-gray-500 whitespace-nowrap">
                         <span className="font-medium">Total: </span>
                         {formatCurrency(newCost.amount * (orderCount || 0))}
                       </div>
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      Current orders count: {ordersData || 0}
+                      <div>Total orders: {ordersData?.total || 0}</div>
+                      <div>Delivered orders: {ordersData?.delivered || 0}</div>
                     </div>
                   </div>
                 )}
 
                 <div>
-                  <Label htmlFor="costDate">Date</Label>
+                  <Label htmlFor="costDate" className="text-sm">Date</Label>
                   <Input 
                     id="costDate" 
                     type="date"
+                    className="h-9 text-sm"
                     value={newCost.date}
                     onChange={(e) => setNewCost({...newCost, date: e.target.value})}
                   />
                 </div>
 
                 <Button 
-                  className="w-full mt-4" 
+                  className="w-full h-9 mt-4 text-sm" 
                   onClick={handleAddCost}
                 >
-                  <PlusCircle className="mr-2 h-4 w-4" />
+                  <PlusCircle className="mr-2 h-3.5 w-3.5" />
                   Add Cost
                 </Button>
               </div>
