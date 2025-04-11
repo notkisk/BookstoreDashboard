@@ -88,6 +88,8 @@ export default function Customers() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedWilaya, setSelectedWilaya] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // for first to last or last to first
+  const [loyaltyFilter, setLoyaltyFilter] = useState<string>("all"); // all, regular, silver, gold, platinum
+  const [loyaltyPointsMinimum, setLoyaltyPointsMinimum] = useState<number>(0); // for filtering by minimum points
   const { toast } = useToast();
 
   // Fetch customers
@@ -146,17 +148,34 @@ export default function Customers() {
     },
   });
 
-  // Filter customers based on search query
+  // Filter customers based on search query, loyalty tier, and points
   const typedCustomers = customers as Customer[] | undefined;
   
-  // First filter by search query
-  const filtered = typedCustomers && searchQuery
-    ? typedCustomers.filter((customer: Customer) => 
-        customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.phone.includes(searchQuery) ||
-        customer.address.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : typedCustomers;
+  // First apply all filters sequentially
+  let filtered = typedCustomers;
+  
+  // Apply search query filter
+  if (filtered && searchQuery) {
+    filtered = filtered.filter((customer: Customer) => 
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.phone.includes(searchQuery) ||
+      customer.address.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+  
+  // Apply loyalty tier filter
+  if (filtered && loyaltyFilter !== "all") {
+    filtered = filtered.filter((customer: Customer) => 
+      customer.loyaltyTier === loyaltyFilter
+    );
+  }
+  
+  // Apply minimum loyalty points filter
+  if (filtered && loyaltyPointsMinimum > 0) {
+    filtered = filtered.filter((customer: Customer) => 
+      (customer.loyaltyPoints || 0) >= loyaltyPointsMinimum
+    );
+  }
     
   // Then sort by name in the chosen order
   const filteredCustomers = filtered
@@ -549,38 +568,117 @@ export default function Customers() {
 
       <Card>
         <CardHeader className="pb-2">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-lg">Customer List</CardTitle>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-1 h-8"
-                onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-              >
-                {sortOrder === "asc" ? (
-                  <>
-                    <ArrowUp className="h-4 w-4" />
-                    <span className="text-xs font-medium">A-Z</span>
-                  </>
-                ) : (
-                  <>
-                    <ArrowDown className="h-4 w-4" />
-                    <span className="text-xs font-medium">Z-A</span>
-                  </>
-                )}
-              </Button>
+          <div className="flex flex-col space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg">Customer List</CardTitle>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-1 h-8"
+                  onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+                >
+                  {sortOrder === "asc" ? (
+                    <>
+                      <ArrowUp className="h-4 w-4" />
+                      <span className="text-xs font-medium">A-Z</span>
+                    </>
+                  ) : (
+                    <>
+                      <ArrowDown className="h-4 w-4" />
+                      <span className="text-xs font-medium">Z-A</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+              <div className="w-full max-w-sm ml-4">
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                  <Input
+                    type="search"
+                    placeholder="Search customers..."
+                    className="pl-8 bg-gray-50"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="w-full max-w-sm ml-4">
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            
+            {/* Loyalty filters */}
+            <div className="flex flex-wrap gap-3 items-center">
+              <div className="flex items-center">
+                <Award className="h-4 w-4 mr-1.5 text-amber-500" />
+                <span className="text-sm font-medium">Loyalty Filters:</span>
+              </div>
+              
+              <div className="flex flex-wrap gap-2">
+                <Button 
+                  size="sm" 
+                  variant={loyaltyFilter === "all" ? "default" : "outline"}
+                  className="px-3 h-8 text-xs"
+                  onClick={() => setLoyaltyFilter("all")}
+                >
+                  All Tiers
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={loyaltyFilter === "regular" ? "default" : "outline"}
+                  className="px-3 h-8 text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 hover:text-gray-900 border-gray-200"
+                  onClick={() => setLoyaltyFilter("regular")}
+                >
+                  <span className={loyaltyFilter === "regular" ? "text-white" : ""}>Regular</span>
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={loyaltyFilter === "silver" ? "default" : "outline"}
+                  className="px-3 h-8 text-xs bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border-slate-200"
+                  onClick={() => setLoyaltyFilter("silver")}
+                >
+                  <span className={loyaltyFilter === "silver" ? "text-white" : ""}>Silver</span>
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={loyaltyFilter === "gold" ? "default" : "outline"}
+                  className="px-3 h-8 text-xs bg-amber-100 text-amber-800 hover:bg-amber-200 hover:text-amber-900 border-amber-200"
+                  onClick={() => setLoyaltyFilter("gold")}
+                >
+                  <span className={loyaltyFilter === "gold" ? "text-white" : ""}>Gold</span>
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant={loyaltyFilter === "platinum" ? "default" : "outline"}
+                  className="px-3 h-8 text-xs bg-purple-100 text-purple-800 hover:bg-purple-200 hover:text-purple-900 border-purple-200"
+                  onClick={() => setLoyaltyFilter("platinum")}
+                >
+                  <span className={loyaltyFilter === "platinum" ? "text-white" : ""}>Platinum</span>
+                </Button>
+              </div>
+              
+              <div className="flex items-center ml-2">
+                <div className="flex items-center">
+                  <Filter className="h-4 w-4 mr-1.5 text-gray-500" />
+                  <span className="text-sm font-medium mr-2">Min Points:</span>
+                </div>
                 <Input
-                  type="search"
-                  placeholder="Search customers..."
-                  className="pl-8 bg-gray-50"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  type="number"
+                  value={loyaltyPointsMinimum.toString()}
+                  onChange={(e) => setLoyaltyPointsMinimum(parseInt(e.target.value) || 0)}
+                  className="w-24 h-8 text-sm"
+                  min="0"
+                  step="50"
                 />
+                {loyaltyPointsMinimum > 0 && (
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    className="h-8 px-2 ml-1"
+                    onClick={() => setLoyaltyPointsMinimum(0)}
+                  >
+                    <span className="sr-only">Reset</span>
+                    ✕
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -601,8 +699,12 @@ export default function Customers() {
               </div>
               <h3 className="text-gray-600 font-medium mb-1">No customers found</h3>
               <p className="text-gray-500 text-sm max-w-md mx-auto">
-                {searchQuery 
-                  ? "No customers match your search criteria. Try using different keywords."
+                {searchQuery || loyaltyFilter !== "all" || loyaltyPointsMinimum > 0
+                  ? `No customers match your ${[
+                    searchQuery ? "search" : "", 
+                    loyaltyFilter !== "all" ? "loyalty tier" : "", 
+                    loyaltyPointsMinimum > 0 ? "points" : ""
+                  ].filter(Boolean).join(" and ")} criteria. Try adjusting your filters.`
                   : "You have not added any customers yet. Add customers when creating orders or import them."}
               </p>
             </div>
