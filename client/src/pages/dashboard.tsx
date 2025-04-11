@@ -526,7 +526,6 @@ export default function Dashboard() {
                     <div className="p-2">
                       <Button
                         variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
-                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -554,7 +553,6 @@ export default function Dashboard() {
                       </Button>
                       <Button
                         variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
-                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -582,7 +580,6 @@ export default function Dashboard() {
                       </Button>
                       <Button
                         variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
-                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -610,7 +607,6 @@ export default function Dashboard() {
                       </Button>
                       <Button
                         variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
-                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
