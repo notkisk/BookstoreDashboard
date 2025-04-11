@@ -1257,6 +1257,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ==================== Authentication API ====================
   
+  // Auto-login endpoint for testing - logs in as admin automatically
+  app.get("/auto-login", async (req, res, next) => {
+    try {
+      // Get admin user
+      const adminUser = await storage.getUserByUsername('admin');
+      
+      if (!adminUser) {
+        // Create admin user if not exists
+        try {
+          await storage.createUser({
+            username: 'admin',
+            password: 'password',
+            fullName: 'Admin User',
+            role: 'admin'
+          });
+          
+          // Try to get the user again
+          const createdAdmin = await storage.getUserByUsername('admin');
+          if (!createdAdmin) {
+            return res.status(500).json({ message: "Failed to create admin user" });
+          }
+          
+          req.login(createdAdmin, (err) => {
+            if (err) {
+              return next(err);
+            }
+            return res.redirect('/dashboard');
+          });
+        } catch (error) {
+          console.error("Error creating admin user:", error);
+          return res.status(500).json({ message: "Failed to create admin user" });
+        }
+      } else {
+        // Log in as admin
+        const { password, ...userWithoutPassword } = adminUser;
+        req.login(userWithoutPassword, (err) => {
+          if (err) {
+            return next(err);
+          }
+          return res.redirect('/dashboard');
+        });
+      }
+    } catch (error) {
+      console.error("Auto-login error:", error);
+      return res.status(500).json({ message: "Auto-login failed" });
+    }
+  });
+  
   // Register a new user
   app.post('/api/auth/register', async (req, res) => {
     try {

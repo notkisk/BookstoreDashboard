@@ -842,6 +842,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
+    // Special case for admin - try to find it ignoring case
+    if (username.toLowerCase() === 'admin') {
+      const results = await db.select().from(users).where(eq(users.username, 'admin'));
+      if (results.length > 0) {
+        return results[0];
+      }
+    }
+    
+    // Normal case-sensitive search
     const results = await db.select().from(users).where(eq(users.username, username));
     return results[0];
   }

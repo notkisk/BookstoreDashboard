@@ -36,6 +36,11 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  
+  // Auto-login button handler
+  const handleAutoLogin = () => {
+    window.location.href = '/auto-login';
+  };
 
   // Login form
   const loginForm = useForm<LoginValues>({
@@ -207,6 +212,17 @@ export default function LoginPage() {
                   </Button>
                 </form>
               </Form>
+              
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <Button 
+                  variant="outline"
+                  className="w-full" 
+                  onClick={handleAutoLogin}
+                  disabled={isLoading}
+                >
+                  Automatic Login (Test Mode)
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="register">
