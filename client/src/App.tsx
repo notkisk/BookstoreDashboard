@@ -1,118 +1,32 @@
-import { useState, useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
-import { queryClient, apiRequest } from "./lib/queryClient";
-import { QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient";
+import { Switch, Route } from "wouter";
 import { Toaster } from "@/components/ui/toaster";
+import Login from "@/pages/login";
 import DashboardLayout from "@/layouts/dashboard-layout";
 import Dashboard from "@/pages/dashboard";
-import Inventory from "@/pages/inventory";
-import CreateOrder from "@/pages/create-order";
-import ViewOrders from "@/pages/view-orders";
-import Customers from "@/pages/customers";
-import ImportCsv from "@/pages/import-csv";
-import ExportCsv from "@/pages/export-csv";
-import LocationData from "@/pages/location-data";
-import HistoricalSales from "@/pages/historical-sales";
-import Login from "@/pages/login";
-import NotFound from "@/pages/not-found";
 
-// Custom hook to check if user is authenticated
-function useAuth() {
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['/api/auth/me'],
-    queryFn: async () => {
-      try {
-        const response = await apiRequest('/api/auth/me', {
-          method: 'GET'
-        });
-        console.log("Auth response:", response);
-        return response.user;
-      } catch (error) {
-        console.error("Authentication error:", error);
-        return null;
-      }
-    },
-    staleTime: 30 * 1000, // 30 seconds
-    refetchOnWindowFocus: true,
-    retry: 1
-  });
-
-  // Add a manual refetch function to be used when needed
-  useEffect(() => {
-    // Refetch authentication on component mount
-    refetch();
-  }, [refetch]);
-
-  return {
-    user: data,
-    isLoading,
-    isAuthenticated: !!data,
-    error,
-    refetch
-  };
-}
-
-// Protected Route Component
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const [location, setLocation] = useLocation();
-  const { isAuthenticated, isLoading } = useAuth();
-  
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated && location !== "/login") {
-      setLocation("/login");
-    }
-  }, [isAuthenticated, isLoading, location, setLocation]);
-
-  // Show loading indicator while checking auth
-  if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  // If not authenticated, don't render children
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  return <>{children}</>;
-}
-
-function AuthenticatedRouter() {
-  return (
-    <ProtectedRoute>
-      <DashboardLayout>
-        <Switch>
-          <Route path="/" component={Dashboard} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/inventory" component={Inventory} />
-          <Route path="/orders" component={CreateOrder} />
-          <Route path="/view-orders" component={ViewOrders} />
-          <Route path="/customers" component={Customers} />
-          <Route path="/import" component={ImportCsv} />
-          <Route path="/export" component={ExportCsv} />
-          <Route path="/location-data" component={LocationData} />
-          <Route path="/historical-sales" component={HistoricalSales} />
-          <Route path="/cost-management" component={() => <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6">Cost Management</h1>
-            <p>Cost management features are coming soon.</p>
-          </div>} />
-          <Route component={NotFound} />
-        </Switch>
-      </DashboardLayout>
-    </ProtectedRoute>
-  );
-}
-
+// Temporary simplified version to debug white screen issue
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Switch>
         <Route path="/login" component={Login} />
-        <Route path="/:rest*">
-          <AuthenticatedRouter />
+        <Route path="/">
+          <div className="flex h-screen w-full items-center justify-center">
+            <div className="bg-white shadow-md rounded p-8 max-w-sm">
+              <h1 className="text-3xl font-bold text-center mb-6 text-primary">Bookstore Management</h1>
+              <p className="mb-4 text-gray-700">Welcome to the bookstore management application</p>
+              <div className="flex justify-center">
+                <a 
+                  href="/login" 
+                  className="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90 transition-colors"
+                >
+                  Go to Login
+                </a>
+              </div>
+            </div>
+          </div>
         </Route>
       </Switch>
       <Toaster />
