@@ -13,6 +13,7 @@ import ImportCsv from "@/pages/import-csv";
 import ExportCsv from "@/pages/export-csv";
 import LocationData from "@/pages/location-data";
 import HistoricalSales from "@/pages/historical-sales";
+import CostManagement from "@/pages/cost-management";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
@@ -95,10 +96,7 @@ function AuthenticatedRouter() {
           <Route path="/export" component={ExportCsv} />
           <Route path="/location-data" component={LocationData} />
           <Route path="/historical-sales" component={HistoricalSales} />
-          <Route path="/cost-management" component={() => <div className="container mx-auto px-4 py-8">
-            <h1 className="text-2xl font-bold mb-6">Cost Management</h1>
-            <p>Cost management features are coming soon.</p>
-          </div>} />
+          <Route path="/cost-management" component={CostManagement} />
           <Route component={NotFound} />
         </Switch>
       </DashboardLayout>

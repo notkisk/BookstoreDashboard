@@ -19,11 +19,14 @@ import {
   LineChart, 
   AreaChart, 
   TrendingUp, 
-  Filter 
+  Filter,
+  ShoppingBag,
+  BookOpen,
+  DollarSign
 } from "lucide-react";
 import { Link } from "wouter";
-import { formatCurrency, formatDate } from "@/lib/utils";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { formatCurrency } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 
 interface SalesDataItem {
@@ -68,7 +71,6 @@ function generateDailySalesData(days: number = 90): SalesDataItem[] {
 }
 
 export default function HistoricalSales() {
-  const [viewMode, setViewMode] = useState<string>("daily");
   const [chartType, setChartType] = useState<string>("line");
   const [dateRange, setDateRange] = useState<string>("all");
   const [groupBy, setGroupBy] = useState<string>("day");
@@ -76,11 +78,11 @@ export default function HistoricalSales() {
 
   // Query for sales data
   const { data: salesData, isLoading } = useQuery({
-    queryKey: ['/api/analytics/sales', viewMode, dateRange, groupBy],
+    queryKey: ['/api/analytics/sales', dateRange, groupBy],
     queryFn: async () => {
       try {
         // Attempt to get real data from API
-        const response = await apiRequest(`/api/analytics/sales?viewMode=${viewMode}&range=${dateRange}&groupBy=${groupBy}`);
+        const response = await apiRequest(`/api/analytics/sales?range=${dateRange}&groupBy=${groupBy}`);
         return response;
       } catch (error) {
         console.error("Error fetching sales data:", error);
@@ -201,104 +203,6 @@ export default function HistoricalSales() {
     }
   }, [salesData, dateRange, groupBy]);
 
-  // Helper functions for grouping data
-  function groupDataByWeek(data: SalesDataItem[]): SalesDataItem[] {
-    const weekMap = new Map<string, SalesDataItem>();
-    
-    data.forEach(item => {
-      const date = new Date(item.date);
-      // Get the week number
-      const weekStart = new Date(date);
-      weekStart.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
-      const weekEnd = new Date(weekStart);
-      weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
-      
-      const weekKey = `${weekStart.toISOString().split('T')[0]} to ${weekEnd.toISOString().split('T')[0]}`;
-      
-      if (weekMap.has(weekKey)) {
-        const existingData = weekMap.get(weekKey)!;
-        existingData.sales += item.sales;
-        existingData.ordersCount += item.ordersCount;
-        existingData.booksCount += item.booksCount;
-      } else {
-        weekMap.set(weekKey, {
-          date: weekKey,
-          sales: item.sales,
-          ordersCount: item.ordersCount,
-          booksCount: item.booksCount,
-          avgOrderValue: 0 // Will calculate later
-        });
-      }
-    });
-    
-    // Calculate average order value for each week
-    const result = Array.from(weekMap.values()).map(week => ({
-      ...week,
-      avgOrderValue: week.ordersCount > 0 ? Math.round(week.sales / week.ordersCount) : 0
-    }));
-    
-    // Sort by date
-    return result.sort((a, b) => {
-      const dateA = new Date(a.date.split(' to ')[0]);
-      const dateB = new Date(b.date.split(' to ')[0]);
-      return dateA.getTime() - dateB.getTime();
-    });
-  }
-  
-  function groupDataByMonth(data: SalesDataItem[]): SalesDataItem[] {
-    const monthMap = new Map<string, SalesDataItem>();
-    
-    data.forEach(item => {
-      const date = new Date(item.date);
-      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-      const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
-      
-      if (monthMap.has(monthKey)) {
-        const existingData = monthMap.get(monthKey)!;
-        existingData.sales += item.sales;
-        existingData.ordersCount += item.ordersCount;
-        existingData.booksCount += item.booksCount;
-      } else {
-        monthMap.set(monthKey, {
-          date: monthName,
-          sales: item.sales,
-          ordersCount: item.ordersCount,
-          booksCount: item.booksCount,
-          avgOrderValue: 0 // Will calculate later
-        });
-      }
-    });
-    
-    // Calculate average order value for each month
-    const result = Array.from(monthMap.values()).map(month => ({
-      ...month,
-      avgOrderValue: month.ordersCount > 0 ? Math.round(month.sales / month.ordersCount) : 0
-    }));
-    
-    // Sort by date (using original keys to sort)
-    const monthKeys = Array.from(monthMap.keys());
-    return result.sort((a, b) => {
-      const keyA = monthKeys.find(key => monthMap.get(key) === a)!;
-      const keyB = monthKeys.find(key => monthMap.get(key) === b)!;
-      return keyA.localeCompare(keyB);
-    });
-  }
-
-  // Determine the appropriate chart type component
-  const ChartComponent = () => {
-    return (
-      <Chart
-        data={dataFormat || []}
-        categories={["sales"]}
-        index="date"
-        colors={["#3b82f6"]}
-        valueFormatter={(value: number) => `${formatCurrency(value)}`}
-        yAxisWidth={65}
-        type={chartType === "bar" ? "bar" : chartType === "area" ? "area" : "line"}
-      />
-    );
-  };
-
   // Calculate totals and averages
   const totalSales = dataFormat.reduce((sum, item) => sum + item.sales, 0);
   const totalOrders = dataFormat.reduce((sum, item) => sum + item.ordersCount, 0);
@@ -399,7 +303,15 @@ export default function HistoricalSales() {
             {isLoading ? (
               <Skeleton className="h-full w-full" />
             ) : (
-              <ChartComponent />
+              <Chart
+                data={dataFormat || []}
+                categories={["sales"]}
+                index="date"
+                colors={["#3b82f6"]}
+                valueFormatter={(value: number) => `${formatCurrency(value)}`}
+                yAxisWidth={65}
+                chartType={chartType as "line" | "bar" | "area"}
+              />
             )}
           </div>
         </CardContent>
@@ -540,7 +452,10 @@ export default function HistoricalSales() {
                     ))
                   ) : (
                     dataFormat.map((data, index) => (
-                      <tr key={index} className={highestSalesPeriod?.date === data.date ? "bg-blue-50" : ""}>
+                      <tr 
+                        key={index} 
+                        className={highestSalesPeriod?.date === data.date ? "bg-blue-50" : ""}
+                      >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {data.date}
                         </td>
