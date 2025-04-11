@@ -100,11 +100,23 @@ export default function Dashboard() {
   // Fetch dashboard analytics
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: [`/api/analytics/dashboard?period=${period}`],
+    enabled: true,
+    retry: 1,
+    staleTime: 60000,
+    onError: (error) => {
+      console.error("Failed to fetch dashboard analytics:", error);
+    }
   });
 
   // Fetch recent orders
   const { data: orders, isLoading: ordersLoading } = useQuery({
     queryKey: ["/api/orders"],
+    enabled: true,
+    retry: 1,
+    staleTime: 60000,
+    onError: (error) => {
+      console.error("Failed to fetch orders:", error);
+    }
   });
 
   // Safe casting
