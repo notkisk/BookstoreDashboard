@@ -2,30 +2,45 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Chart } from "@/components/ui/chart";
-import { 
-  BookOpen, 
-  ShoppingBag, 
-  DollarSign, 
-  TrendingUp, 
-  ArrowUp, 
+import {
+  BookOpen,
+  ShoppingBag,
+  DollarSign,
+  TrendingUp,
+  ArrowUp,
   ArrowDown,
-  BarChart as BarChartIcon, 
+  BarChart as BarChartIcon,
   CheckCircle,
   Truck,
   Clock,
   RefreshCcw,
   MapPin,
   PercentSquare,
-  Tag
+  Tag,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { DataTable } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
 
@@ -87,7 +102,7 @@ export default function Dashboard() {
 
   // Fetch recent orders
   const { data: orders, isLoading: ordersLoading } = useQuery({
-    queryKey: ['/api/orders'],
+    queryKey: ["/api/orders"],
   });
 
   // Safe casting
@@ -111,14 +126,14 @@ export default function Dashboard() {
   const updateOrderStatus = useMutation({
     mutationFn: async ({ id, status }: { id: number; status: string }) => {
       return apiRequest<any>(`/api/orders/${id}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/analytics/dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ["/api/orders"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/analytics/dashboard"] });
       toast({
         title: "Status updated",
         description: "Order status has been successfully updated.",
@@ -131,7 +146,7 @@ export default function Dashboard() {
         variant: "destructive",
       });
       console.error("Error updating order status:", error);
-    }
+    },
   });
 
   // Define order columns for the data table
@@ -150,7 +165,7 @@ export default function Dashboard() {
       accessorKey: "items" as const,
       cell: (order: Order) => {
         if (!order.items?.length) return "N/A";
-        return order.items.map(item => item.book.title).join(", ");
+        return order.items.map((item) => item.book.title).join(", ");
       },
     },
     {
@@ -167,11 +182,20 @@ export default function Dashboard() {
       header: "Status",
       accessorKey: "status" as const,
       cell: (order: Order) => (
-        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-          ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : 
-          order.status === 'delivering' ? 'bg-yellow-100 text-yellow-800' :
-          order.status === 'returned' || order.status === 'reactionary' ? 'bg-red-100 text-red-800' : 
-          order.status === 'pending' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
+        <span
+          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+          ${
+            order.status === "delivered"
+              ? "bg-green-100 text-green-800"
+              : order.status === "delivering"
+                ? "bg-yellow-100 text-yellow-800"
+                : order.status === "returned" || order.status === "reactionary"
+                  ? "bg-red-100 text-red-800"
+                  : order.status === "pending"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-gray-100 text-gray-800"
+          }`}
+        >
           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </span>
       ),
@@ -185,14 +209,14 @@ export default function Dashboard() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
               <span className="sr-only">Open menu</span>
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="h-4 w-4"
               >
                 <circle cx="12" cy="12" r="1" />
@@ -203,29 +227,48 @@ export default function Dashboard() {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
-              onClick={() => updateOrderStatus.mutate({ id: order.id, status: 'pending' })}
-              disabled={order.status === 'pending' || updateOrderStatus.isPending}
+              onClick={() =>
+                updateOrderStatus.mutate({ id: order.id, status: "pending" })
+              }
+              disabled={
+                order.status === "pending" || updateOrderStatus.isPending
+              }
             >
               <Clock className="mr-2 h-4 w-4" />
               <span>Mark as Pending</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => updateOrderStatus.mutate({ id: order.id, status: 'delivering' })}
-              disabled={order.status === 'delivering' || updateOrderStatus.isPending}
+              onClick={() =>
+                updateOrderStatus.mutate({ id: order.id, status: "delivering" })
+              }
+              disabled={
+                order.status === "delivering" || updateOrderStatus.isPending
+              }
             >
               <Truck className="mr-2 h-4 w-4" />
               <span>Mark as Delivering</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => updateOrderStatus.mutate({ id: order.id, status: 'delivered' })}
-              disabled={order.status === 'delivered' || updateOrderStatus.isPending}
+              onClick={() =>
+                updateOrderStatus.mutate({ id: order.id, status: "delivered" })
+              }
+              disabled={
+                order.status === "delivered" || updateOrderStatus.isPending
+              }
             >
               <CheckCircle className="mr-2 h-4 w-4" />
               <span>Mark as Delivered</span>
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => updateOrderStatus.mutate({ id: order.id, status: 'reactionary' })}
-              disabled={order.status === 'reactionary' || updateOrderStatus.isPending}
+              onClick={() =>
+                updateOrderStatus.mutate({
+                  id: order.id,
+                  status: "reactionary",
+                })
+              }
+              disabled={
+                order.status === "reactionary" || updateOrderStatus.isPending
+              }
             >
               <RefreshCcw className="mr-2 h-4 w-4" />
               <span>Mark as Reactionary</span>
@@ -247,7 +290,9 @@ export default function Dashboard() {
             <CardContent className="p-5">
               <div className="flex justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Total Books</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Total Books
+                  </p>
                   {statsLoading ? (
                     <Skeleton className="h-8 w-16 mt-1" />
                   ) : (
@@ -264,7 +309,9 @@ export default function Dashboard() {
                 <span className="text-xs font-medium text-green-600 flex items-center">
                   <ArrowUp className="h-3 w-3" /> 12%
                 </span>
-                <span className="text-xs text-gray-500 ml-1">from last month</span>
+                <span className="text-xs text-gray-500 ml-1">
+                  from last month
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -274,7 +321,9 @@ export default function Dashboard() {
             <CardContent className="p-5">
               <div className="flex justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Total Orders</p>
+                  <p className="text-sm font-medium text-gray-500">
+                    Total Orders
+                  </p>
                   {statsLoading ? (
                     <Skeleton className="h-8 w-16 mt-1" />
                   ) : (
@@ -291,7 +340,9 @@ export default function Dashboard() {
                 <span className="text-xs font-medium text-green-600 flex items-center">
                   <ArrowUp className="h-3 w-3" /> 7%
                 </span>
-                <span className="text-xs text-gray-500 ml-1">from last month</span>
+                <span className="text-xs text-gray-500 ml-1">
+                  from last month
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -318,7 +369,9 @@ export default function Dashboard() {
                 <span className="text-xs font-medium text-green-600 flex items-center">
                   <ArrowUp className="h-3 w-3" /> 23%
                 </span>
-                <span className="text-xs text-gray-500 ml-1">from last month</span>
+                <span className="text-xs text-gray-500 ml-1">
+                  from last month
+                </span>
               </div>
             </CardContent>
           </Card>
@@ -346,18 +399,24 @@ export default function Dashboard() {
                   <span className="text-xs font-medium text-green-600 flex items-center">
                     <ArrowUp className="h-3 w-3" /> 18%
                   </span>
-                  <span className="text-xs text-gray-500 ml-1">from last month</span>
+                  <span className="text-xs text-gray-500 ml-1">
+                    from last month
+                  </span>
                 </div>
                 {!statsLoading && typedStats?.totalSales ? (
                   <span className="text-xs font-medium text-blue-600 flex items-center">
                     <PercentSquare className="h-3 w-3 mr-1" />
-                    {((typedStats.profit / typedStats.totalSales) * 100).toFixed(1)}% margin
+                    {(
+                      (typedStats.profit / typedStats.totalSales) *
+                      100
+                    ).toFixed(1)}
+                    % margin
                   </span>
                 ) : null}
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Discounts Card */}
           <Card>
             <CardContent className="p-5">
@@ -380,11 +439,13 @@ export default function Dashboard() {
                 <div className="flex items-center">
                   <span className="text-xs font-medium text-purple-600 flex items-center">
                     <PercentSquare className="h-3 w-3 mr-1" />
-                    {typedStats?.discounts?.percentage 
-                      ? (typedStats.discounts.percentage * 100).toFixed(1) + '%' 
-                      : '0%'}
+                    {typedStats?.discounts?.percentage
+                      ? (typedStats.discounts.percentage * 100).toFixed(1) + "%"
+                      : "0%"}
                   </span>
-                  <span className="text-xs text-gray-500 ml-1">of total sales</span>
+                  <span className="text-xs text-gray-500 ml-1">
+                    of total sales
+                  </span>
                 </div>
               </div>
             </CardContent>
@@ -395,14 +456,16 @@ export default function Dashboard() {
       {/* Recent Orders */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-800">Recent Orders</h3>
+          <h3 className="text-base font-semibold text-gray-800">
+            Recent Orders
+          </h3>
           <Link href="/view-orders">
             <span className="text-sm font-medium text-primary-600 hover:text-primary-800 cursor-pointer">
               View All
             </span>
           </Link>
         </div>
-        
+
         {ordersLoading ? (
           <Card>
             <CardContent className="p-6">
@@ -422,7 +485,9 @@ export default function Dashboard() {
       {/* Sales Analytics */}
       {/* Order Status Overview */}
       <div className="mb-8">
-        <h3 className="text-base font-semibold text-gray-800 mb-4">Order Status Overview</h3>
+        <h3 className="text-base font-semibold text-gray-800 mb-4">
+          Order Status Overview
+        </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Pending Orders */}
           <Card>
@@ -436,17 +501,19 @@ export default function Dashboard() {
                   <p className="text-xs text-gray-500">Awaiting processing</p>
                 </div>
               </div>
-              
+
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
                 <p className="text-2xl font-semibold text-gray-800">
-                  {typedStats?.ordersByStatus?.find(s => s.status === 'pending')?.count || 0}
+                  {typedStats?.ordersByStatus?.find(
+                    (s) => s.status === "pending",
+                  )?.count || 0}
                 </p>
               )}
             </CardContent>
           </Card>
-          
+
           {/* Delivering Orders */}
           <Card>
             <CardContent className="p-5">
@@ -456,20 +523,24 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-800">Delivering</h4>
-                  <p className="text-xs text-gray-500">In transit to customer</p>
+                  <p className="text-xs text-gray-500">
+                    In transit to customer
+                  </p>
                 </div>
               </div>
-              
+
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
                 <p className="text-2xl font-semibold text-gray-800">
-                  {typedStats?.ordersByStatus?.find(s => s.status === 'delivering')?.count || 0}
+                  {typedStats?.ordersByStatus?.find(
+                    (s) => s.status === "delivering",
+                  )?.count || 0}
                 </p>
               )}
             </CardContent>
           </Card>
-          
+
           {/* Delivered Orders */}
           <Card>
             <CardContent className="p-5">
@@ -479,20 +550,24 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-800">Delivered</h4>
-                  <p className="text-xs text-gray-500">Successfully completed</p>
+                  <p className="text-xs text-gray-500">
+                    Successfully completed
+                  </p>
                 </div>
               </div>
-              
+
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
                 <p className="text-2xl font-semibold text-gray-800">
-                  {typedStats?.ordersByStatus?.find(s => s.status === 'delivered')?.count || 0}
+                  {typedStats?.ordersByStatus?.find(
+                    (s) => s.status === "delivered",
+                  )?.count || 0}
                 </p>
               )}
             </CardContent>
           </Card>
-          
+
           {/* Returned Orders */}
           <Card>
             <CardContent className="p-5">
@@ -505,13 +580,17 @@ export default function Dashboard() {
                   <p className="text-xs text-gray-500">Returned orders</p>
                 </div>
               </div>
-              
+
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
                 <p className="text-2xl font-semibold text-gray-800">
-                  {(typedStats?.ordersByStatus?.find(s => s.status === 'returned')?.count || 0) +
-                   (typedStats?.ordersByStatus?.find(s => s.status === 'reactionary')?.count || 0)}
+                  {(typedStats?.ordersByStatus?.find(
+                    (s) => s.status === "returned",
+                  )?.count || 0) +
+                    (typedStats?.ordersByStatus?.find(
+                      (s) => s.status === "reactionary",
+                    )?.count || 0)}
                 </p>
               )}
             </CardContent>
@@ -522,7 +601,9 @@ export default function Dashboard() {
       {/* Sales Analytics */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-base font-semibold text-gray-800">Sales Analytics</h3>
+          <h3 className="text-base font-semibold text-gray-800">
+            Sales Analytics
+          </h3>
           <Select defaultValue={period} onValueChange={setPeriod}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select period" />
@@ -535,18 +616,20 @@ export default function Dashboard() {
             </SelectContent>
           </Select>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Sales Chart */}
           <Card>
             <CardContent className="p-5">
-              <h4 className="text-sm font-medium text-gray-500 mb-4">Sales Overview</h4>
+              <h4 className="text-sm font-medium text-gray-500 mb-4">
+                Sales Overview
+              </h4>
               <div className="h-64">
                 {statsLoading ? (
                   <Skeleton className="h-full w-full" />
                 ) : (
-                  <Chart 
-                    data={salesData} 
+                  <Chart
+                    data={salesData}
                     categories={["sales"]}
                     index="name"
                     colors={["#3b82f6"]}
@@ -557,11 +640,13 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-          
+
           {/* Best Selling Books */}
           <Card>
             <CardContent className="p-5">
-              <h4 className="text-sm font-medium text-gray-500 mb-4">Best Selling Books</h4>
+              <h4 className="text-sm font-medium text-gray-500 mb-4">
+                Best Selling Books
+              </h4>
               {statsLoading ? (
                 <div className="space-y-4">
                   {[1, 2, 3, 4].map((i) => (
@@ -585,18 +670,19 @@ export default function Dashboard() {
                           </p>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                          <div 
-                            className="bg-blue-500 h-2 rounded-full" 
+                          <div
+                            className="bg-blue-500 h-2 rounded-full"
                             style={{
-                              width: `${Math.min(100, (item.soldCount / (typedStats?.bestSellingBooks?.[0]?.soldCount || 1)) * 100)}%`
+                              width: `${Math.min(100, (item.soldCount / (typedStats?.bestSellingBooks?.[0]?.soldCount || 1)) * 100)}%`,
                             }}
                           ></div>
                         </div>
                       </div>
                     </div>
                   ))}
-                  
-                  {(!typedStats?.bestSellingBooks || typedStats.bestSellingBooks.length === 0) && (
+
+                  {(!typedStats?.bestSellingBooks ||
+                    typedStats.bestSellingBooks.length === 0) && (
                     <div className="text-center py-6 text-gray-500">
                       <BarChartIcon className="h-10 w-10 mx-auto text-blue-300 mb-2" />
                       <p>No sales data available</p>
@@ -608,10 +694,12 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
-      
+
       {/* Orders by Wilaya */}
       <div className="mb-8">
-        <h3 className="text-base font-semibold text-gray-800 mb-4">Orders by Wilaya</h3>
+        <h3 className="text-base font-semibold text-gray-800 mb-4">
+          Orders by Wilaya
+        </h3>
         <Card>
           <CardContent className="p-5">
             {statsLoading ? (
@@ -637,18 +725,19 @@ export default function Dashboard() {
                         </p>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-500 h-2 rounded-full" 
+                        <div
+                          className="bg-blue-500 h-2 rounded-full"
                           style={{
-                            width: `${Math.min(100, (item.count / (typedStats?.ordersByWilaya?.[0]?.count || 1)) * 100)}%`
+                            width: `${Math.min(100, (item.count / (typedStats?.ordersByWilaya?.[0]?.count || 1)) * 100)}%`,
                           }}
                         ></div>
                       </div>
                     </div>
                   </div>
                 ))}
-                
-                {(!typedStats?.ordersByWilaya || typedStats.ordersByWilaya.length === 0) && (
+
+                {(!typedStats?.ordersByWilaya ||
+                  typedStats.ordersByWilaya.length === 0) && (
                   <div className="text-center py-6 text-gray-500">
                     <MapPin className="h-10 w-10 mx-auto text-blue-300 mb-2" />
                     <p>No orders by wilaya data available</p>
