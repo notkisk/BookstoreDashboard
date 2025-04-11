@@ -90,6 +90,27 @@ export default function LoyaltyManagement() {
   const { data: loyaltySettings, isLoading: isLoadingSettings } = useQuery<LoyaltySettings>({
     queryKey: ['/api/loyalty/settings'],
     enabled: activeTab === "settings",
+    select: (data) => {
+      // Ensure data has the expected shape
+      if (!data) return null;
+      
+      // Cast data to LoyaltySettings with appropriate defaults
+      return {
+        id: data.id || 0,
+        pointsPerDinar: data.pointsPerDinar || 0.1,
+        redemptionRate: data.redemptionRate || 0.5,
+        minimumPointsToRedeem: data.minimumPointsToRedeem || 100,
+        silverThreshold: data.silverThreshold || 500,
+        goldThreshold: data.goldThreshold || 1000,
+        platinumThreshold: data.platinumThreshold || 2000,
+        silverMultiplier: data.silverMultiplier || 1.1,
+        goldMultiplier: data.goldMultiplier || 1.2,
+        platinumMultiplier: data.platinumMultiplier || 1.3,
+        expirationDays: data.expirationDays || 365,
+        active: data.active !== undefined ? data.active : true,
+        updatedAt: data.updatedAt || new Date().toISOString()
+      } as LoyaltySettings;
+    }
   });
 
   // Create form with react-hook-form + zod validation
