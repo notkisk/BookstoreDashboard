@@ -19,13 +19,21 @@ import {
 import { wilayas, communes } from '@/data/algeria';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Download, Save, Pencil, AlertTriangle, Plus, Upload } from 'lucide-react';
+import { Search, Download, Save, Pencil, AlertTriangle, Plus, Upload, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { apiRequest } from '@/lib/queryClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 // Define the delivery price interface
 interface DeliveryPrice {
@@ -609,19 +617,26 @@ export default function LocationData() {
                       )}
                     </div>
                     
-                    {editMode ? (
-                      <div className="bg-primary-50 p-4 border border-primary-200 rounded-md mb-4">
-                        <h4 className="text-primary-800 font-medium mb-3">
-                          {editingDeliveryPrice?.id ? 'Edit Delivery Price' : 'Add New Delivery Price'}
-                        </h4>
+                    <Dialog open={editMode} onOpenChange={(open) => {
+                      if (!open) cancelEditing();
+                    }}>
+                      <DialogContent className="sm:max-w-[500px]">
+                        <DialogHeader>
+                          <DialogTitle>
+                            {editingDeliveryPrice?.id ? 'Edit Delivery Price' : 'Add New Delivery Price'}
+                          </DialogTitle>
+                          <DialogDescription>
+                            Set pricing for desk delivery and doorstep delivery for this wilaya.
+                          </DialogDescription>
+                        </DialogHeader>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <div className="grid gap-4 py-4">
+                          <div className="grid gap-2">
+                            <label className="text-sm font-medium text-gray-700">
                               Wilaya
                             </label>
                             <select
-                              className="w-full p-2 border border-gray-300 rounded-md"
+                              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                               value={editingDeliveryPrice?.wilayaId || ''}
                               disabled={!!editingDeliveryPrice?.id}
                               onChange={(e) => {
@@ -632,17 +647,19 @@ export default function LocationData() {
                                 });
                               }}
                             >
-                              {wilayas.map(wilaya => (
+                              {wilayas
+                                .sort((a, b) => parseInt(a.id) - parseInt(b.id))
+                                .map(wilaya => (
                                 <option key={wilaya.id} value={wilaya.id}>
-                                  {wilaya.name} ({wilaya.id})
+                                  ({wilaya.id}) {wilaya.name}
                                 </option>
                               ))}
                             </select>
                           </div>
                           
                           <div className="grid grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <div className="grid gap-2">
+                              <label className="text-sm font-medium text-gray-700">
                                 Desk Price (DZD)
                               </label>
                               <Input
@@ -653,8 +670,8 @@ export default function LocationData() {
                               />
                             </div>
                             
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <div className="grid gap-2">
+                              <label className="text-sm font-medium text-gray-700">
                                 Doorstep Price (DZD)
                               </label>
                               <Input
@@ -667,11 +684,12 @@ export default function LocationData() {
                           </div>
                         </div>
                         
-                        <div className="flex justify-end space-x-2">
+                        <DialogFooter>
                           <Button
                             variant="outline"
                             onClick={cancelEditing}
                           >
+                            <X className="h-4 w-4 mr-2" />
                             Cancel
                           </Button>
                           <Button
@@ -689,9 +707,9 @@ export default function LocationData() {
                               </>
                             )}
                           </Button>
-                        </div>
-                      </div>
-                    ) : null}
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                     
                     <div className="border rounded-md">
                       <Table>
