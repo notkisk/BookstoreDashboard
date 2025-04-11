@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   PlusCircle, 
   Trash2, 
@@ -12,44 +14,121 @@ import {
   DollarSign, 
   TrendingUp, 
   TrendingDown,
-  PercentCircle
+  PercentCircle,
+  Package,
+  Calendar
 } from "lucide-react";
 import { Link } from "wouter";
 import { formatCurrency } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
+import { useQuery } from "@tanstack/react-query";
 
+// Definition of a cost item with support for per-order costs
 interface CostItem {
   id: string;
   name: string;
   amount: number;
-  type: "fixed" | "variable";
+  type: "fixed" | "variable" | "per-order";
   date: string;
+  orderCount?: number; // For per-order costs
+}
+
+// Monthly data interface
+interface MonthlyData {
+  month: string;
+  costs: number;
+  revenue: number;
+  profit: number;
+  profitMargin: number;
 }
 
 export default function CostManagement() {
   const { toast } = useToast();
+  // Sample initial costs
   const [costs, setCosts] = useState<CostItem[]>([
     { id: "1", name: "Rent", amount: 25000, type: "fixed", date: "2025-04-01" },
     { id: "2", name: "Utilities", amount: 5000, type: "variable", date: "2025-04-05" },
     { id: "3", name: "Staff Salaries", amount: 60000, type: "fixed", date: "2025-04-10" },
     { id: "4", name: "Marketing", amount: 15000, type: "variable", date: "2025-04-15" },
+    { id: "5", name: "Shipping per Order", amount: 500, type: "per-order", date: "2025-04-20", orderCount: 40 },
   ]);
+  
+  // Tab state for month selection
+  const [activeTab, setActiveTab] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().slice(0, 7)); // YYYY-MM format
+  
+  // New cost state
   const [newCost, setNewCost] = useState<Omit<CostItem, "id">>({
     name: "",
     amount: 0,
     type: "fixed",
     date: new Date().toISOString().split('T')[0],
   });
-
-  // Summary calculations
-  const totalCosts = costs.reduce((sum, cost) => sum + cost.amount, 0);
-  const fixedCosts = costs.filter(cost => cost.type === "fixed").reduce((sum, cost) => sum + cost.amount, 0);
-  const variableCosts = costs.filter(cost => cost.type === "variable").reduce((sum, cost) => sum + cost.amount, 0);
+  
+  // For per-order costs
+  const [orderCount, setOrderCount] = useState<number>(0);
+  
+  // Fetch orders count for reference
+  const { data: ordersData } = useQuery({
+    queryKey: ['ordersCount'],
+    queryFn: async () => {
+      try {
+        const response = await apiRequest('/api/analytics/dashboard', {
+          method: 'GET'
+        });
+        return response.ordersCount || 0;
+      } catch (error) {
+        console.error("Error fetching orders count:", error);
+        return 0;
+      }
+    }
+  });
+  
+  // Filter costs by selected month if a month is selected
+  const filteredCosts = activeTab === "all" 
+    ? costs 
+    : costs.filter(cost => cost.date.startsWith(selectedMonth));
+  
+  // Summary calculations based on filtered costs
+  const calculateTotalAmount = (cost: CostItem): number => {
+    if (cost.type === "per-order" && cost.orderCount) {
+      return cost.amount * cost.orderCount;
+    }
+    return cost.amount;
+  };
+  
+  const totalCosts = filteredCosts.reduce((sum, cost) => sum + calculateTotalAmount(cost), 0);
+  const fixedCosts = filteredCosts
+    .filter(cost => cost.type === "fixed")
+    .reduce((sum, cost) => sum + cost.amount, 0);
+  const variableCosts = filteredCosts
+    .filter(cost => cost.type === "variable")
+    .reduce((sum, cost) => sum + cost.amount, 0);
+  const perOrderCosts = filteredCosts
+    .filter(cost => cost.type === "per-order")
+    .reduce((sum, cost) => sum + calculateTotalAmount(cost), 0);
   
   // Revenue and profit (mock data for now, would come from actual orders in a real implementation)
   const revenue = 350000;
   const profit = revenue - totalCosts;
-  const profitMargin = (profit / revenue) * 100;
+  const profitMargin = revenue > 0 ? (profit / revenue) * 100 : 0;
+  
+  // Generate monthly data for charts/reports
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([
+    { month: "Jan", costs: 85000, revenue: 120000, profit: 35000, profitMargin: 29.17 },
+    { month: "Feb", costs: 90000, revenue: 140000, profit: 50000, profitMargin: 35.71 },
+    { month: "Mar", costs: 95000, revenue: 160000, profit: 65000, profitMargin: 40.63 },
+    { month: "Apr", costs: totalCosts, revenue: revenue, profit: profit, profitMargin: profitMargin },
+    { month: "May", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Jun", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Jul", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Aug", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Sep", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Oct", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Nov", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+    { month: "Dec", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
+  ]);
 
   const handleAddCost = () => {
     if (!newCost.name) {
@@ -69,19 +148,37 @@ export default function CostManagement() {
       });
       return;
     }
+    
+    // For per-order costs, validate order count
+    if (newCost.type === "per-order" && orderCount <= 0) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid order count for per-order costs.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const costItem: CostItem = {
       ...newCost,
       id: Date.now().toString(),
     };
+    
+    // Add order count for per-order costs
+    if (newCost.type === "per-order") {
+      costItem.orderCount = orderCount;
+    }
 
     setCosts([...costs, costItem]);
+    
+    // Reset form
     setNewCost({
       name: "",
       amount: 0,
       type: "fixed",
       date: new Date().toISOString().split('T')[0],
     });
+    setOrderCount(0);
 
     toast({
       title: "Cost Added",
@@ -203,20 +300,33 @@ export default function CostManagement() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {costs.map((cost) => (
+                    {filteredCosts.map((cost) => (
                       <TableRow key={cost.id}>
                         <TableCell className="font-medium">{cost.name}</TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             cost.type === "fixed" 
                               ? "bg-blue-100 text-blue-800" 
-                              : "bg-amber-100 text-amber-800"
+                              : cost.type === "variable"
+                                ? "bg-amber-100 text-amber-800"
+                                : "bg-green-100 text-green-800"
                           }`}>
-                            {cost.type === "fixed" ? "Fixed" : "Variable"}
+                            {cost.type === "fixed" 
+                              ? "Fixed" 
+                              : cost.type === "variable" 
+                                ? "Variable" 
+                                : "Per-Order"}
                           </span>
                         </TableCell>
                         <TableCell>{cost.date}</TableCell>
-                        <TableCell className="text-right">{formatCurrency(cost.amount)}</TableCell>
+                        <TableCell className="text-right">
+                          {formatCurrency(cost.amount)}
+                          {cost.type === "per-order" && cost.orderCount && (
+                            <div className="text-xs text-gray-500">
+                              {cost.orderCount} orders × {formatCurrency(cost.amount)} = {formatCurrency(cost.amount * cost.orderCount)}
+                            </div>
+                          )}
+                        </TableCell>
                         <TableCell className="text-right">
                           <Button 
                             variant="ghost" 
@@ -277,12 +387,36 @@ export default function CostManagement() {
                     id="costType"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     value={newCost.type}
-                    onChange={(e) => setNewCost({...newCost, type: e.target.value as "fixed" | "variable"})}
+                    onChange={(e) => setNewCost({...newCost, type: e.target.value as "fixed" | "variable" | "per-order"})}
                   >
                     <option value="fixed">Fixed Cost</option>
                     <option value="variable">Variable Cost</option>
+                    <option value="per-order">Per-Order Cost</option>
                   </select>
                 </div>
+
+                {/* Show order count input only for per-order costs */}
+                {newCost.type === "per-order" && (
+                  <div>
+                    <Label htmlFor="orderCount">Number of Orders</Label>
+                    <div className="flex items-center space-x-2">
+                      <Input 
+                        id="orderCount" 
+                        type="number"
+                        placeholder="Number of orders"
+                        value={orderCount || ""}
+                        onChange={(e) => setOrderCount(parseInt(e.target.value) || 0)}
+                      />
+                      <div className="text-sm text-gray-500">
+                        <span className="font-medium">Total: </span>
+                        {formatCurrency(newCost.amount * (orderCount || 0))}
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Current orders count: {ordersData || 0}
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <Label htmlFor="costDate">Date</Label>
@@ -318,6 +452,10 @@ export default function CostManagement() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Variable Costs:</span>
                   <span className="font-medium">{formatCurrency(variableCosts)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Per-Order Costs:</span>
+                  <span className="font-medium">{formatCurrency(perOrderCosts)}</span>
                 </div>
                 <div className="border-t pt-2 mt-2 flex justify-between">
                   <span className="font-medium">Total Costs:</span>
