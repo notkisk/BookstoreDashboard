@@ -149,7 +149,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               onClick={handleLogout}
             >
               <LogOut className="h-3.5 w-3.5" />
-              <span>Logout</span>
+              <span>Log out</span>
             </Button>
           </div>
         </div>
@@ -232,7 +232,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               onClick={handleLogout}
             >
               <LogOut className="h-3.5 w-3.5" />
-              <span>Logout</span>
+              <span>Log out</span>
             </Button>
           </div>
         </div>
