@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Save, Settings, Award, Tag, Users } from "lucide-react";
 
+// Standard dashboard layout
 import DashboardLayout from "@/layouts/dashboard-layout";
 
 // Schema for loyalty settings form

@@ -48,6 +48,40 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
+// Export the routes for use in other components
+export const dashboardRoutes = [
+  { path: "/", label: "Dashboard", icon: <LayoutDashboard /> },
+  { path: "/inventory", label: "Book Inventory", icon: <BookOpen /> },
+  { path: "/orders", label: "Orders", icon: <ShoppingCart /> },
+  { path: "/customers", label: "Customers", icon: <User /> },
+  { path: "/historical-sales", label: "Historical Sales", icon: <BarChart /> },
+  { path: "/cost-management", label: "Cost Management", icon: <FileText /> },
+  { path: "/loyalty-management", label: "Loyalty Program", icon: <Award /> },
+  { path: "/location-data", label: "Location Data", icon: <MapPin /> },
+  { path: "/import", label: "CSV Import", icon: <Upload /> },
+  { path: "/export", label: "CSV Export", icon: <Download /> },
+];
+
+// Export this component for reuse in other layouts
+export function DashboardSidebarContent() {
+  const [location] = useLocation();
+  
+  return (
+    <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+      {dashboardRoutes.map(route => (
+        <NavLink 
+          key={route.path} 
+          href={route.path} 
+          icon={route.icon}
+          isActive={location === route.path}
+        >
+          {route.label}
+        </NavLink>
+      ))}
+    </nav>
+  );
+}
+
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [location, setLocation] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -100,18 +134,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   };
 
-  const routes = [
-    { path: "/", label: "Dashboard", icon: <LayoutDashboard /> },
-    { path: "/inventory", label: "Book Inventory", icon: <BookOpen /> },
-    { path: "/orders", label: "Orders", icon: <ShoppingCart /> },
-    { path: "/customers", label: "Customers", icon: <User /> },
-    { path: "/historical-sales", label: "Historical Sales", icon: <BarChart /> },
-    { path: "/cost-management", label: "Cost Management", icon: <FileText /> },
-    { path: "/loyalty-management", label: "Loyalty Program", icon: <Award /> },
-    { path: "/location-data", label: "Location Data", icon: <MapPin /> },
-    { path: "/import", label: "CSV Import", icon: <Upload /> },
-    { path: "/export", label: "CSV Export", icon: <Download /> },
-  ];
+  // Use the exported routes
+  const routes = dashboardRoutes;
 
   // Extract the title from the current route
   const getCurrentTitle = () => {
