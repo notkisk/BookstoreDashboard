@@ -20,10 +20,10 @@ import {
 import { cn } from "@/lib/utils";
 
 interface DataTableColumn<T> {
-  header: string;
+  header: string | ((props: { table: any }) => React.ReactNode);
   accessorKey?: keyof T;
   id?: string;
-  cell?: (item: T) => React.ReactNode;
+  cell?: ((item: T) => React.ReactNode) | ((props: { row: any }) => React.ReactNode);
   sortable?: boolean;
 }
 
@@ -198,7 +198,11 @@ export function DataTable<T>({
                   <TableHead className="w-[50px] text-center">#</TableHead>
                 )}
                 {columns.map((column, index) => (
-                  <TableHead key={index}>{column.header}</TableHead>
+                  <TableHead key={index}>
+                    {typeof column.header === 'function' 
+                      ? column.header({ table: { getIsAllRowsSelected: () => selectAll, getToggleAllRowsSelectedHandler: () => toggleSelectAll } }) 
+                      : column.header}
+                  </TableHead>
                 ))}
               </TableRow>
             </TableHeader>
@@ -244,7 +248,18 @@ export function DataTable<T>({
                     {columns.map((column, cellIndex) => (
                       <TableCell key={cellIndex}>
                         {column.cell
-                          ? column.cell(item)
+                          ? (typeof column.cell === 'function' && 'row' in column.cell.prototype
+                              ? (column.cell as any)({ row: { original: item, getIsSelected: () => isItemSelected(item), toggleSelected: (checked: boolean) => {
+                                  if (checked) {
+                                    if (!isItemSelected(item)) {
+                                      setSelectedItems([...selectedItems, item]);
+                                    }
+                                  } else {
+                                    setSelectedItems(selectedItems.filter(i => JSON.stringify(i) !== JSON.stringify(item)));
+                                  }
+                                }
+                              }})
+                              : (column.cell as any)(item))
                           : column.accessorKey ? (item[column.accessorKey as keyof T] as React.ReactNode) : ''}
                       </TableCell>
                     ))}
