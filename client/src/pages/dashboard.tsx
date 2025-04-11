@@ -404,7 +404,28 @@ export default function Dashboard() {
             <CardContent className="p-5">
               <div className="flex justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">Profit</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-gray-500">Profit</p>
+                    <Link href="/cost-management">
+                      <Button variant="link" size="sm" className="text-primary-600 font-medium flex items-center p-0 h-auto">
+                        View More
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-3 w-3 ml-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </Button>
+                    </Link>
+                  </div>
                   {statsLoading ? (
                     <Skeleton className="h-8 w-24 mt-1" />
                   ) : (
@@ -788,9 +809,30 @@ export default function Dashboard() {
           {/* Sales Chart */}
           <Card>
             <CardContent className="p-5">
-              <h4 className="text-sm font-medium text-gray-500 mb-4">
-                Sales Overview
-              </h4>
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="text-sm font-medium text-gray-500">
+                  Sales Overview
+                </h4>
+                <Link href="/historical-sales">
+                  <Button variant="link" size="sm" className="text-primary-600 font-medium flex items-center">
+                    View More
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 ml-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </Button>
+                </Link>
+              </div>
               <div className="h-64">
                 {statsLoading ? (
                   <Skeleton className="h-full w-full" />

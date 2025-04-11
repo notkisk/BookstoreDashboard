@@ -304,25 +304,8 @@ export class DatabaseStorage implements IStorage {
       // Insert all order items
       await db.insert(orderItems).values(orderItemsToInsert);
       
-      // Update inventory quantities (reduce available stock)
-      for (const item of items) {
-        // Get current book data
-        const bookResult = await db.select().from(books).where(eq(books.id, item.bookId));
-        if (bookResult.length === 0) continue;
-        
-        const book = bookResult[0];
-        const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
-        const newQuantityLeft = Math.max(0, book.quantityLeft - itemQuantity);
-        
-        // Update the book inventory
-        await db
-          .update(books)
-          .set({ 
-            quantityLeft: newQuantityLeft,
-            updatedAt: new Date()
-          })
-          .where(eq(books.id, item.bookId));
-      }
+      // Don't update inventory for pending orders per requirement
+      // Inventory will be updated when order status changes from pending to delivering
     }
     
     return newOrder;
