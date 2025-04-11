@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -60,19 +60,41 @@ export default function LoginPage() {
   const onLoginSubmit = async (data: LoginValues) => {
     try {
       setIsLoading(true);
+      console.log("Attempting login with:", data.username);
+      
       const response = await apiRequest('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
+      console.log("Login response:", response);
+      
       toast({
         title: "Login successful",
         description: "Welcome back!",
       });
+      
+      // Manually fetch user data to ensure we have it
+      try {
+        const userData = await apiRequest('/api/auth/me', {
+          method: 'GET'
+        });
+        console.log("User data after login:", userData);
+      } catch (err) {
+        console.error("Error fetching user data after login:", err);
+      }
 
-      // Redirect to dashboard
-      setLocation("/dashboard");
+      // Force a refresh of the auth query
+      await queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/auth/me'] });
+      
+      console.log("Redirecting to dashboard...");
+      // Redirect to dashboard with a slight delay
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 500);
+      
     } catch (error) {
       console.error("Login error:", error);
       toast({
