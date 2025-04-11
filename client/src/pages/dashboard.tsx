@@ -152,7 +152,28 @@ export default function Dashboard() {
   });
 
   // Define order columns for the data table
+  const isOrderSelected = (order: Order) => selectedOrders.includes(order.id);
+  const toggleOrderSelected = (order: Order, isSelected: boolean) => {
+    if (isSelected) {
+      setSelectedOrders(prev => [...prev, order.id]);
+    } else {
+      setSelectedOrders(prev => prev.filter(id => id !== order.id));
+    }
+  };
+  
   const orderColumns = [
+    {
+      id: "select",
+      header: "Select",
+      cell: (order: Order) => (
+        <input
+          type="checkbox"
+          className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          checked={isOrderSelected(order)}
+          onChange={(e) => toggleOrderSelected(order, e.target.checked)}
+        />
+      ),
+    },
     {
       header: "Order ID",
       accessorKey: "reference" as const,
@@ -475,12 +496,159 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         ) : (
-          <DataTable
-            data={typedOrders?.slice(0, 5) || []}
-            columns={orderColumns}
-            pagination={false}
-            searchable={false}
-          />
+          <>
+            <DataTable
+              data={typedOrders?.slice(0, 5) || []}
+              columns={orderColumns}
+              pagination={false}
+              searchable={false}
+            />
+            
+            {selectedOrders.length > 0 && (
+              <div className="mt-4 flex gap-2 items-center">
+                <p className="text-sm text-gray-600">
+                  {selectedOrders.length} order{selectedOrders.length !== 1 ? 's' : ''} selected
+                </p>
+                <div className="flex-1"></div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex items-center"
+                      disabled={isChangingStatus}
+                    >
+                      Change Status
+                      {isChangingStatus && <span className="ml-2 animate-spin">⟳</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="end">
+                    <div className="p-2">
+                      <Button
+                        variant="ghost"
+                        className="flex w-full items-center justify-start"
+                        onClick={async () => {
+                          setIsChangingStatus(true);
+                          try {
+                            for (const id of selectedOrders) {
+                              await updateOrderStatus.mutateAsync({ id, status: "pending" });
+                            }
+                            setSelectedOrders([]);
+                            toast({
+                              title: "Status updated",
+                              description: `${selectedOrders.length} orders marked as pending.`,
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to update some order statuses.",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setIsChangingStatus(false);
+                          }
+                        }}
+                      >
+                        <Clock className="mr-2 h-4 w-4" />
+                        <span>Mark as Pending</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="flex w-full items-center justify-start"
+                        onClick={async () => {
+                          setIsChangingStatus(true);
+                          try {
+                            for (const id of selectedOrders) {
+                              await updateOrderStatus.mutateAsync({ id, status: "delivering" });
+                            }
+                            setSelectedOrders([]);
+                            toast({
+                              title: "Status updated",
+                              description: `${selectedOrders.length} orders marked as delivering.`,
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to update some order statuses.",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setIsChangingStatus(false);
+                          }
+                        }}
+                      >
+                        <Truck className="mr-2 h-4 w-4" />
+                        <span>Mark as Delivering</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="flex w-full items-center justify-start"
+                        onClick={async () => {
+                          setIsChangingStatus(true);
+                          try {
+                            for (const id of selectedOrders) {
+                              await updateOrderStatus.mutateAsync({ id, status: "delivered" });
+                            }
+                            setSelectedOrders([]);
+                            toast({
+                              title: "Status updated",
+                              description: `${selectedOrders.length} orders marked as delivered.`,
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to update some order statuses.",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setIsChangingStatus(false);
+                          }
+                        }}
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        <span>Mark as Delivered</span>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        className="flex w-full items-center justify-start"
+                        onClick={async () => {
+                          setIsChangingStatus(true);
+                          try {
+                            for (const id of selectedOrders) {
+                              await updateOrderStatus.mutateAsync({ id, status: "reactionary" });
+                            }
+                            setSelectedOrders([]);
+                            toast({
+                              title: "Status updated",
+                              description: `${selectedOrders.length} orders marked as reactionary.`,
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to update some order statuses.",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setIsChangingStatus(false);
+                          }
+                        }}
+                      >
+                        <RefreshCcw className="mr-2 h-4 w-4" />
+                        <span>Mark as Reactionary</span>
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setSelectedOrders([])}
+                >
+                  Clear Selection
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
