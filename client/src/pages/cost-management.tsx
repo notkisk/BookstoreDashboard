@@ -132,8 +132,8 @@ export default function CostManagement() {
     .filter(cost => cost.type === "per-order")
     .reduce((sum, cost) => sum + calculateTotalAmount(cost), 0);
   
-  // Revenue and profit (mock data for now, would come from actual orders in a real implementation)
-  const revenue = 350000;
+  // Real revenue and profit from dashboard data (only counting delivered orders)
+  const revenue = dashboardData?.totalSales || 0;
   const profit = revenue - totalCosts;
   const profitMargin = revenue > 0 ? (profit / revenue) * 100 : 0;
   

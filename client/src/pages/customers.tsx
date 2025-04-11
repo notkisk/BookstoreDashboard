@@ -13,7 +13,10 @@ import {
   Trash2, 
   MoreVertical,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Award,
+  Filter,
+  BadgeCheck
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -60,6 +63,8 @@ interface Customer {
   address: string;
   wilaya: string;
   commune: string;
+  loyaltyPoints: number;
+  loyaltyTier: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -250,6 +255,37 @@ export default function Customers() {
           </div>
         </div>
       ),
+    },
+    {
+      header: "Loyalty",
+      accessorKey: "loyaltyPoints" as const,
+      cell: (customer: Customer) => {
+        // Define colors based on loyalty tier
+        const tierColors = {
+          regular: "bg-gray-100 text-gray-800",
+          silver: "bg-slate-100 text-slate-800",
+          gold: "bg-amber-100 text-amber-800",
+          platinum: "bg-purple-100 text-purple-800"
+        };
+        
+        const tierColor = tierColors[customer.loyaltyTier as keyof typeof tierColors] || tierColors.regular;
+        
+        return (
+          <div className="flex flex-col">
+            <div className="flex items-center text-sm text-gray-600 mb-1">
+              <Award className="h-3.5 w-3.5 mr-1 text-amber-500" /> 
+              <span className="font-medium">{customer.loyaltyPoints || 0}</span> 
+              <span className="ml-1">points</span>
+            </div>
+            <div className="flex items-center">
+              <span className={`text-xs px-2 py-0.5 rounded-full ${tierColor} capitalize`}>
+                <BadgeCheck className="inline h-3 w-3 mr-0.5" />
+                {customer.loyaltyTier || 'regular'}
+              </span>
+            </div>
+          </div>
+        );
+      },
     },
     {
       header: "Actions",
