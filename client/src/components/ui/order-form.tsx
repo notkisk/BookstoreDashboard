@@ -50,6 +50,14 @@ interface Customer {
   commune: string;
 }
 
+// Define the delivery price type
+interface DeliveryPrice {
+  id: number;
+  wilayaId: string;
+  doorstepPrice: number;
+  deskPrice: number;
+}
+
 // Schema for the form
 const orderFormSchema = z.object({
   // Customer Information
@@ -74,6 +82,7 @@ const orderFormSchema = z.object({
     (val) => (val === "" || val === null || val === undefined) ? 0 : Number(val),
     z.number().min(0).max(100, "Percentage must be between 0 and 100").default(0)
   ),
+  freeDelivery: z.boolean().default(false),
   fragile: z.boolean().default(false),
   echange: z.boolean().default(false),
   pickup: z.boolean().default(false),
@@ -106,6 +115,7 @@ interface OrderFormData {
   discountPercentage: number;
   totalAmount: number; // Before discounts
   finalAmount: number; // After discounts and with delivery fee
+  freeDelivery: boolean;
   fragile: boolean;
   echange: boolean;
   pickup: boolean;
@@ -130,6 +140,12 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
   const [phoneSearchQuery, setPhoneSearchQuery] = useState("");
   const [phoneSearchResults, setPhoneSearchResults] = useState<Customer[]>([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  
+  // Fetch delivery prices
+  const { data: deliveryPrices = [] } = useQuery<DeliveryPrice[]>({
+    queryKey: ['/api/delivery-prices'],
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
   // Initialize the form
   const form = useForm<OrderFormValues>({
@@ -144,6 +160,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       deliveryPrice: 0,
       discountAmount: 0,
       discountPercentage: 0,
+      freeDelivery: false,
       fragile: false,
       echange: false,
       pickup: false,
@@ -365,6 +382,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
       deliveryPrice: values.deliveryPrice,
       discountAmount: values.discountAmount,
       discountPercentage: values.discountPercentage,
+      freeDelivery: values.freeDelivery,
       fragile: values.fragile,
       echange: values.echange,
       pickup: values.pickup,
@@ -554,6 +572,42 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                 )}
               />
 
+              {/* Free Delivery Option */}
+              <FormField
+                control={form.control}
+                name="freeDelivery"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked);
+                          // If free delivery is checked, set delivery price to 0
+                          if (checked) {
+                            form.setValue('deliveryPrice', 0);
+                          } else {
+                            // Reset to default price based on wilaya if available
+                            const wilayaId = form.getValues('wilaya');
+                            if (wilayaId) {
+                              const price = deliveryPrices.find(p => p.wilayaId === wilayaId);
+                              if (price) {
+                                if (form.getValues('stopDesk')) {
+                                  form.setValue('deliveryPrice', price.deskPrice);
+                                } else {
+                                  form.setValue('deliveryPrice', price.doorstepPrice);
+                                }
+                              }
+                            }
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="!mt-0 font-medium text-green-600">Free Delivery</FormLabel>
+                  </FormItem>
+                )}
+              />
+                  
               {/* Delivery Price */}
               <FormField
                 control={form.control}
@@ -569,6 +623,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                         placeholder="0"
                         onChange={(e) => field.onChange(e.target.value === "" ? 0 : Number(e.target.value))}
                         value={field.value}
+                        disabled={form.getValues('freeDelivery')}
                       />
                     </FormControl>
                     <div className="text-xs text-gray-500 mt-1">
