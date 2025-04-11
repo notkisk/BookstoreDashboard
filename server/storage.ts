@@ -53,6 +53,7 @@ export interface IStorage {
   getOrdersByWilaya(limit?: number): Promise<{ wilayaId: string; wilayaName: string; count: number }[]>;
   
   // User operations
+  getUserById(id: number): Promise<User | undefined>;  
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: Omit<InsertUser, "password"> & { password: string }): Promise<Omit<User, "password">>;
   validateUserCredentials(username: string, password: string): Promise<Omit<User, "password"> | null>;
@@ -777,6 +778,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   // User operations
+  async getUserById(id: number): Promise<User | undefined> {
+    const results = await db.select().from(users).where(eq(users.id, id));
+    return results[0];
+  }
+
   async getUserByUsername(username: string): Promise<User | undefined> {
     const results = await db.select().from(users).where(eq(users.username, username));
     return results[0];
