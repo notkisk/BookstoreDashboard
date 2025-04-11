@@ -632,6 +632,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ==================== Enhanced Analytics API ====================
 
+  // Get sales data for historical view
+  app.get("/api/analytics/sales", async (req, res) => {
+    try {
+      const period = req.query.period as string || 'year';
+      const range = req.query.range as string || 'all';
+      
+      // Get all orders
+      const allOrders = await storage.getOrders();
+      
+      // Create monthly sales data
+      const monthlyData: { month: string; sales: number }[] = [];
+      
+      // Define month names
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      
+      // Initialize monthly data
+      for (let i = 0; i < 12; i++) {
+        monthlyData.push({ month: monthNames[i], sales: 0 });
+      }
+      
+      // Calculate monthly sales from orders
+      for (const order of allOrders) {
+        const orderDate = new Date(order.createdAt);
+        const monthIndex = orderDate.getMonth();
+        monthlyData[monthIndex].sales += Number(order.totalAmount) || 0;
+      }
+      
+      // Filter data based on period if needed
+      let filteredData = [...monthlyData];
+      if (period === 'month') {
+        // Last month only
+        const currentMonth = new Date().getMonth();
+        filteredData = [monthlyData[currentMonth === 0 ? 11 : currentMonth - 1]];
+      } else if (period === 'quarter') {
+        // Last 3 months
+        const currentMonth = new Date().getMonth();
+        filteredData = [];
+        for (let i = 0; i < 3; i++) {
+          // Calculate month index with wraparound for previous year
+          const monthIndex = (currentMonth - i + 12) % 12;
+          filteredData.unshift(monthlyData[monthIndex]);
+        }
+      } else if (period === 'year') {
+        // All 12 months (already set)
+      }
+      
+      res.json(filteredData);
+    } catch (error) {
+      console.error("Error fetching sales data:", error);
+      res.status(500).json({ message: "Failed to fetch sales data" });
+    }
+  });
+
   // Get orders by status
   app.get("/api/analytics/orders-by-status", async (req, res) => {
     try {

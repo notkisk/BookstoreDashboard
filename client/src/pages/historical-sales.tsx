@@ -9,8 +9,13 @@ import { BarChart, Calendar, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 import { formatCurrency } from "@/lib/utils";
 
+interface SalesDataItem {
+  month: string;
+  sales: number;
+}
+
 // Dummy data for visualization until API is implemented
-const monthlySalesData = [
+const monthlySalesData: SalesDataItem[] = [
   { month: "Jan", sales: 5200 },
   { month: "Feb", sales: 4800 },
   { month: "Mar", sales: 6500 },
@@ -122,7 +127,7 @@ export default function HistoricalSales() {
                 colors={["#3b82f6"]}
                 valueFormatter={(value: number) => `${formatCurrency(value)}`}
                 yAxisWidth={65}
-                type={chartType === 'bar' ? 'bar' : chartType === 'area' ? 'area' : 'line'}
+                // Remove the type prop as it's not supported in ChartProps
               />
             )}
           </div>
@@ -147,7 +152,7 @@ export default function HistoricalSales() {
                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
                 formatCurrency(
-                  salesData?.reduce((sum, item) => sum + item.sales, 0) || 0
+                  salesData?.reduce((sum: number, item: SalesDataItem) => sum + item.sales, 0) || 0
                 )
               )}
             </div>
@@ -171,7 +176,7 @@ export default function HistoricalSales() {
               ) : (
                 formatCurrency(
                   salesData?.length
-                    ? (salesData.reduce((sum, item) => sum + item.sales, 0) / salesData.length)
+                    ? (salesData.reduce((sum: number, item: SalesDataItem) => sum + item.sales, 0) / salesData.length)
                     : 0
                 )
               )}
@@ -196,10 +201,10 @@ export default function HistoricalSales() {
               ) : (
                 salesData?.length ? (
                   <>
-                    {salesData.reduce((max, item) => (item.sales > max.sales ? item : max), salesData[0]).month}
+                    {salesData.reduce((max: SalesDataItem, item: SalesDataItem) => (item.sales > max.sales ? item : max), salesData[0]).month}
                     <span className="text-base font-medium text-gray-500 ml-2">
                       {formatCurrency(
-                        salesData.reduce((max, item) => (item.sales > max ? item.sales : max), 0)
+                        salesData.reduce((max: number, item: SalesDataItem) => (item.sales > max ? item.sales : max), 0)
                       )}
                     </span>
                   </>
@@ -262,7 +267,7 @@ export default function HistoricalSales() {
                       </tr>
                     ))
                   ) : (
-                    salesData?.map((data, index) => (
+                    salesData?.map((data: SalesDataItem, index: number) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {data.month}
