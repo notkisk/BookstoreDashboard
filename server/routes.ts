@@ -950,7 +950,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Deserialize user from session
   passport.deserializeUser(async (id: number, done) => {
     try {
-      const user = await storage.getUserByUsername(String(id));
+      // We need to get the user by ID, not username
+      const user = await storage.getUserById(id);
       if (!user) {
         return done(null, false);
       }
