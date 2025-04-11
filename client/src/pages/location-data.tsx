@@ -19,7 +19,7 @@ import {
 import { wilayas, communes } from '@/data/algeria';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Download, Save, Pencil, AlertTriangle, Plus } from 'lucide-react';
+import { Search, Download, Save, Pencil, AlertTriangle, Plus, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { apiRequest } from '@/lib/queryClient';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -67,6 +67,40 @@ export default function LocationData() {
   } = useQuery<DeliveryPrice[]>({
     queryKey: ['/api/delivery-prices'],
     staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+  
+  // Mutation to bulk import delivery prices
+  const bulkImportDeliveryPricesMutation = useMutation({
+    mutationFn: async (prices: {wilayaId: string, wilayaName: string, deskPrice: number, doorstepPrice: number}[]) => {
+      const response = await fetch('/api/delivery-prices/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prices }),
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || response.statusText);
+      }
+      
+      return await response.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/delivery-prices'] });
+      toast({
+        title: 'Success',
+        description: `${data.results.created} prices created, ${data.results.updated} prices updated.`,
+        variant: 'default',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to import delivery prices',
+        variant: 'destructive',
+      });
+    }
   });
   
   // Mutation to create a new delivery price
@@ -265,6 +299,80 @@ export default function LocationData() {
       ...editingDeliveryPrice,
       [field]: numericValue
     });
+  };
+  
+  // Handle bulk import of all delivery prices
+  const handleImportAllDeliveryPrices = () => {
+    // Raw data provided by user
+    const deliveryData = [
+      {wilayaId: "1", wilayaName: "Adrar", doorstepPrice: 1100, deskPrice: 500},
+      {wilayaId: "2", wilayaName: "Chlef", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "3", wilayaName: "Laghouat", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "4", wilayaName: "Oum-El-Bouaghi", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "5", wilayaName: "Batna", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "6", wilayaName: "Béjaïa", doorstepPrice: 700, deskPrice: 400},
+      {wilayaId: "7", wilayaName: "Biskra", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "8", wilayaName: "Béchar", doorstepPrice: 1050, deskPrice: 400},
+      {wilayaId: "9", wilayaName: "Blida", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "10", wilayaName: "Bouira", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "11", wilayaName: "Tamanrasset", doorstepPrice: 1650, deskPrice: 0},
+      {wilayaId: "12", wilayaName: "Tébessa", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "13", wilayaName: "Tlemcen", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "14", wilayaName: "Tiaret", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "15", wilayaName: "Tizi-Ouzou", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "16", wilayaName: "Alger", doorstepPrice: 700, deskPrice: 400},
+      {wilayaId: "17", wilayaName: "Djelfa", doorstepPrice: 850, deskPrice: 400},
+      {wilayaId: "18", wilayaName: "Jijel", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "19", wilayaName: "Saïda", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "20", wilayaName: "Skikda", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "21", wilayaName: "Sidi Bel Abbès", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "22", wilayaName: "Annaba", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "23", wilayaName: "Guelma", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "24", wilayaName: "Constantine", doorstepPrice: 700, deskPrice: 400},
+      {wilayaId: "25", wilayaName: "Médéa", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "26", wilayaName: "Mostaganem", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "27", wilayaName: "Msila", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "28", wilayaName: "Mascara", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "30", wilayaName: "Ouargla", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "31", wilayaName: "Oran", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "32", wilayaName: "El Bayadh", doorstepPrice: 800, deskPrice: 450},
+      {wilayaId: "33", wilayaName: "Illizi", doorstepPrice: 1400, deskPrice: 700},
+      {wilayaId: "34", wilayaName: "Bordj Bou Arreridj", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "35", wilayaName: "Boumerdès", doorstepPrice: 700, deskPrice: 400},
+      {wilayaId: "36", wilayaName: "El-Tarf", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "37", wilayaName: "Tindouf", doorstepPrice: 1800, deskPrice: 500},
+      {wilayaId: "38", wilayaName: "Tissemsilt", doorstepPrice: 850, deskPrice: 450},
+      {wilayaId: "39", wilayaName: "El-Oued", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "40", wilayaName: "Khenchela", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "41", wilayaName: "Souk-Ahras", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "42", wilayaName: "Tipaza", doorstepPrice: 750, deskPrice: 400},
+      {wilayaId: "43", wilayaName: "Mila", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "44", wilayaName: "Aïn-Defla", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "45", wilayaName: "Naâma", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "46", wilayaName: "Aïn-Témouchent", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "47", wilayaName: "Ghardaïa", doorstepPrice: 850, deskPrice: 400},
+      {wilayaId: "48", wilayaName: "Relizane", doorstepPrice: 800, deskPrice: 400},
+      {wilayaId: "49", wilayaName: "Timimoun", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "50", wilayaName: "Bordj Badji Mokhtar", doorstepPrice: 1800, deskPrice: 500},
+      {wilayaId: "51", wilayaName: "Ouled Djellal", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "52", wilayaName: "Beni Abbès", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "53", wilayaName: "In Salah", doorstepPrice: 1350, deskPrice: 650},
+      {wilayaId: "54", wilayaName: "In Guezzam", doorstepPrice: 1350, deskPrice: 650},
+      {wilayaId: "55", wilayaName: "Touggourt", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "56", wilayaName: "Djanet", doorstepPrice: 1350, deskPrice: 650},
+      {wilayaId: "57", wilayaName: "El-M'Ghair", doorstepPrice: 950, deskPrice: 500},
+      {wilayaId: "58", wilayaName: "El Meniaa", doorstepPrice: 950, deskPrice: 500}
+    ];
+    
+    // Confirm with user before making changes
+    const existingPrices = deliveryPrices.length;
+    const confirmMsg = existingPrices > 0 
+      ? `This will update ${existingPrices} existing delivery prices and add new ones. Continue?` 
+      : 'This will add delivery prices for all wilayas. Continue?';
+      
+    if (window.confirm(confirmMsg)) {
+      bulkImportDeliveryPricesMutation.mutate(deliveryData);
+    }
   };
   
   return (
@@ -478,15 +586,26 @@ export default function LocationData() {
                       </div>
                       
                       {!editMode && (
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => startCreatingDeliveryPrice(selectedWilaya || filteredWilayas[0]?.id)}
-                          disabled={!dataLoaded || wilayas.length === 0}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Price
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={handleImportAllDeliveryPrices}
+                            disabled={bulkImportDeliveryPricesMutation.isPending || !dataLoaded || wilayas.length === 0}
+                          >
+                            <Upload className="h-4 w-4 mr-2" />
+                            {bulkImportDeliveryPricesMutation.isPending ? 'Importing...' : 'Import All Prices'}
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => startCreatingDeliveryPrice(selectedWilaya || filteredWilayas[0]?.id)}
+                            disabled={!dataLoaded || wilayas.length === 0}
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Price
+                          </Button>
+                        </div>
                       )}
                     </div>
                     
