@@ -64,6 +64,8 @@ export const customers = pgTable("customers", {
   address: text("address").notNull(),
   wilaya: text("wilaya").notNull(), // numbered 01-58
   commune: text("commune").notNull(),
+  loyaltyPoints: integer("loyalty_points").default(0).notNull(),
+  loyaltyTier: text("loyalty_tier").default("regular").notNull(), // "regular", "silver", "gold", "platinum"
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -170,3 +172,47 @@ export const insertUserSchema = createInsertSchema(users).omit({
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
+
+// Loyalty Points Transaction table
+export const loyaltyTransactions = pgTable("loyalty_transactions", {
+  id: serial("id").primaryKey(),
+  customerId: integer("customer_id").notNull().references(() => customers.id),
+  orderId: integer("order_id").references(() => orders.id),
+  points: integer("points").notNull(), // Positive for earned, negative for redeemed
+  type: text("type").notNull(), // "earned", "redeemed", "bonus", "expired"
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLoyaltyTransactionSchema = createInsertSchema(loyaltyTransactions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type LoyaltyTransaction = typeof loyaltyTransactions.$inferSelect;
+export type InsertLoyaltyTransaction = z.infer<typeof insertLoyaltyTransactionSchema>;
+
+// Loyalty Program Settings
+export const loyaltySettings = pgTable("loyalty_settings", {
+  id: serial("id").primaryKey(),
+  pointsPerDinar: doublePrecision("points_per_dinar").default(0.1).notNull(), // How many points earned per 1 DZD spent
+  redemptionRate: doublePrecision("redemption_rate").default(0.5).notNull(), // Value in DZD of 1 loyalty point when redeemed
+  minimumPointsToRedeem: integer("minimum_points_to_redeem").default(100).notNull(),
+  silverThreshold: integer("silver_threshold").default(500).notNull(), // Points needed to reach Silver tier
+  goldThreshold: integer("gold_threshold").default(1000).notNull(), // Points needed to reach Gold tier
+  platinumThreshold: integer("platinum_threshold").default(2000).notNull(), // Points needed to reach Platinum tier
+  silverMultiplier: doublePrecision("silver_multiplier").default(1.1).notNull(), // 10% bonus points
+  goldMultiplier: doublePrecision("gold_multiplier").default(1.2).notNull(), // 20% bonus points
+  platinumMultiplier: doublePrecision("platinum_multiplier").default(1.3).notNull(), // 30% bonus points
+  expirationDays: integer("expiration_days").default(365).notNull(), // Points expire after this many days
+  active: boolean("active").default(true).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const insertLoyaltySettingsSchema = createInsertSchema(loyaltySettings).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type LoyaltySettings = typeof loyaltySettings.$inferSelect;
+export type InsertLoyaltySettings = z.infer<typeof insertLoyaltySettingsSchema>;

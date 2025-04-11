@@ -13,7 +13,9 @@ import {
   insertOrderSchema, 
   insertOrderItemSchema,
   insertDeliveryPriceSchema,
-  insertUserSchema
+  insertUserSchema,
+  insertLoyaltySettingsSchema,
+  insertLoyaltyTransactionSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -1025,6 +1027,224 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(401).json({ message: 'Unauthorized' });
   };
   
+  // ==================== Loyalty System API ====================
+  
+  // Get loyalty settings
+  app.get("/api/loyalty/settings", async (req, res) => {
+    try {
+      const settings = await storage.getLoyaltySettings();
+      res.json(settings);
+    } catch (error) {
+      console.error("Error fetching loyalty settings:", error);
+      res.status(500).json({ message: "Failed to fetch loyalty settings" });
+    }
+  });
+  
+  // Update loyalty settings
+  app.put("/api/loyalty/settings", async (req, res) => {
+    try {
+      const settingsData = insertLoyaltySettingsSchema.partial().parse(req.body);
+      const updatedSettings = await storage.updateLoyaltySettings(settingsData);
+      res.json(updatedSettings);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid settings data", errors: error.errors });
+      }
+      console.error("Error updating loyalty settings:", error);
+      res.status(500).json({ message: "Failed to update loyalty settings" });
+    }
+  });
+  
+  // Get customer loyalty points and tier
+  app.get("/api/loyalty/customers/:id", async (req, res) => {
+    try {
+      const customerId = Number(req.params.id);
+      if (isNaN(customerId)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      const loyalty = await storage.getCustomerLoyaltyPoints(customerId);
+      res.json(loyalty);
+    } catch (error) {
+      console.error("Error fetching customer loyalty info:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch customer loyalty information",
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+  
+  // Manually add points to a customer
+  app.post("/api/loyalty/customers/:id/add-points", async (req, res) => {
+    try {
+      const customerId = Number(req.params.id);
+      if (isNaN(customerId)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      const { points, orderId, orderAmount } = req.body;
+      
+      if (typeof points !== 'number' || points <= 0) {
+        return res.status(400).json({ message: "Points must be a positive number" });
+      }
+      
+      // If orderId is provided, validate it
+      let orderIdNumber = 0;
+      if (orderId) {
+        orderIdNumber = Number(orderId);
+        if (isNaN(orderIdNumber)) {
+          return res.status(400).json({ message: "Invalid order ID" });
+        }
+      }
+      
+      // Calculate final amount if not provided
+      const finalOrderAmount = typeof orderAmount === 'number' ? orderAmount : points * 10;
+      
+      const addedPoints = await storage.addLoyaltyPoints(
+        customerId, 
+        orderIdNumber, 
+        points,
+        finalOrderAmount
+      );
+      
+      res.json({ 
+        success: true, 
+        customerId,
+        pointsAdded: addedPoints,
+        message: `Added ${addedPoints} points to customer #${customerId}`
+      });
+    } catch (error) {
+      console.error("Error adding loyalty points:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to add loyalty points", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+  
+  // Redeem points for a customer
+  app.post("/api/loyalty/customers/:id/redeem-points", async (req, res) => {
+    try {
+      const customerId = Number(req.params.id);
+      if (isNaN(customerId)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      const { points, description } = req.body;
+      
+      if (typeof points !== 'number' || points <= 0) {
+        return res.status(400).json({ message: "Points must be a positive number" });
+      }
+      
+      const redemptionDescription = description || "Points redeemed";
+      
+      const success = await storage.redeemLoyaltyPoints(
+        customerId, 
+        points,
+        redemptionDescription
+      );
+      
+      // Get updated loyalty points after redemption
+      const updatedLoyalty = await storage.getCustomerLoyaltyPoints(customerId);
+      
+      res.json({ 
+        success,
+        customerId,
+        pointsRedeemed: points,
+        currentPoints: updatedLoyalty.points,
+        currentTier: updatedLoyalty.tier,
+        message: `Redeemed ${points} points from customer #${customerId}`
+      });
+    } catch (error) {
+      console.error("Error redeeming loyalty points:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to redeem loyalty points", 
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+  
+  // Get loyalty transactions for a customer
+  app.get("/api/loyalty/customers/:id/transactions", async (req, res) => {
+    try {
+      const customerId = Number(req.params.id);
+      if (isNaN(customerId)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      let limit = 50; // Default limit
+      if (req.query.limit) {
+        const queryLimit = Number(req.query.limit);
+        if (!isNaN(queryLimit) && queryLimit > 0) {
+          limit = Math.min(queryLimit, 100); // Cap at 100 for performance
+        }
+      }
+      
+      const transactions = await storage.getLoyaltyTransactions(customerId, limit);
+      
+      // Get customer and loyalty info
+      const customer = await storage.getCustomerById(customerId);
+      const loyaltyInfo = await storage.getCustomerLoyaltyPoints(customerId);
+      
+      res.json({
+        customer: customer ? {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          loyaltyPoints: customer.loyaltyPoints,
+          loyaltyTier: customer.loyaltyTier
+        } : null,
+        currentPoints: loyaltyInfo.points,
+        currentTier: loyaltyInfo.tier,
+        transactions
+      });
+    } catch (error) {
+      console.error("Error fetching loyalty transactions:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch loyalty transactions",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+  
+  // Recalculate a customer's loyalty tier
+  app.post("/api/loyalty/customers/:id/recalculate-tier", async (req, res) => {
+    try {
+      const customerId = Number(req.params.id);
+      if (isNaN(customerId)) {
+        return res.status(400).json({ message: "Invalid customer ID" });
+      }
+      
+      const newTier = await storage.recalculateLoyaltyTier(customerId);
+      
+      // Get customer data after update
+      const customer = await storage.getCustomerById(customerId);
+      
+      res.json({
+        success: true,
+        customerId,
+        newTier,
+        customer: customer ? {
+          id: customer.id,
+          name: customer.name,
+          phone: customer.phone,
+          loyaltyPoints: customer.loyaltyPoints,
+          loyaltyTier: customer.loyaltyTier
+        } : null,
+        message: `Customer #${customerId} tier updated to ${newTier}`
+      });
+    } catch (error) {
+      console.error("Error recalculating loyalty tier:", error);
+      res.status(500).json({ 
+        success: false,
+        message: "Failed to recalculate loyalty tier",
+        error: error instanceof Error ? error.message : "Unknown error" 
+      });
+    }
+  });
+
   // ==================== Authentication API ====================
   
   // Register a new user
