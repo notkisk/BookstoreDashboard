@@ -94,7 +94,9 @@ interface Order {
 
 export default function Dashboard() {
   const [period, setPeriod] = useState<string>("week");
-
+  const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
+  const [isChangingStatus, setIsChangingStatus] = useState(false);
+  
   // Fetch dashboard analytics
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: [`/api/analytics/dashboard?period=${period}`],
