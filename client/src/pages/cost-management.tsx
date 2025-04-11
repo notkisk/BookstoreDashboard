@@ -207,6 +207,30 @@ export default function CostManagement() {
           <h1 className="text-2xl font-bold text-gray-900">Cost Management</h1>
           <p className="text-gray-600">Track and analyze your business expenses</p>
         </div>
+        <div className="mt-4 sm:mt-0">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
+            <TabsList className="grid grid-cols-2 w-[300px]">
+              <TabsTrigger value="all" className="flex items-center">
+                <Calendar className="h-4 w-4 mr-2" />
+                All Time
+              </TabsTrigger>
+              <TabsTrigger value="month" className="flex items-center">
+                <Calendar className="h-4 w-4 mr-2" />
+                By Month
+              </TabsTrigger>
+            </TabsList>
+            {activeTab === "month" && (
+              <div className="mt-2">
+                <Input
+                  type="month"
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+            )}
+          </Tabs>
+        </div>
       </div>
 
       {/* Summary Cards */}
@@ -339,10 +363,13 @@ export default function CostManagement() {
                         </TableCell>
                       </TableRow>
                     ))}
-                    {costs.length === 0 && (
+                    {filteredCosts.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center py-4 text-gray-500">
-                          No costs added yet. Add your first cost below.
+                          {activeTab === "month" 
+                            ? `No costs found for ${selectedMonth}. Try selecting a different month or add new costs.`
+                            : "No costs added yet. Add your first cost below."
+                          }
                         </TableCell>
                       </TableRow>
                     )}
@@ -467,6 +494,44 @@ export default function CostManagement() {
         </div>
       </div>
 
+      {/* Monthly Cost Analysis */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Monthly Cost Analysis</CardTitle>
+          <p className="text-sm text-gray-500">Review your cost breakdown, revenue, and profit margin by month</p>
+        </CardHeader>
+        <CardContent>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Month</TableHead>
+                  <TableHead className="text-right">Costs</TableHead>
+                  <TableHead className="text-right">Revenue</TableHead>
+                  <TableHead className="text-right">Profit</TableHead>
+                  <TableHead className="text-right">Profit Margin</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {monthlyData.map((item) => (
+                  <TableRow key={item.month}>
+                    <TableCell className="font-medium">{item.month}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(item.costs)}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(item.revenue)}</TableCell>
+                    <TableCell className={`text-right ${item.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {formatCurrency(item.profit)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {item.revenue > 0 ? `${item.profitMargin.toFixed(2)}%` : 'N/A'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Tips and Information */}
       <Alert className="bg-blue-50 border-blue-200 mb-8">
         <AlertDescription className="text-blue-800">
@@ -474,6 +539,7 @@ export default function CostManagement() {
           <ul className="list-disc pl-5 space-y-1">
             <li>Fixed costs are expenses that remain the same regardless of production volume, like rent and salaries.</li>
             <li>Variable costs change with production levels, like raw materials and delivery expenses.</li>
+            <li>Per-order costs multiply based on the number of orders, like shipping or packaging costs.</li>
             <li>Keep track of all business expenses to ensure accurate profitability analysis.</li>
             <li>Review your costs regularly to identify opportunities for cost reduction.</li>
           </ul>
