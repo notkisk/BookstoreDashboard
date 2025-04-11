@@ -334,11 +334,13 @@ export class DatabaseStorage implements IStorage {
         if (bookResult.length === 0) continue;
         
         const book = bookResult[0];
+        const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
         
-        // Handle status transitions
+        // Handle various status transitions
+        
+        // 1. If order status changes from pending to delivering:
+        // Decrease the stock quantity and add to delivering stock
         if (oldStatus === "pending" && newStatus === "delivering") {
-          // Move from regular stock to delivering stock
-          const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
           const newDeliveringStock = book.deliveringStock + itemQuantity;
           const newQuantityLeft = Math.max(0, book.quantityLeft - itemQuantity);
           
@@ -351,9 +353,9 @@ export class DatabaseStorage implements IStorage {
             })
             .where(eq(books.id, item.bookId));
         } 
+        // 2. If order status changes from delivering to delivered:
+        // Decrease the delivering stock and add to sold stock
         else if (oldStatus === "delivering" && newStatus === "delivered") {
-          // Move from delivering stock to sold stock
-          const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
           const newDeliveringStock = Math.max(0, book.deliveringStock - itemQuantity);
           const newSoldStock = book.soldStock + itemQuantity;
           
@@ -366,10 +368,32 @@ export class DatabaseStorage implements IStorage {
             })
             .where(eq(books.id, item.bookId));
         } 
-        else if ((oldStatus === "pending" || oldStatus === "delivering") && (newStatus === "returned" || newStatus === "reactionary")) {
-          // Return books to available stock
-          const itemQuantity = item.quantity || 1; // Default to 1 if quantity is undefined
+        // 3. If order status changes from pending to reactionary:
+        // No change, as no stock was moved yet
+        else if (oldStatus === "pending" && newStatus === "reactionary") {
+          // No inventory change needed since no items were moved from stock
+        }
+        // 4. If order status changes from delivering to reactionary:
+        // Move books from delivering back to available stock
+        else if (oldStatus === "delivering" && newStatus === "reactionary") {
+          const newDeliveringStock = Math.max(0, book.deliveringStock - itemQuantity);
           const newQuantityLeft = book.quantityLeft + itemQuantity;
+          
+          await db
+            .update(books)
+            .set({ 
+              deliveringStock: newDeliveringStock,
+              quantityLeft: newQuantityLeft,
+              updatedAt: new Date()
+            })
+            .where(eq(books.id, item.bookId));
+        }
+        // 5. Handle other return cases (returned, cancelled, etc.)
+        else if ((oldStatus === "pending" || oldStatus === "delivering") && 
+                (newStatus === "returned" || newStatus === "cancelled")) {
+          // Return books to available stock
+          const newQuantityLeft = book.quantityLeft + 
+            (oldStatus === "delivering" ? itemQuantity : 0);
           const newDeliveringStock = oldStatus === "delivering" 
             ? Math.max(0, book.deliveringStock - itemQuantity)
             : book.deliveringStock;
