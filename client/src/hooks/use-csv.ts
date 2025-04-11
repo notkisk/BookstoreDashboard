@@ -133,30 +133,48 @@ export function useCsv(): UseCsvResult {
           Object.entries(row).forEach(([csvHeader, value]) => {
             const fieldName = reverseMapping[csvHeader];
             if (fieldName) {
-              // Clean and normalize the value
-              if (value === null || value === undefined) {
-                // Handle null/undefined values but don't set them as empty string
-                // to allow schema default values to work
-              } else if (typeof value === 'string') {
-                // For numeric fields, attempt to convert string to number
-                if (['price', 'buyPrice', 'quantityBought', 'quantityLeft'].includes(fieldName)) {
-                  // First clean the string - remove currency symbols, commas, and spaces
+              // Process numeric fields (price, buyPrice, quantityBought, quantityLeft)
+              if (['price', 'buyPrice', 'quantityBought', 'quantityLeft'].includes(fieldName)) {
+                let numericValue = 0;
+                
+                // Handle different value types
+                if (value === null || value === undefined) {
+                  // Use default 0 for null/undefined
+                  numericValue = 0;
+                } else if (typeof value === 'number') {
+                  // Already a number
+                  numericValue = value;
+                } else if (typeof value === 'string') {
+                  // Clean string and convert to number
                   const cleanedValue = value.trim().replace(/[^\d.-]/g, '');
-                  // Try to parse as number
-                  const numValue = parseFloat(cleanedValue);
-                  if (!isNaN(numValue)) {
-                    newRow[fieldName] = numValue;
-                  } else {
-                    // Keep as string if it can't be parsed as number
-                    newRow[fieldName] = cleanedValue || "0";
-                  }
+                  const parsedValue = parseFloat(cleanedValue);
+                  
+                  // Debug logging
+                  console.log(`CSV numeric field conversion: ${fieldName}`, {
+                    original: value,
+                    cleaned: cleanedValue,
+                    parsed: parsedValue
+                  });
+                  
+                  numericValue = !isNaN(parsedValue) ? parsedValue : 0;
                 } else {
-                  // For non-numeric fields, just trim whitespace
-                  newRow[fieldName] = value.trim();
+                  // Try to convert any other type to number
+                  const asNumber = Number(value);
+                  numericValue = !isNaN(asNumber) ? asNumber : 0;
                 }
+                
+                // Store the numeric value
+                newRow[fieldName] = numericValue;
               } else {
-                // Keep other values as is
-                newRow[fieldName] = value;
+                // For non-numeric fields
+                if (value === null || value === undefined) {
+                  // Don't set to allow schema defaults to work
+                } else if (typeof value === 'string') {
+                  newRow[fieldName] = value.trim();
+                } else {
+                  // Keep other types as is
+                  newRow[fieldName] = value;
+                }
               }
             }
           });
