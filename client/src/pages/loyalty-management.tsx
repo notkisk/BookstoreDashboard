@@ -8,12 +8,11 @@ import { useToast } from "@/hooks/use-toast";
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Save, Settings } from "lucide-react";
+import { Loader2, Save, Settings, Award, Tag, Users } from "lucide-react";
 
 import DashboardLayout from "@/layouts/dashboard-layout";
 
@@ -64,54 +63,27 @@ const loyaltySettingsSchema = z.object({
 
 type LoyaltySettingsFormValues = z.infer<typeof loyaltySettingsSchema>;
 
+// Define the loyalty settings interface
+interface LoyaltySettings {
+  id: number;
+  pointsPerDinar: number;
+  redemptionRate: number;
+  minimumPointsToRedeem: number;
+  silverThreshold: number;
+  goldThreshold: number;
+  platinumThreshold: number;
+  silverMultiplier: number;
+  goldMultiplier: number;
+  platinumMultiplier: number;
+  expirationDays: number;
+  active: boolean;
+  updatedAt: string;
+}
+
 export default function LoyaltyManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("settings");
-
-  // Define the loyalty settings type
-  interface LoyaltySettings {
-    id: number;
-    pointsPerDinar: number;
-    redemptionRate: number;
-    minimumPointsToRedeem: number;
-    silverThreshold: number;
-    goldThreshold: number;
-    platinumThreshold: number;
-    silverMultiplier: number;
-    goldMultiplier: number;
-    platinumMultiplier: number;
-    expirationDays: number;
-    active: boolean;
-    updatedAt: string;
-  }
-
-  // Fetch loyalty settings
-  const { data: loyaltySettings, isLoading: isLoadingSettings } = useQuery<LoyaltySettings>({
-    queryKey: ['/api/loyalty/settings'],
-    enabled: activeTab === "settings",
-    select: (data) => {
-      // Ensure data has the expected shape
-      if (!data) return null;
-      
-      // Cast data to LoyaltySettings with appropriate defaults
-      return {
-        id: data.id || 0,
-        pointsPerDinar: data.pointsPerDinar || 0.1,
-        redemptionRate: data.redemptionRate || 0.5,
-        minimumPointsToRedeem: data.minimumPointsToRedeem || 100,
-        silverThreshold: data.silverThreshold || 500,
-        goldThreshold: data.goldThreshold || 1000,
-        platinumThreshold: data.platinumThreshold || 2000,
-        silverMultiplier: data.silverMultiplier || 1.1,
-        goldMultiplier: data.goldMultiplier || 1.2,
-        platinumMultiplier: data.platinumMultiplier || 1.3,
-        expirationDays: data.expirationDays || 365,
-        active: data.active !== undefined ? data.active : true,
-        updatedAt: data.updatedAt || new Date().toISOString()
-      } as LoyaltySettings;
-    }
-  });
 
   // Create form with react-hook-form + zod validation
   const form = useForm<LoyaltySettingsFormValues>({
@@ -129,6 +101,12 @@ export default function LoyaltyManagement() {
       expirationDays: 365,
       active: true,
     },
+  });
+
+  // Fetch loyalty settings
+  const { data: loyaltySettings, isLoading: isLoadingSettings } = useQuery<any>({
+    queryKey: ['/api/loyalty/settings'],
+    enabled: activeTab === "settings",
   });
 
   // Update form values when settings data is loaded
@@ -177,8 +155,10 @@ export default function LoyaltyManagement() {
   });
 
   // Handle form submission
-  const onSubmit = (data: LoyaltySettingsFormValues) => {
-    updateSettingsMutation.mutate(data);
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const values = form.getValues();
+    updateSettingsMutation.mutate(values);
   };
 
   // Helper function to calculate points preview
@@ -204,14 +184,18 @@ export default function LoyaltyManagement() {
             </p>
           </div>
           <div>
-            <Settings className="w-8 h-8 text-primary" />
+            <Award className="w-8 h-8 text-primary" />
           </div>
         </div>
 
         <Tabs defaultValue="settings" value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="settings">Program Settings</TabsTrigger>
-            <TabsTrigger value="customers">Customer Management</TabsTrigger>
+            <TabsTrigger value="settings">
+              <Settings className="w-4 h-4 mr-2" /> Program Settings
+            </TabsTrigger>
+            <TabsTrigger value="customers">
+              <Users className="w-4 h-4 mr-2" /> Customer Management
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="settings" className="space-y-6 mt-6">
@@ -220,7 +204,7 @@ export default function LoyaltyManagement() {
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <Card>
                   <CardHeader>
                     <CardTitle>Program Configuration</CardTitle>
@@ -228,119 +212,109 @@ export default function LoyaltyManagement() {
                       Configure your loyalty program settings
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <Form {...form}>
-                      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                          control={form.control}
-                          name="active"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                              <div className="space-y-0.5">
-                                <FormLabel className="text-base">
-                                  Loyalty Program Status
-                                </FormLabel>
-                                <FormDescription>
-                                  Enable or disable the loyalty program
-                                </FormDescription>
-                              </div>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
+                  <CardContent className="space-y-6">
+                    <form onSubmit={onSubmit}>
+                      <div className="flex flex-col space-y-6">
+                        <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <label className="text-base font-medium">
+                              Loyalty Program Status
+                            </label>
+                            <p className="text-sm text-muted-foreground">
+                              Enable or disable the loyalty program
+                            </p>
+                          </div>
+                          <Switch
+                            checked={form.watch("active")}
+                            onCheckedChange={(checked) => form.setValue("active", checked)}
+                          />
+                        </div>
                         
-                        <Separator className="my-4" />
+                        <Separator />
                         
-                        <FormField
-                          control={form.control}
-                          name="pointsPerDinar"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Points per DZD</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormDescription>
+                        <div className="space-y-4">
+                          <h3 className="text-sm font-medium flex items-center">
+                            <Tag className="w-4 h-4 mr-2" /> Basic Point Settings
+                          </h3>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <label className="text-sm font-medium">Points per DZD</label>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                className="mt-1"
+                                value={form.watch("pointsPerDinar")}
+                                onChange={(e) => form.setValue("pointsPerDinar", parseFloat(e.target.value))}
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
                                 How many points customers earn per 1 DZD spent
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="redemptionRate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Redemption Rate (DZD per point)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  step="0.01"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormDescription>
+                              </p>
+                              {form.formState.errors.pointsPerDinar && (
+                                <p className="text-xs text-red-500 mt-1">
+                                  Value must be between 0.01 and 10
+                                </p>
+                              )}
+                            </div>
+                            
+                            <div>
+                              <label className="text-sm font-medium">Redemption Rate (DZD per point)</label>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                className="mt-1"
+                                value={form.watch("redemptionRate")}
+                                onChange={(e) => form.setValue("redemptionRate", parseFloat(e.target.value))}
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
                                 Value in DZD of 1 loyalty point when redeemed
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="minimumPointsToRedeem"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Minimum Points to Redeem</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormDescription>
+                              </p>
+                              {form.formState.errors.redemptionRate && (
+                                <p className="text-xs text-red-500 mt-1">
+                                  Value must be between 0.01 and 10
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <label className="text-sm font-medium">Minimum Points to Redeem</label>
+                              <Input
+                                type="number"
+                                className="mt-1"
+                                value={form.watch("minimumPointsToRedeem")}
+                                onChange={(e) => form.setValue("minimumPointsToRedeem", parseInt(e.target.value))}
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
                                 Minimum points required for redemption
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={form.control}
-                          name="expirationDays"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Points Expiration (days)</FormLabel>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                />
-                              </FormControl>
-                              <FormDescription>
+                              </p>
+                              {form.formState.errors.minimumPointsToRedeem && (
+                                <p className="text-xs text-red-500 mt-1">
+                                  Value must be at least 1
+                                </p>
+                              )}
+                            </div>
+                            
+                            <div>
+                              <label className="text-sm font-medium">Points Expiration (days)</label>
+                              <Input
+                                type="number"
+                                className="mt-1"
+                                value={form.watch("expirationDays")}
+                                onChange={(e) => form.setValue("expirationDays", parseInt(e.target.value))}
+                              />
+                              <p className="text-xs text-muted-foreground mt-1">
                                 Number of days until points expire (0 for no expiration)
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                              </p>
+                              {form.formState.errors.expirationDays && (
+                                <p className="text-xs text-red-500 mt-1">
+                                  Value must be between 30 and 3650
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                         
                         <div className="pt-4">
                           <Button 
@@ -361,8 +335,8 @@ export default function LoyaltyManagement() {
                             )}
                           </Button>
                         </div>
-                      </form>
-                    </Form>
+                      </div>
+                    </form>
                   </CardContent>
                 </Card>
 
@@ -374,127 +348,97 @@ export default function LoyaltyManagement() {
                         Configure loyalty tier thresholds and bonuses
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <Form {...form}>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={form.control}
-                              name="silverThreshold"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Silver Tier Threshold</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            
-                            <FormField
-                              control={form.control}
-                              name="silverMultiplier"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Silver Tier Multiplier</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      step="0.1"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={form.control}
-                              name="goldThreshold"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Gold Tier Threshold</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            
-                            <FormField
-                              control={form.control}
-                              name="goldMultiplier"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Gold Tier Multiplier</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      step="0.1"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={form.control}
-                              name="platinumThreshold"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Platinum Tier Threshold</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            
-                            <FormField
-                              control={form.control}
-                              name="platinumMultiplier"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Platinum Tier Multiplier</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      type="number"
-                                      step="0.1"
-                                      {...field}
-                                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
+                    <CardContent className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <label className="text-sm font-medium">Silver Tier Threshold</label>
+                          <Input
+                            type="number"
+                            value={form.watch("silverThreshold")}
+                            onChange={(e) => form.setValue("silverThreshold", parseInt(e.target.value))}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Points needed to reach Silver tier
+                          </p>
                         </div>
-                      </Form>
+                        
+                        <div>
+                          <label className="text-sm font-medium">Silver Tier Multiplier</label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={form.watch("silverMultiplier")}
+                            onChange={(e) => form.setValue("silverMultiplier", parseFloat(e.target.value))}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Points multiplier for Silver tier
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <label className="text-sm font-medium">Gold Tier Threshold</label>
+                          <Input
+                            type="number"
+                            value={form.watch("goldThreshold")}
+                            onChange={(e) => form.setValue("goldThreshold", parseInt(e.target.value))}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Points needed to reach Gold tier
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <label className="text-sm font-medium">Gold Tier Multiplier</label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={form.watch("goldMultiplier")}
+                            onChange={(e) => form.setValue("goldMultiplier", parseFloat(e.target.value))}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Points multiplier for Gold tier
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <Separator />
+                      
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <label className="text-sm font-medium">Platinum Tier Threshold</label>
+                          <Input
+                            type="number"
+                            value={form.watch("platinumThreshold")}
+                            onChange={(e) => form.setValue("platinumThreshold", parseInt(e.target.value))}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Points needed to reach Platinum tier
+                          </p>
+                        </div>
+                        
+                        <div>
+                          <label className="text-sm font-medium">Platinum Tier Multiplier</label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={form.watch("platinumMultiplier")}
+                            onChange={(e) => form.setValue("platinumMultiplier", parseFloat(e.target.value))}
+                            className="mt-1"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Points multiplier for Platinum tier
+                          </p>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
 
@@ -506,14 +450,15 @@ export default function LoyaltyManagement() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-6">
                         <div>
-                          <FormLabel>Order Amount (DZD)</FormLabel>
+                          <label className="text-sm font-medium">Order Amount (DZD)</label>
                           <Input
                             type="number"
                             placeholder="1000"
                             defaultValue={1000}
                             id="calculator-amount"
+                            className="mt-1"
                             onChange={(e) => {
                               const pointsPreview = document.getElementById("points-preview");
                               if (pointsPreview) {
@@ -521,17 +466,18 @@ export default function LoyaltyManagement() {
                               }
                             }}
                           />
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Earns <span id="points-preview">{calculatePoints(1000)}</span> points
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Earns <span id="points-preview" className="font-semibold">{calculatePoints(1000)}</span> points
                           </p>
                         </div>
                         <div>
-                          <FormLabel>Points to Redeem</FormLabel>
+                          <label className="text-sm font-medium">Points to Redeem</label>
                           <Input
                             type="number"
                             placeholder="500"
                             defaultValue={500}
                             id="calculator-points"
+                            className="mt-1" 
                             onChange={(e) => {
                               const valuePreview = document.getElementById("value-preview");
                               if (valuePreview) {
@@ -539,8 +485,8 @@ export default function LoyaltyManagement() {
                               }
                             }}
                           />
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Worth <span id="value-preview">{calculateRedemptionValue(500)}</span> DZD
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Worth <span id="value-preview" className="font-semibold">{calculateRedemptionValue(500)}</span> DZD
                           </p>
                         </div>
                       </div>
@@ -560,13 +506,16 @@ export default function LoyaltyManagement() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-center py-8">
-                  Customer loyalty management will be implemented in a future update.
-                </p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Users className="w-12 h-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-medium mb-2">Customer Loyalty Management</h3>
+                  <p className="text-muted-foreground max-w-md">
+                    This feature will allow you to view and manage customer loyalty points, 
+                    tiers, and redemption history.
+                  </p>
+                  <Button disabled className="mt-6">Coming Soon</Button>
+                </div>
               </CardContent>
-              <CardFooter className="border-t px-6 py-4">
-                <Button disabled>Load Customer List</Button>
-              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
