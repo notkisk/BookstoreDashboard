@@ -212,6 +212,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
     const deliveryPrice = Number(form.watch("deliveryPrice") || 0);
     const discountAmount = Number(form.watch("discountAmount") || 0);
     const discountPercentage = Number(form.watch("discountPercentage") || 0);
+    const freeDelivery = form.watch("freeDelivery") || false;
     
     // Calculate discounts
     let discounted = itemsTotal;
@@ -230,15 +231,17 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
     // Set the discounted amount (before delivery)
     setDiscountedAmount(discounted);
     
-    // Add delivery price to final amount
-    const total = discounted + deliveryPrice;
+    // Add delivery price to final amount (unless free delivery is checked)
+    const finalDeliveryPrice = freeDelivery ? 0 : deliveryPrice;
+    const total = discounted + finalDeliveryPrice;
     setTotalAmount(total);
     setFinalAmount(total);
   }, [
     orderItems, 
     form.watch("deliveryPrice"), 
     form.watch("discountAmount"), 
-    form.watch("discountPercentage")
+    form.watch("discountPercentage"),
+    form.watch("freeDelivery")
   ]);
 
   // Fetch delivery price based on wilaya and delivery type
