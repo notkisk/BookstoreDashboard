@@ -4,7 +4,9 @@ import {
   orders, type Order, type InsertOrder,
   orderItems, type OrderItem, type InsertOrderItem,
   deliveryPrices, type DeliveryPrice, type InsertDeliveryPrice,
-  users, type User, type InsertUser
+  users, type User, type InsertUser,
+  loyaltyTransactions, type LoyaltyTransaction, type InsertLoyaltyTransaction,
+  loyaltySettings, type LoyaltySettings, type InsertLoyaltySettings
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, like, desc, sql as sqlBuilder, count } from "drizzle-orm";
@@ -57,6 +59,15 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: Omit<InsertUser, "password"> & { password: string }): Promise<Omit<User, "password">>;
   validateUserCredentials(username: string, password: string): Promise<Omit<User, "password"> | null>;
+  
+  // Loyalty operations
+  getLoyaltySettings(): Promise<LoyaltySettings>;
+  updateLoyaltySettings(settings: Partial<InsertLoyaltySettings>): Promise<LoyaltySettings>;
+  getCustomerLoyaltyPoints(customerId: number): Promise<{ points: number; tier: string }>;
+  addLoyaltyPoints(customerId: number, orderId: number, amount: number, orderAmount: number): Promise<number>;
+  redeemLoyaltyPoints(customerId: number, points: number, description?: string): Promise<boolean>;
+  getLoyaltyTransactions(customerId: number, limit?: number): Promise<LoyaltyTransaction[]>;
+  recalculateLoyaltyTier(customerId: number): Promise<string>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -308,6 +319,10 @@ export class DatabaseStorage implements IStorage {
       // Inventory will be updated when order status changes from pending to delivering
     }
     
+    // Add loyalty points for the customer
+    // We only add points when the order is actually delivered, not when it's created
+    // This is done in the updateOrderStatus function when status changes to "delivered"
+    
     return newOrder;
   }
 
@@ -407,6 +422,26 @@ export class DatabaseStorage implements IStorage {
             })
             .where(eq(books.id, item.bookId));
         }
+      }
+    }
+    
+    // Add loyalty points when an order is delivered
+    if (newStatus === "delivered" && oldStatus !== "delivered") {
+      try {
+        // Add loyalty points for the customer
+        const customerId = orderData.order.customerId;
+        const finalAmount = orderData.order.finalAmount;
+        
+        // We don't use the amount parameter here - instead calculating based on the finalAmount
+        await this.addLoyaltyPoints(
+          customerId, 
+          id, 
+          0, // This parameter is not used as we calculate points from orderAmount
+          finalAmount
+        );
+      } catch (error) {
+        console.error("Error adding loyalty points:", error);
+        // We don't throw - we don't want to prevent status update if loyalty points fail
       }
     }
     
@@ -844,6 +879,227 @@ export class DatabaseStorage implements IStorage {
     // Return user without password
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
+  }
+  
+  // Loyalty operations
+  async getLoyaltySettings(): Promise<LoyaltySettings> {
+    // Get existing settings or create default settings if none exist
+    const existingSettings = await db.select().from(loyaltySettings);
+    
+    if (existingSettings.length > 0) {
+      return existingSettings[0];
+    } else {
+      // Create default loyalty settings
+      const [defaultSettings] = await db.insert(loyaltySettings)
+        .values({
+          pointsPerDinar: 0.1,
+          redemptionRate: 0.5,
+          minimumPointsToRedeem: 100,
+          silverThreshold: 500,
+          goldThreshold: 1000,
+          platinumThreshold: 2000,
+          silverMultiplier: 1.1,
+          goldMultiplier: 1.2,
+          platinumMultiplier: 1.3,
+          expirationDays: 365,
+          active: true
+        })
+        .returning();
+      
+      return defaultSettings;
+    }
+  }
+  
+  async updateLoyaltySettings(settings: Partial<InsertLoyaltySettings>): Promise<LoyaltySettings> {
+    const currentSettings = await this.getLoyaltySettings();
+    
+    const [updatedSettings] = await db
+      .update(loyaltySettings)
+      .set({ ...settings, updatedAt: new Date() })
+      .where(eq(loyaltySettings.id, currentSettings.id))
+      .returning();
+    
+    return updatedSettings;
+  }
+  
+  async getCustomerLoyaltyPoints(customerId: number): Promise<{ points: number; tier: string }> {
+    const customer = await this.getCustomerById(customerId);
+    
+    if (!customer) {
+      throw new Error(`Customer with ID ${customerId} not found`);
+    }
+    
+    return {
+      points: customer.loyaltyPoints || 0,
+      tier: customer.loyaltyTier || 'regular'
+    };
+  }
+  
+  async addLoyaltyPoints(customerId: number, orderId: number, amount: number, orderAmount: number): Promise<number> {
+    // Validate customer exists
+    const customer = await this.getCustomerById(customerId);
+    if (!customer) {
+      throw new Error(`Customer with ID ${customerId} not found`);
+    }
+    
+    // Get loyalty settings
+    const settings = await this.getLoyaltySettings();
+    if (!settings.active) {
+      return 0; // Loyalty program is not active
+    }
+    
+    // Calculate points based on order amount and customer's tier multiplier
+    const basePoints = Math.round(orderAmount * settings.pointsPerDinar);
+    let pointsMultiplier = 1.0; // Default multiplier for regular tier
+    
+    // Apply tier-based multiplier
+    switch (customer.loyaltyTier) {
+      case 'silver':
+        pointsMultiplier = settings.silverMultiplier;
+        break;
+      case 'gold':
+        pointsMultiplier = settings.goldMultiplier;
+        break;
+      case 'platinum':
+        pointsMultiplier = settings.platinumMultiplier;
+        break;
+    }
+    
+    // Calculate final points with multiplier
+    const pointsToAdd = Math.round(basePoints * pointsMultiplier);
+    
+    // Create transaction record
+    await db.insert(loyaltyTransactions).values({
+      customerId,
+      orderId,
+      points: pointsToAdd,
+      type: 'earned',
+      description: `Points earned from order #${orderId}`
+    });
+    
+    // Update customer's total points
+    const newTotalPoints = (customer.loyaltyPoints || 0) + pointsToAdd;
+    await db
+      .update(customers)
+      .set({ 
+        loyaltyPoints: newTotalPoints,
+        updatedAt: new Date()
+      })
+      .where(eq(customers.id, customerId));
+    
+    // Check if customer's tier should be updated
+    await this.recalculateLoyaltyTier(customerId);
+    
+    return pointsToAdd;
+  }
+  
+  async redeemLoyaltyPoints(customerId: number, points: number, description: string = 'Points redeemed'): Promise<boolean> {
+    // Validate customer exists
+    const customer = await this.getCustomerById(customerId);
+    if (!customer) {
+      throw new Error(`Customer with ID ${customerId} not found`);
+    }
+    
+    // Get loyalty settings
+    const settings = await this.getLoyaltySettings();
+    if (!settings.active) {
+      throw new Error('Loyalty program is not active');
+    }
+    
+    // Check if customer has enough points
+    if (!customer.loyaltyPoints || customer.loyaltyPoints < points) {
+      throw new Error(`Customer does not have enough points to redeem (${customer.loyaltyPoints || 0} available, ${points} requested)`);
+    }
+    
+    // Check minimum points requirement
+    if (points < settings.minimumPointsToRedeem) {
+      throw new Error(`Minimum points to redeem is ${settings.minimumPointsToRedeem}`);
+    }
+    
+    // Create transaction record (negative points for redemption)
+    await db.insert(loyaltyTransactions).values({
+      customerId,
+      points: -points, // Negative value indicates redemption
+      type: 'redeemed',
+      description
+    });
+    
+    // Update customer's total points
+    const newTotalPoints = customer.loyaltyPoints - points;
+    await db
+      .update(customers)
+      .set({ 
+        loyaltyPoints: newTotalPoints,
+        updatedAt: new Date()
+      })
+      .where(eq(customers.id, customerId));
+    
+    // Check if customer's tier should be downgraded
+    await this.recalculateLoyaltyTier(customerId);
+    
+    return true;
+  }
+  
+  async getLoyaltyTransactions(customerId: number, limit: number = 50): Promise<LoyaltyTransaction[]> {
+    // Validate customer exists
+    const customer = await this.getCustomerById(customerId);
+    if (!customer) {
+      throw new Error(`Customer with ID ${customerId} not found`);
+    }
+    
+    // Get transactions for the customer
+    const transactions = await db
+      .select()
+      .from(loyaltyTransactions)
+      .where(eq(loyaltyTransactions.customerId, customerId))
+      .orderBy(desc(loyaltyTransactions.createdAt))
+      .limit(limit);
+      
+    return transactions;
+  }
+  
+  async recalculateLoyaltyTier(customerId: number): Promise<string> {
+    // Validate customer exists
+    const customer = await this.getCustomerById(customerId);
+    if (!customer) {
+      throw new Error(`Customer with ID ${customerId} not found`);
+    }
+    
+    // Get loyalty settings
+    const settings = await this.getLoyaltySettings();
+    
+    // Determine the tier based on current points
+    let newTier = 'regular';
+    const points = customer.loyaltyPoints || 0;
+    
+    if (points >= settings.platinumThreshold) {
+      newTier = 'platinum';
+    } else if (points >= settings.goldThreshold) {
+      newTier = 'gold';
+    } else if (points >= settings.silverThreshold) {
+      newTier = 'silver';
+    }
+    
+    // Update tier if it has changed
+    if (newTier !== customer.loyaltyTier) {
+      await db
+        .update(customers)
+        .set({ 
+          loyaltyTier: newTier,
+          updatedAt: new Date()
+        })
+        .where(eq(customers.id, customerId));
+        
+      // Create a transaction record for tier change
+      await db.insert(loyaltyTransactions).values({
+        customerId,
+        points: 0,
+        type: 'bonus',
+        description: `Customer tier upgraded to ${newTier}`
+      });
+    }
+    
+    return newTier;
   }
 }
 

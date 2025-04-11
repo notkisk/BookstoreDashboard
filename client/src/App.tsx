@@ -14,6 +14,7 @@ import ExportCsv from "@/pages/export-csv";
 import LocationData from "@/pages/location-data";
 import HistoricalSales from "@/pages/historical-sales";
 import CostManagement from "@/pages/cost-management";
+import LoyaltyManagement from "@/pages/loyalty-management";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 
@@ -97,6 +98,7 @@ function AuthenticatedRouter() {
           <Route path="/location-data" component={LocationData} />
           <Route path="/historical-sales" component={HistoricalSales} />
           <Route path="/cost-management" component={CostManagement} />
+          <Route path="/loyalty-management" component={LoyaltyManagement} />
           <Route component={NotFound} />
         </Switch>
       </DashboardLayout>
