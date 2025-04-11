@@ -1363,30 +1363,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
-  // Auto-login for testing (should be removed in production)
-  app.get('/auto-login', async (req, res) => {
-    try {
-      // Get the admin user
-      const user = await storage.getUserByUsername('admin');
-      
-      if (!user) {
-        return res.status(404).json({ message: 'Admin user not found' });
-      }
-      
-      // Log the user in
-      req.login(user, (err) => {
-        if (err) {
-          return res.status(500).json({ message: 'Login failed', error: err.message });
-        }
-        
-        // Redirect to dashboard
-        res.redirect('/dashboard');
-      });
-    } catch (error) {
-      console.error('Auto-login error:', error);
-      res.status(500).json({ message: 'Auto-login failed', error: error instanceof Error ? error.message : 'Unknown error' });
-    }
-  });
+  // Auto-login endpoint is now defined above
 
   const httpServer = createServer(app);
   return httpServer;
