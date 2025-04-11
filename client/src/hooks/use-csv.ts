@@ -134,12 +134,26 @@ export function useCsv(): UseCsvResult {
             const fieldName = reverseMapping[csvHeader];
             if (fieldName) {
               // Clean and normalize the value
-              if (typeof value === 'string') {
-                // Trim whitespace
-                newRow[fieldName] = value.trim();
-              } else if (value === null || value === undefined) {
+              if (value === null || value === undefined) {
                 // Handle null/undefined values but don't set them as empty string
                 // to allow schema default values to work
+              } else if (typeof value === 'string') {
+                // For numeric fields, attempt to convert string to number
+                if (['price', 'buyPrice', 'quantityBought', 'quantityLeft'].includes(fieldName)) {
+                  // First clean the string - remove currency symbols, commas, and spaces
+                  const cleanedValue = value.trim().replace(/[^\d.-]/g, '');
+                  // Try to parse as number
+                  const numValue = parseFloat(cleanedValue);
+                  if (!isNaN(numValue)) {
+                    newRow[fieldName] = numValue;
+                  } else {
+                    // Keep as string if it can't be parsed as number
+                    newRow[fieldName] = cleanedValue || "0";
+                  }
+                } else {
+                  // For non-numeric fields, just trim whitespace
+                  newRow[fieldName] = value.trim();
+                }
               } else {
                 // Keep other values as is
                 newRow[fieldName] = value;

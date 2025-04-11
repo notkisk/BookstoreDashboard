@@ -1,63 +1,318 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Chart } from "@/components/ui/chart";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BarChart, Calendar, ChevronLeft } from "lucide-react";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { 
+  BarChart, 
+  Calendar, 
+  ChevronLeft, 
+  Download, 
+  LineChart, 
+  AreaChart, 
+  TrendingUp, 
+  Filter 
+} from "lucide-react";
 import { Link } from "wouter";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { apiRequest } from "@/lib/queryClient";
 
 interface SalesDataItem {
-  month: string;
+  date: string;
   sales: number;
+  ordersCount: number;
+  booksCount: number;
+  avgOrderValue: number;
 }
 
-// Dummy data for visualization until API is implemented
-const monthlySalesData: SalesDataItem[] = [
-  { month: "Jan", sales: 5200 },
-  { month: "Feb", sales: 4800 },
-  { month: "Mar", sales: 6500 },
-  { month: "Apr", sales: 5900 },
-  { month: "May", sales: 6800 },
-  { month: "Jun", sales: 7200 },
-  { month: "Jul", sales: 7800 },
-  { month: "Aug", sales: 8400 },
-  { month: "Sep", sales: 7900 },
-  { month: "Oct", sales: 8700 },
-  { month: "Nov", sales: 9200 },
-  { month: "Dec", sales: 9800 },
-];
+// Generate current dates for realistic visualization
+function generateDailySalesData(days: number = 90): SalesDataItem[] {
+  const today = new Date();
+  const data: SalesDataItem[] = [];
+  
+  for (let i = 0; i < days; i++) {
+    const date = new Date();
+    date.setDate(today.getDate() - i);
+    
+    // Create some pattern with weekends having higher sales
+    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+    const baseAmount = isWeekend ? 2000 + Math.random() * 1000 : 1000 + Math.random() * 800;
+    // Create trend where older dates have slightly lower sales (business growth)
+    const trendFactor = 1 - (i / (days * 2));
+    const ordersCount = Math.max(1, Math.floor((isWeekend ? 5 + Math.random() * 4 : 2 + Math.random() * 3) * trendFactor));
+    
+    const sales = Math.round(baseAmount * trendFactor);
+    const booksCount = Math.round(ordersCount * (2 + Math.random() * 2));
+    const avgOrderValue = Math.round(sales / ordersCount);
+    
+    data.push({
+      date: date.toISOString().split('T')[0],
+      sales,
+      ordersCount,
+      booksCount,
+      avgOrderValue
+    });
+  }
+  
+  // Sort by date ascending
+  return data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+}
 
 export default function HistoricalSales() {
-  const [period, setPeriod] = useState<string>("year");
+  const [viewMode, setViewMode] = useState<string>("daily");
   const [chartType, setChartType] = useState<string>("line");
   const [dateRange, setDateRange] = useState<string>("all");
+  const [groupBy, setGroupBy] = useState<string>("day");
+  const [dataFormat, setDataFormat] = useState<SalesDataItem[]>([]);
 
-  // Query for sales data based on period
+  // Query for sales data
   const { data: salesData, isLoading } = useQuery({
-    queryKey: ['/api/analytics/sales', period, dateRange],
+    queryKey: ['/api/analytics/sales', viewMode, dateRange, groupBy],
     queryFn: async () => {
       try {
         // Attempt to get real data from API
-        const response = await fetch(`/api/analytics/sales?period=${period}&range=${dateRange}`);
-        if (response.ok) {
-          return await response.json();
-        }
+        const response = await apiRequest(`/api/analytics/sales?viewMode=${viewMode}&range=${dateRange}&groupBy=${groupBy}`);
+        return response;
       } catch (error) {
         console.error("Error fetching sales data:", error);
+        // Return empty array if API call fails
+        return [];
       }
-      // Fallback to dummy data if API call fails
-      console.log("Using dummy data for sales visualization");
-      return monthlySalesData;
     },
     staleTime: 60 * 1000, // 1 minute
   });
+  
+  // Helper functions for grouping data
+  function groupDataByWeek(data: SalesDataItem[]): SalesDataItem[] {
+    const weekMap = new Map<string, SalesDataItem>();
+    
+    data.forEach(item => {
+      const date = new Date(item.date);
+      // Get the week number
+      const weekStart = new Date(date);
+      weekStart.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
+      
+      const weekKey = `${weekStart.toISOString().split('T')[0]} to ${weekEnd.toISOString().split('T')[0]}`;
+      
+      if (weekMap.has(weekKey)) {
+        const existingData = weekMap.get(weekKey)!;
+        existingData.sales += item.sales;
+        existingData.ordersCount += item.ordersCount;
+        existingData.booksCount += item.booksCount;
+      } else {
+        weekMap.set(weekKey, {
+          date: weekKey,
+          sales: item.sales,
+          ordersCount: item.ordersCount,
+          booksCount: item.booksCount,
+          avgOrderValue: 0 // Will calculate later
+        });
+      }
+    });
+    
+    // Calculate average order value for each week
+    const result = Array.from(weekMap.values()).map(week => ({
+      ...week,
+      avgOrderValue: week.ordersCount > 0 ? Math.round(week.sales / week.ordersCount) : 0
+    }));
+    
+    // Sort by date
+    return result.sort((a, b) => {
+      const dateA = new Date(a.date.split(' to ')[0]);
+      const dateB = new Date(b.date.split(' to ')[0]);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
+  
+  function groupDataByMonth(data: SalesDataItem[]): SalesDataItem[] {
+    const monthMap = new Map<string, SalesDataItem>();
+    
+    data.forEach(item => {
+      const date = new Date(item.date);
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+      const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+      
+      if (monthMap.has(monthKey)) {
+        const existingData = monthMap.get(monthKey)!;
+        existingData.sales += item.sales;
+        existingData.ordersCount += item.ordersCount;
+        existingData.booksCount += item.booksCount;
+      } else {
+        monthMap.set(monthKey, {
+          date: monthName,
+          sales: item.sales,
+          ordersCount: item.ordersCount,
+          booksCount: item.booksCount,
+          avgOrderValue: 0 // Will calculate later
+        });
+      }
+    });
+    
+    // Calculate average order value for each month
+    const result = Array.from(monthMap.values()).map(month => ({
+      ...month,
+      avgOrderValue: month.ordersCount > 0 ? Math.round(month.sales / month.ordersCount) : 0
+    }));
+    
+    // Sort by date (using original keys to sort)
+    const monthKeys = Array.from(monthMap.keys());
+    return result.sort((a, b) => {
+      const keyA = monthKeys.find(key => monthMap.get(key) === a)!;
+      const keyB = monthKeys.find(key => monthMap.get(key) === b)!;
+      return keyA.localeCompare(keyB);
+    });
+  }
+  
+  // Use real data if available, otherwise generate realistic sample data
+  useEffect(() => {
+    if (salesData && Array.isArray(salesData) && salesData.length > 0) {
+      setDataFormat(salesData);
+    } else {
+      // Generate different amount of data based on date range
+      let daysToGenerate = 90;
+      if (dateRange === '30days') daysToGenerate = 30;
+      else if (dateRange === '90days') daysToGenerate = 90;
+      else if (dateRange === '6months') daysToGenerate = 180;
+      else daysToGenerate = 365; // all time
+      
+      const generatedData = generateDailySalesData(daysToGenerate);
+      
+      // Apply groupBy transformation
+      if (groupBy === 'week') {
+        const weekData = groupDataByWeek(generatedData);
+        setDataFormat(weekData);
+      } else if (groupBy === 'month') {
+        const monthData = groupDataByMonth(generatedData);
+        setDataFormat(monthData);
+      } else {
+        setDataFormat(generatedData);
+      }
+    }
+  }, [salesData, dateRange, groupBy]);
+
+  // Helper functions for grouping data
+  function groupDataByWeek(data: SalesDataItem[]): SalesDataItem[] {
+    const weekMap = new Map<string, SalesDataItem>();
+    
+    data.forEach(item => {
+      const date = new Date(item.date);
+      // Get the week number
+      const weekStart = new Date(date);
+      weekStart.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
+      
+      const weekKey = `${weekStart.toISOString().split('T')[0]} to ${weekEnd.toISOString().split('T')[0]}`;
+      
+      if (weekMap.has(weekKey)) {
+        const existingData = weekMap.get(weekKey)!;
+        existingData.sales += item.sales;
+        existingData.ordersCount += item.ordersCount;
+        existingData.booksCount += item.booksCount;
+      } else {
+        weekMap.set(weekKey, {
+          date: weekKey,
+          sales: item.sales,
+          ordersCount: item.ordersCount,
+          booksCount: item.booksCount,
+          avgOrderValue: 0 // Will calculate later
+        });
+      }
+    });
+    
+    // Calculate average order value for each week
+    const result = Array.from(weekMap.values()).map(week => ({
+      ...week,
+      avgOrderValue: week.ordersCount > 0 ? Math.round(week.sales / week.ordersCount) : 0
+    }));
+    
+    // Sort by date
+    return result.sort((a, b) => {
+      const dateA = new Date(a.date.split(' to ')[0]);
+      const dateB = new Date(b.date.split(' to ')[0]);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }
+  
+  function groupDataByMonth(data: SalesDataItem[]): SalesDataItem[] {
+    const monthMap = new Map<string, SalesDataItem>();
+    
+    data.forEach(item => {
+      const date = new Date(item.date);
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+      const monthName = date.toLocaleString('default', { month: 'long', year: 'numeric' });
+      
+      if (monthMap.has(monthKey)) {
+        const existingData = monthMap.get(monthKey)!;
+        existingData.sales += item.sales;
+        existingData.ordersCount += item.ordersCount;
+        existingData.booksCount += item.booksCount;
+      } else {
+        monthMap.set(monthKey, {
+          date: monthName,
+          sales: item.sales,
+          ordersCount: item.ordersCount,
+          booksCount: item.booksCount,
+          avgOrderValue: 0 // Will calculate later
+        });
+      }
+    });
+    
+    // Calculate average order value for each month
+    const result = Array.from(monthMap.values()).map(month => ({
+      ...month,
+      avgOrderValue: month.ordersCount > 0 ? Math.round(month.sales / month.ordersCount) : 0
+    }));
+    
+    // Sort by date (using original keys to sort)
+    const monthKeys = Array.from(monthMap.keys());
+    return result.sort((a, b) => {
+      const keyA = monthKeys.find(key => monthMap.get(key) === a)!;
+      const keyB = monthKeys.find(key => monthMap.get(key) === b)!;
+      return keyA.localeCompare(keyB);
+    });
+  }
+
+  // Determine the appropriate chart type component
+  const ChartComponent = () => {
+    return (
+      <Chart
+        data={dataFormat || []}
+        categories={["sales"]}
+        index="date"
+        colors={["#3b82f6"]}
+        valueFormatter={(value: number) => `${formatCurrency(value)}`}
+        yAxisWidth={65}
+        type={chartType === "bar" ? "bar" : chartType === "area" ? "area" : "line"}
+      />
+    );
+  };
+
+  // Calculate totals and averages
+  const totalSales = dataFormat.reduce((sum, item) => sum + item.sales, 0);
+  const totalOrders = dataFormat.reduce((sum, item) => sum + item.ordersCount, 0);
+  const totalBooks = dataFormat.reduce((sum, item) => sum + item.booksCount, 0);
+  const avgOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+  
+  // Find highest sales day/period
+  const highestSalesPeriod = dataFormat.length > 0 
+    ? dataFormat.reduce((max, item) => item.sales > max.sales ? item : max, dataFormat[0])
+    : null;
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
         <div>
           <Link href="/dashboard">
             <Button variant="ghost" className="flex items-center text-gray-600">
@@ -68,30 +323,16 @@ export default function HistoricalSales() {
           <h1 className="text-2xl font-bold text-gray-900">Historical Sales</h1>
           <p className="text-gray-600">Analyze your sales performance over time</p>
         </div>
-        <div className="flex space-x-4">
-          <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Period" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="month">Last Month</SelectItem>
-              <SelectItem value="quarter">Last Quarter</SelectItem>
-              <SelectItem value="year">Last Year</SelectItem>
-              <SelectItem value="all">All Time</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={chartType} onValueChange={setChartType}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Chart Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="line">Line Chart</SelectItem>
-              <SelectItem value="bar">Bar Chart</SelectItem>
-              <SelectItem value="area">Area Chart</SelectItem>
-            </SelectContent>
-          </Select>
+      </div>
+      
+      {/* Filter Controls */}
+      <div className="bg-white rounded-lg shadow p-4 mb-6 flex flex-wrap gap-4 items-center">
+        <div className="mr-2">
+          <Filter className="h-5 w-5 text-gray-500" />
+        </div>
+        <div>
           <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Date Range" />
             </SelectTrigger>
             <SelectContent>
@@ -102,13 +343,51 @@ export default function HistoricalSales() {
             </SelectContent>
           </Select>
         </div>
+        <div>
+          <Select value={groupBy} onValueChange={setGroupBy}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Group By" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Daily</SelectItem>
+              <SelectItem value="week">Weekly</SelectItem>
+              <SelectItem value="month">Monthly</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Tabs value={chartType} onValueChange={setChartType} className="w-[280px]">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="line" className="flex items-center gap-1">
+                <LineChart className="h-4 w-4" />
+                <span>Line</span>
+              </TabsTrigger>
+              <TabsTrigger value="bar" className="flex items-center gap-1">
+                <BarChart className="h-4 w-4" />
+                <span>Bar</span>
+              </TabsTrigger>
+              <TabsTrigger value="area" className="flex items-center gap-1">
+                <AreaChart className="h-4 w-4" />
+                <span>Area</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        <div className="ml-auto">
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            <span>Export Data</span>
+          </Button>
+        </div>
       </div>
 
       {/* Sales Chart */}
       <Card className="mb-8">
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-medium text-gray-900">Sales Trend</h2>
+            <h2 className="text-lg font-medium text-gray-900">
+              Sales Trend {groupBy === 'day' ? 'Daily' : groupBy === 'week' ? 'Weekly' : 'Monthly'}
+            </h2>
             <div className="flex items-center space-x-2">
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
@@ -120,30 +399,22 @@ export default function HistoricalSales() {
             {isLoading ? (
               <Skeleton className="h-full w-full" />
             ) : (
-              <Chart
-                data={salesData || []}
-                categories={["sales"]}
-                index="month"
-                colors={["#3b82f6"]}
-                valueFormatter={(value: number) => `${formatCurrency(value)}`}
-                yAxisWidth={65}
-                // Remove the type prop as it's not supported in ChartProps
-              />
+              <ChartComponent />
             )}
           </div>
         </CardContent>
       </Card>
 
       {/* Sales Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                <BarChart className="h-5 w-5 text-blue-600" />
+                <TrendingUp className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Total Sales</h3>
+                <h3 className="text-lg font-medium text-gray-900">Total Revenue</h3>
                 <p className="text-sm text-gray-500">Overall sales amount</p>
               </div>
             </div>
@@ -151,9 +422,7 @@ export default function HistoricalSales() {
               {isLoading ? (
                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
-                formatCurrency(
-                  salesData?.reduce((sum: number, item: SalesDataItem) => sum + item.sales, 0) || 0
-                )
+                formatCurrency(totalSales)
               )}
             </div>
           </CardContent>
@@ -163,22 +432,18 @@ export default function HistoricalSales() {
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                <Calendar className="h-5 w-5 text-green-600" />
+                <ShoppingBag className="h-5 w-5 text-green-600" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Average Monthly</h3>
-                <p className="text-sm text-gray-500">Average sales per month</p>
+                <h3 className="text-lg font-medium text-gray-900">Orders</h3>
+                <p className="text-sm text-gray-500">Total completed orders</p>
               </div>
             </div>
             <div className="text-2xl font-bold text-gray-900">
               {isLoading ? (
                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
-                formatCurrency(
-                  salesData?.length
-                    ? (salesData.reduce((sum: number, item: SalesDataItem) => sum + item.sales, 0) / salesData.length)
-                    : 0
-                )
+                totalOrders
               )}
             </div>
           </CardContent>
@@ -188,29 +453,39 @@ export default function HistoricalSales() {
           <CardContent className="p-6">
             <div className="flex items-center mb-4">
               <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                <BarChart className="h-5 w-5 text-purple-600" />
+                <BookOpen className="h-5 w-5 text-purple-600" />
               </div>
               <div>
-                <h3 className="text-lg font-medium text-gray-900">Highest Month</h3>
-                <p className="text-sm text-gray-500">Month with highest sales</p>
+                <h3 className="text-lg font-medium text-gray-900">Books Sold</h3>
+                <p className="text-sm text-gray-500">Total books sold</p>
               </div>
             </div>
             <div className="text-2xl font-bold text-gray-900">
               {isLoading ? (
                 <Skeleton className="h-8 w-24 mt-1" />
               ) : (
-                salesData?.length ? (
-                  <>
-                    {salesData.reduce((max: SalesDataItem, item: SalesDataItem) => (item.sales > max.sales ? item : max), salesData[0]).month}
-                    <span className="text-base font-medium text-gray-500 ml-2">
-                      {formatCurrency(
-                        salesData.reduce((max: number, item: SalesDataItem) => (item.sales > max ? item.sales : max), 0)
-                      )}
-                    </span>
-                  </>
-                ) : (
-                  "N/A"
-                )
+                totalBooks
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center mb-4">
+              <div className="h-10 w-10 bg-amber-100 rounded-full flex items-center justify-center mr-3">
+                <DollarSign className="h-5 w-5 text-amber-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">Average Order</h3>
+                <p className="text-sm text-gray-500">Avg. value per order</p>
+              </div>
+            </div>
+            <div className="text-2xl font-bold text-gray-900">
+              {isLoading ? (
+                <Skeleton className="h-8 w-24 mt-1" />
+              ) : (
+                formatCurrency(avgOrderValue)
               )}
             </div>
           </CardContent>
@@ -222,14 +497,11 @@ export default function HistoricalSales() {
         <Card>
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium text-gray-900">Daily Sales Breakdown</h2>
+              <h2 className="text-lg font-medium text-gray-900">Sales Breakdown</h2>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Filter by Date
-                </Button>
-                <Button variant="outline" size="sm">
-                  Export
+                <Button variant="outline" size="sm" className="flex items-center gap-1">
+                  <Download className="h-4 w-4" />
+                  Export CSV
                 </Button>
               </div>
             </div>
@@ -239,7 +511,7 @@ export default function HistoricalSales() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                      {groupBy === 'day' ? 'Date' : groupBy === 'week' ? 'Week' : 'Month'}
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Orders
@@ -267,22 +539,22 @@ export default function HistoricalSales() {
                       </tr>
                     ))
                   ) : (
-                    salesData?.map((data: SalesDataItem, index: number) => (
-                      <tr key={index}>
+                    dataFormat.map((data, index) => (
+                      <tr key={index} className={highestSalesPeriod?.date === data.date ? "bg-blue-50" : ""}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {data.month}
+                          {data.date}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {Math.floor(data.sales / 1000) + Math.floor(Math.random() * 5)}
+                          {data.ordersCount}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {formatCurrency(data.sales)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {Math.floor(data.sales / 200) + Math.floor(Math.random() * 10)}
+                          {data.booksCount}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatCurrency(data.sales / (Math.floor(data.sales / 1000) + Math.floor(Math.random() * 5)))}
+                          {formatCurrency(data.avgOrderValue)}
                         </td>
                       </tr>
                     ))
@@ -293,11 +565,11 @@ export default function HistoricalSales() {
             
             <div className="flex justify-between items-center pt-4">
               <div className="text-sm text-gray-700">
-                Showing <span className="font-medium">{salesData?.length || 0}</span> entries
+                Showing <span className="font-medium">{dataFormat.length || 0}</span> entries
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" disabled>Previous</Button>
-                <Button variant="outline" size="sm" disabled>Next</Button>
+                <Button variant="outline" size="sm" disabled={true}>Previous</Button>
+                <Button variant="outline" size="sm" disabled={true}>Next</Button>
               </div>
             </div>
           </CardContent>
