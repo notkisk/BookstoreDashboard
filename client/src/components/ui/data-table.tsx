@@ -248,18 +248,20 @@ export function DataTable<T>({
                     {columns.map((column, cellIndex) => (
                       <TableCell key={cellIndex}>
                         {column.cell
-                          ? (typeof column.cell === 'function' && 'row' in column.cell.prototype
-                              ? (column.cell as any)({ row: { original: item, getIsSelected: () => isItemSelected(item), toggleSelected: (checked: boolean) => {
-                                  if (checked) {
-                                    if (!isItemSelected(item)) {
-                                      setSelectedItems([...selectedItems, item]);
+                          ? (typeof column.cell === 'function'
+                              ? (typeof column.cell.prototype === 'object' && column.cell.prototype && 'row' in column.cell.prototype)
+                                  ? (column.cell as any)({ row: { original: item, getIsSelected: () => isItemSelected(item), toggleSelected: (checked: boolean) => {
+                                      if (checked) {
+                                        if (!isItemSelected(item)) {
+                                          setSelectedItems([...selectedItems, item]);
+                                        }
+                                      } else {
+                                        setSelectedItems(selectedItems.filter(i => JSON.stringify(i) !== JSON.stringify(item)));
+                                      }
                                     }
-                                  } else {
-                                    setSelectedItems(selectedItems.filter(i => JSON.stringify(i) !== JSON.stringify(item)));
-                                  }
-                                }
-                              }})
-                              : (column.cell as any)(item))
+                                  }})
+                                  : (column.cell as any)(item)
+                              : column.cell)
                           : column.accessorKey ? (item[column.accessorKey as keyof T] as React.ReactNode) : ''}
                       </TableCell>
                     ))}
