@@ -409,10 +409,14 @@ export class DatabaseStorage implements IStorage {
     
     // Add date filter if period is specified
     if (fromDate) {
+      // Convert dates to ISO string for proper SQL compatibility
+      const fromDateStr = fromDate.toISOString();
+      const nowStr = now.toISOString();
+      
       query.where(
         and(
-          sqlBuilder`${orders.createdAt} >= ${fromDate}`,
-          sqlBuilder`${orders.createdAt} <= ${now}`
+          sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
+          sqlBuilder`${orders.createdAt} <= ${nowStr}`
         )
       );
     }
@@ -442,10 +446,14 @@ export class DatabaseStorage implements IStorage {
     
     // Add date filter if period is specified
     if (fromDate) {
+      // Convert dates to ISO string for proper SQL compatibility
+      const fromDateStr = fromDate.toISOString();
+      const nowStr = now.toISOString();
+      
       query.where(
         and(
-          sqlBuilder`${orders.createdAt} >= ${fromDate}`,
-          sqlBuilder`${orders.createdAt} <= ${now}`
+          sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
+          sqlBuilder`${orders.createdAt} <= ${nowStr}`
         )
       );
     }
@@ -474,10 +482,14 @@ export class DatabaseStorage implements IStorage {
     
     // Add date filter if period is specified
     if (fromDate) {
+      // Convert dates to ISO string for proper SQL compatibility
+      const fromDateStr = fromDate.toISOString();
+      const nowStr = now.toISOString();
+      
       orderIdsQuery.where(
         and(
-          sqlBuilder`${orders.createdAt} >= ${fromDate}`,
-          sqlBuilder`${orders.createdAt} <= ${now}`
+          sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
+          sqlBuilder`${orders.createdAt} <= ${nowStr}`
         )
       );
     }
