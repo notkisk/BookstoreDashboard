@@ -29,19 +29,35 @@ const bookSchema = z.object({
   author: z.string().optional().default("Unknown"),
   publisher: z.string().optional().default("Unknown"),
   price: z.preprocess(
-    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    (val) => {
+      if (val === "" || val === null || val === undefined) return 0;
+      const num = Number(val);
+      return isNaN(num) ? 0 : num; // Convert NaN to 0
+    },
     z.number().min(0, "Price cannot be negative").default(0)
   ),
   buyPrice: z.preprocess(
-    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    (val) => {
+      if (val === "" || val === null || val === undefined) return 0;
+      const num = Number(val);
+      return isNaN(num) ? 0 : num; // Convert NaN to 0
+    },
     z.number().min(0, "Buy price cannot be negative").default(0)
   ),
   quantityBought: z.preprocess(
-    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    (val) => {
+      if (val === "" || val === null || val === undefined) return 0;
+      const num = Number(val);
+      return isNaN(num) ? 0 : num; // Convert NaN to 0
+    },
     z.number().min(0, "Quantity bought cannot be negative").default(0)
   ),
   quantityLeft: z.preprocess(
-    (val) => val === "" || val === null || val === undefined ? 0 : Number(val),
+    (val) => {
+      if (val === "" || val === null || val === undefined) return 0;
+      const num = Number(val);
+      return isNaN(num) ? 0 : num; // Convert NaN to 0
+    },
     z.number().min(0, "Quantity left cannot be negative").default(0)
   ),
 });
