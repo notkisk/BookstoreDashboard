@@ -233,7 +233,7 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
         <Button 
           onClick={goToMappingStep} 
           disabled={!csvData || loading}
-          className="bg-primary-300 hover:bg-primary-400 text-primary-foreground"
+          className="bg-primary-300 hover:bg-primary-400 text-black" variant="outline"
         >
           Next: Map Columns <ChevronRight className="ml-1 h-4 w-4" />
         </Button>

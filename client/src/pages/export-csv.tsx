@@ -4,12 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Download, FileText, Info } from "lucide-react";
@@ -52,13 +52,13 @@ export default function ExportCsv() {
 
   // Fetch orders for export
   const { data: orders, isLoading } = useQuery<Order[]>({
-    queryKey: ['/api/orders/export/csv'],
+    queryKey: ["/api/orders/export/csv"],
   });
 
   // Filter orders based on selected criteria
-  const filteredOrders = orders?.filter(order => {
+  const filteredOrders = orders?.filter((order) => {
     let includeOrder = true;
-    
+
     // Filter by date range
     if (startDate) {
       const orderDate = new Date(order.createdAt);
@@ -67,7 +67,7 @@ export default function ExportCsv() {
         includeOrder = false;
       }
     }
-    
+
     if (endDate) {
       const orderDate = new Date(order.createdAt);
       const filterDate = new Date(endDate);
@@ -77,12 +77,12 @@ export default function ExportCsv() {
         includeOrder = false;
       }
     }
-    
+
     // Filter by status
-    if (status !== 'all' && order.status !== status) {
+    if (status !== "all" && order.status !== status) {
       includeOrder = false;
     }
-    
+
     return includeOrder;
   });
 
@@ -96,46 +96,58 @@ export default function ExportCsv() {
       });
       return;
     }
-    
-    const csvData = filteredOrders.map(order => {
+
+    const csvData = filteredOrders.map((order) => {
       // Create remarks field containing shipping options
       const remarks = [
         order.fragile ? "FRAGILE" : "",
         order.echange ? "ECHANGE" : "",
         order.pickup ? "PICK UP" : "",
         order.recouvrement ? "RECOUVREMENT" : "",
-        order.stopDesk ? "STOP DESK" : ""
-      ].filter(Boolean).join(", ");
-      
+        order.stopDesk ? "STOP DESK" : "",
+      ]
+        .filter(Boolean)
+        .join(", ");
+
       // Customer info
-      const customer = order.customer || { name: "", phone: "", phone2: "", wilaya: "", commune: "", address: "" };
-      
+      const customer = order.customer || {
+        name: "",
+        phone: "",
+        phone2: "",
+        wilaya: "",
+        commune: "",
+        address: "",
+      };
+
       // Format based on requirement format in task description
       return {
         "reference commande": order.reference,
         "nom et prenom du destinataire": customer.name,
-        "telephone": customer.phone,
+        telephone: customer.phone,
         "telephone 2": customer.phone2 || "",
         "code wilaya": customer.wilaya,
         "wilaya de livraison": getWilayaName(customer.wilaya),
         "commune de livraison": customer.commune,
         "adresse de livraison": customer.address,
-        "produit": "livres", // default as specified
+        produit: "livres", // default as specified
         "poids (kg)": "", // optional, leave empty
         "montant du colis": order.totalAmount,
-        "remarque": remarks,
-        "FRAGILE": order.fragile ? "OUI" : "",
-        "ECHANGE": order.echange ? "OUI" : "",
+        remarque: remarks,
+        FRAGILE: order.fragile ? "OUI" : "",
+        ECHANGE: order.echange ? "OUI" : "",
         "PICK UP": order.pickup ? "OUI" : "",
-        "RECOUVREMENT": order.recouvrement ? "OUI" : "",
+        RECOUVREMENT: order.recouvrement ? "OUI" : "",
         "STOP DESK": order.stopDesk ? "OUI" : "",
-        "Lien map": "" // Optional map link
+        "Lien map": "", // Optional map link
       };
     });
-    
+
     // Generate and download the CSV
-    generateCSV(csvData, `orders_export_${new Date().toISOString().slice(0, 10)}.csv`);
-    
+    generateCSV(
+      csvData,
+      `orders_export_${new Date().toISOString().slice(0, 10)}.csv`,
+    );
+
     toast({
       title: "Export successful",
       description: `${csvData.length} orders have been exported.`,
@@ -153,21 +165,35 @@ export default function ExportCsv() {
     <div>
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-1">CSV Export</h2>
-        <p className="text-sm text-gray-500">Export your orders data in delivery-ready CSV format</p>
+        <p className="text-sm text-gray-500">
+          Export your orders data in delivery-ready CSV format
+        </p>
       </div>
 
       <Card>
         <CardContent className="p-6">
           <div className="mb-6">
-            <h3 className="text-base font-semibold text-gray-800 mb-4">Export Options</h3>
-            
+            <h3 className="text-base font-semibold text-gray-800 mb-4">
+              Export Options
+            </h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Date Range */}
               <div>
-                <Label htmlFor="date_range" className="block text-sm font-medium text-gray-700 mb-1">Date Range</Label>
+                <Label
+                  htmlFor="date_range"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Date Range
+                </Label>
                 <div className="flex space-x-4">
                   <div className="flex-1">
-                    <Label htmlFor="start_date" className="block text-xs text-gray-500 mb-1">Start Date</Label>
+                    <Label
+                      htmlFor="start_date"
+                      className="block text-xs text-gray-500 mb-1"
+                    >
+                      Start Date
+                    </Label>
                     <Input
                       type="date"
                       id="start_date"
@@ -177,7 +203,12 @@ export default function ExportCsv() {
                     />
                   </div>
                   <div className="flex-1">
-                    <Label htmlFor="end_date" className="block text-xs text-gray-500 mb-1">End Date</Label>
+                    <Label
+                      htmlFor="end_date"
+                      className="block text-xs text-gray-500 mb-1"
+                    >
+                      End Date
+                    </Label>
                     <Input
                       type="date"
                       id="end_date"
@@ -190,13 +221,18 @@ export default function ExportCsv() {
               </div>
 
               {/* Order Status */}
-              <div>
-                <Label htmlFor="order_status" className="block text-sm font-medium text-gray-700 mb-1">Order Status</Label>
+              <div className="mt-5">
+                <Label
+                  htmlFor="order_status"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Order Status
+                </Label>
                 <Select value={status} onValueChange={setStatus}>
-                  <SelectTrigger id="order_status">
+                  <SelectTrigger id="order_status" className="">
                     <SelectValue placeholder="All Orders" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="mt-4">
                     <SelectItem value="all">All Orders</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                     <SelectItem value="processing">Processing</SelectItem>
@@ -210,22 +246,50 @@ export default function ExportCsv() {
 
           {/* Export Format Preview */}
           <div className="mb-6">
-            <h3 className="text-base font-semibold text-gray-800 mb-4">Export Format Preview</h3>
+            <h3 className="text-base font-semibold text-gray-800 mb-4">
+              Export Format Preview
+            </h3>
             <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-3">
-              <p className="text-xs font-medium text-gray-700 mb-2">Your CSV will contain the following columns in this order:</p>
+              <p className="text-xs font-medium text-gray-700 mb-2">
+                Your CSV will contain the following columns in this order:
+              </p>
               <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">reference commande</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">nom et prenom du destinataire*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">telephone*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">telephone 2</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">code wilaya*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">wilaya de livraison</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">commune de livraison*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">adresse de livraison*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">produit*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">poids (kg)</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">montant du colis*</span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">remarque</span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  reference commande
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  nom et prenom du destinataire*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  telephone*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  telephone 2
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  code wilaya*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  wilaya de livraison
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  commune de livraison*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  adresse de livraison*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  produit*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  poids (kg)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  montant du colis*
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  remarque
+                </span>
               </div>
               <p className="text-xs text-gray-500 mt-2">* Required fields</p>
             </div>
@@ -233,20 +297,26 @@ export default function ExportCsv() {
             <Alert className="bg-primary-50 border-primary-200">
               <Info className="h-4 w-4 text-primary-600" />
               <AlertDescription className="text-primary-700">
-                The exported CSV will automatically format your order data according to the delivery service requirements. 
-                All shipping options (FRAGILE, ECHANGE, etc.) will be included in the "remarque" field.
+                The exported CSV will automatically format your order data
+                according to the delivery service requirements. All shipping
+                options (FRAGILE, ECHANGE, etc.) will be included in the
+                "remarque" field.
               </AlertDescription>
             </Alert>
           </div>
 
           {/* Orders to be exported */}
           <div className="mb-6">
-            <h3 className="text-base font-semibold text-gray-800 mb-4">Orders to be Exported</h3>
+            <h3 className="text-base font-semibold text-gray-800 mb-4">
+              Orders to be Exported
+            </h3>
             {isLoading ? (
               <Skeleton className="h-16 w-full" />
             ) : filteredOrders && filteredOrders.length > 0 ? (
               <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
-                <p className="text-sm text-gray-700">{filteredOrders.length} orders match your criteria</p>
+                <p className="text-sm text-gray-700">
+                  {filteredOrders.length} orders match your criteria
+                </p>
               </div>
             ) : (
               <Alert variant="destructive">
@@ -259,13 +329,14 @@ export default function ExportCsv() {
           </div>
 
           <div className="flex justify-end space-x-3">
-            <Button variant="outline">
-              Cancel
-            </Button>
+            <Button variant="outline">Cancel</Button>
             <Button
               onClick={prepareOrdersForExport}
-              disabled={isLoading || !filteredOrders || filteredOrders.length === 0}
-              className="bg-primary-300 hover:bg-primary-400 text-white"
+              disabled={
+                isLoading || !filteredOrders || filteredOrders.length === 0
+              }
+              className="bg-primary-300 hover:bg-primary-400 text-black"
+              variant="outline"
             >
               <Download className="mr-2 h-4 w-4" />
               Export Orders

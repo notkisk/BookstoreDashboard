@@ -890,7 +890,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
           <Button 
             type="submit" 
             disabled={isSubmitting || !isLocationDataAvailable()}
-            className="bg-primary-300 hover:bg-primary-400 text-white"
+            className="bg-primary-300 hover:bg-primary-400 text-black" variant="outline"
           >
             Create Order
           </Button>
