@@ -102,10 +102,7 @@ export default function Dashboard() {
     queryKey: [`/api/analytics/dashboard?period=${period}`],
     enabled: true,
     retry: 1,
-    staleTime: 60000,
-    onError: (error) => {
-      console.error("Failed to fetch dashboard analytics:", error);
-    }
+    staleTime: 60000
   });
 
   // Fetch recent orders
@@ -113,10 +110,7 @@ export default function Dashboard() {
     queryKey: ["/api/orders"],
     enabled: true,
     retry: 1,
-    staleTime: 60000,
-    onError: (error) => {
-      console.error("Failed to fetch orders:", error);
-    }
+    staleTime: 60000
   });
 
   // Safe casting
