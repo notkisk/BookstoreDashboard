@@ -168,7 +168,7 @@ export default function Dashboard() {
       cell: (order: Order) => (
         <input
           type="checkbox"
-          className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          className="w-5 h-5 rounded border-2 border-gray-400 text-primary-600 focus:ring-primary-500 cursor-pointer"
           checked={isOrderSelected(order)}
           onChange={(e) => toggleOrderSelected(order, e.target.checked)}
         />
@@ -514,8 +514,8 @@ export default function Dashboard() {
                   <PopoverTrigger asChild>
                     <Button 
                       size="sm" 
-                      variant="outline" 
-                      className="flex items-center"
+                      variant="secondary" 
+                      className="flex items-center bg-gray-200 text-gray-800 border border-gray-300 hover:bg-gray-300"
                       disabled={isChangingStatus}
                     >
                       Change Status
@@ -525,8 +525,8 @@ export default function Dashboard() {
                   <PopoverContent className="w-auto p-0" align="end">
                     <div className="p-2">
                       <Button
-                        variant="ghost"
-                        className="flex w-full items-center justify-start"
+                        variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
+                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -553,8 +553,8 @@ export default function Dashboard() {
                         <span>Mark as Pending</span>
                       </Button>
                       <Button
-                        variant="ghost"
-                        className="flex w-full items-center justify-start"
+                        variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
+                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -581,8 +581,8 @@ export default function Dashboard() {
                         <span>Mark as Delivering</span>
                       </Button>
                       <Button
-                        variant="ghost"
-                        className="flex w-full items-center justify-start"
+                        variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
+                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -609,8 +609,8 @@ export default function Dashboard() {
                         <span>Mark as Delivered</span>
                       </Button>
                       <Button
-                        variant="ghost"
-                        className="flex w-full items-center justify-start"
+                        variant="ghost" className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
+                        className="flex w-full items-center justify-start hover:bg-gray-100 text-gray-800"
                         onClick={async () => {
                           setIsChangingStatus(true);
                           try {
@@ -642,6 +642,7 @@ export default function Dashboard() {
                 <Button 
                   size="sm" 
                   variant="outline" 
+                  className="bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
                   onClick={() => setSelectedOrders([])}
                 >
                   Clear Selection
