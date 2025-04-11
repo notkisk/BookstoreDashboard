@@ -17,28 +17,37 @@ import NotFound from "@/pages/not-found";
 
 // Custom hook to check if user is authenticated
 function useAuth() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['/api/auth/me'],
     queryFn: async () => {
       try {
         const response = await apiRequest('/api/auth/me', {
           method: 'GET'
         });
+        console.log("Auth response:", response);
         return response.user;
       } catch (error) {
         console.error("Authentication error:", error);
         return null;
       }
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    retry: false
+    staleTime: 30 * 1000, // 30 seconds
+    refetchOnWindowFocus: true,
+    retry: 1
   });
+
+  // Add a manual refetch function to be used when needed
+  useEffect(() => {
+    // Refetch authentication on component mount
+    refetch();
+  }, [refetch]);
 
   return {
     user: data,
     isLoading,
     isAuthenticated: !!data,
-    error
+    error,
+    refetch
   };
 }
 
