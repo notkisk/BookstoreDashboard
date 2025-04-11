@@ -175,9 +175,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (val === null || val === undefined || val === "") return 0;
             // Convert string with decimals to integer (remove decimal part)
             if (typeof val === "string" && val.includes(".")) {
-              return Math.round(parseFloat(val));
+              const num = parseFloat(val);
+              return isNaN(num) ? 0 : Math.round(num);
             }
-            return Math.round(Number(val));
+            const num = Number(val);
+            return isNaN(num) ? 0 : Math.round(num);
           },
           z.number().int().min(0).default(0)
         ),
@@ -187,37 +189,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (val === null || val === undefined || val === "") return 0;
             // Convert string with decimals to integer (remove decimal part)
             if (typeof val === "string" && val.includes(".")) {
-              return Math.round(parseFloat(val));
+              const num = parseFloat(val);
+              return isNaN(num) ? 0 : Math.round(num);
             }
-            return Math.round(Number(val));
+            const num = Number(val);
+            return isNaN(num) ? 0 : Math.round(num);
           },
           z.number().int().min(0).default(0)
         ),
         quantityBought: z.preprocess(
           (val) => {
             if (val === null || val === undefined || val === "") return 0;
-            return Math.round(Number(val));
+            const num = Number(val);
+            return isNaN(num) ? 0 : Math.round(num);
           },
           z.number().int().min(0).default(0)
         ),
         quantityLeft: z.preprocess(
           (val) => {
             if (val === null || val === undefined || val === "") return 0;
-            return Math.round(Number(val));
+            const num = Number(val);
+            return isNaN(num) ? 0 : Math.round(num);
           },
           z.number().int().min(0).default(0)
         ),
         deliveringStock: z.preprocess(
           (val) => {
             if (val === null || val === undefined || val === "") return 0;
-            return Math.round(Number(val));
+            const num = Number(val);
+            return isNaN(num) ? 0 : Math.round(num);
           },
           z.number().int().min(0).default(0)
         ),
         soldStock: z.preprocess(
           (val) => {
             if (val === null || val === undefined || val === "") return 0;
-            return Math.round(Number(val));
+            const num = Number(val);
+            return isNaN(num) ? 0 : Math.round(num);
           },
           z.number().int().min(0).default(0)
         ),
