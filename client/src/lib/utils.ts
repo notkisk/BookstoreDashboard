@@ -35,10 +35,13 @@ export function generateCSV(data: any[], filename: string = 'export.csv'): void 
   
   const headers = Object.keys(data[0]);
   
+  // Add BOM to ensure Excel properly handles UTF-8 characters (especially Arabic)
+  const BOM = '\uFEFF';
+  
   // Convert data to CSV
-  const csvContent = [
+  const csvContent = BOM + [
     // Add headers
-    headers.join(','),
+    headers.join(';'), // Using semicolon separator for better Excel compatibility
     // Add rows
     ...data.map(row => 
       headers.map(header => {
@@ -46,13 +49,14 @@ export function generateCSV(data: any[], filename: string = 'export.csv'): void 
         const value = row[header];
         const cellValue = value === null || value === undefined ? '' : String(value);
         
-        if (cellValue.includes(',') || cellValue.includes('\n') || cellValue.includes('"')) {
+        // Properly escape values - especially for Excel compatibility
+        if (cellValue.includes(';') || cellValue.includes('\n') || cellValue.includes('"')) {
           return `"${cellValue.replace(/"/g, '""')}"`;
         }
         return cellValue;
-      }).join(',')
+      }).join(';')
     )
-  ].join('\n');
+  ].join('\r\n'); // CRLF line breaks for better Excel compatibility
   
   // Create download link
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
