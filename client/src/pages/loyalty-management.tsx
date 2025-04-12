@@ -20,12 +20,6 @@ export default function LoyaltyManagement() {
     return Math.round(amount * pointsPerDinar);
   };
 
-  // Helper function to calculate redemption value
-  const calculateRedemptionValue = (points: number) => {
-    const redemptionRate = 0.5; // Fixed redemption rate
-    return Math.round(points * redemptionRate);
-  };
-
   return (
       <div className="flex flex-col space-y-6 p-6">
         <div className="flex justify-between items-center">
@@ -70,40 +64,20 @@ export default function LoyaltyManagement() {
                     For every <span className="font-semibold">1 DZD</span> spent on orders, customers earn <span className="font-semibold">1 loyalty point</span>.
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="group border rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
-                      <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-green-100 opacity-0 group-hover:opacity-30 transition-all duration-500"></div>
-                      <h4 className="text-sm font-semibold uppercase text-gray-500 mb-3 flex items-center">
-                        <span className="inline-block w-6 h-0.5 bg-green-400 mr-2"></span>
-                        Example
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">Order Amount:</span>
-                          <span className="text-base font-medium bg-green-50 px-3 py-0.5 rounded-full">1,000 DZD</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">Points Earned:</span>
-                          <span className="text-base font-medium text-green-600 bg-green-50 px-3 py-0.5 rounded-full">{calculatePoints(1000)} points</span>
-                        </div>
+                  <div className="border rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden max-w-md">
+                    <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-green-100 opacity-0 group-hover:opacity-30 transition-all duration-500"></div>
+                    <h4 className="text-sm font-semibold uppercase text-gray-500 mb-3 flex items-center">
+                      <span className="inline-block w-6 h-0.5 bg-green-400 mr-2"></span>
+                      Example
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Order Amount:</span>
+                        <span className="text-base font-medium bg-green-50 px-3 py-0.5 rounded-full">1,000 DZD</span>
                       </div>
-                    </div>
-
-                    <div className="group border rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
-                      <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-blue-100 opacity-0 group-hover:opacity-30 transition-all duration-500"></div>
-                      <h4 className="text-sm font-semibold uppercase text-gray-500 mb-3 flex items-center">
-                        <span className="inline-block w-6 h-0.5 bg-blue-400 mr-2"></span>
-                        Redemption Value
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">1,000 Points =</span>
-                          <span className="text-base font-medium bg-blue-50 px-3 py-0.5 rounded-full">{calculateRedemptionValue(1000)} DZD</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm">Minimum to Redeem:</span>
-                          <span className="text-base font-medium bg-blue-50 px-3 py-0.5 rounded-full">100 points</span>
-                        </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Points Earned:</span>
+                        <span className="text-base font-medium text-green-600 bg-green-50 px-3 py-0.5 rounded-full">{calculatePoints(1000)} points</span>
                       </div>
                     </div>
                   </div>
