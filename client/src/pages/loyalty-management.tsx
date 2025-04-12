@@ -60,98 +60,130 @@ export default function LoyaltyManagement() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="bg-primary/5 p-4 rounded-md border">
-                  <h3 className="text-lg font-semibold mb-2 flex items-center">
-                    <Award className="w-5 h-5 mr-2 text-primary" />
+                <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-6 rounded-lg border shadow-sm mb-8">
+                  <h3 className="text-xl font-semibold mb-4 flex items-center">
+                    <div className="bg-primary/20 p-2 rounded-full mr-3">
+                      <Award className="w-6 h-6 text-primary" />
+                    </div>
                     Points Earning Structure
                   </h3>
-                  <p className="text-sm mb-4">
-                    For every 1 DZD spent on orders, customers earn 1 loyalty point.
+                  <p className="text-base mb-6 border-l-2 border-primary/30 pl-4 py-1">
+                    For every <span className="font-semibold">1 DZD</span> spent on orders, customers earn <span className="font-semibold">1 loyalty point</span>.
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div className="border rounded-md p-3 bg-white">
-                      <span className="text-sm font-medium">Example:</span>
-                      <div className="flex justify-between mt-1">
-                        <span className="text-sm">Order Amount:</span>
-                        <span className="text-sm font-medium">1,000 DZD</span>
-                      </div>
-                      <div className="flex justify-between mt-1">
-                        <span className="text-sm">Points Earned:</span>
-                        <span className="text-sm font-medium text-primary">{calculatePoints(1000)} points</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="group border rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                      <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-green-100 opacity-0 group-hover:opacity-30 transition-all duration-500"></div>
+                      <h4 className="text-sm font-semibold uppercase text-gray-500 mb-3 flex items-center">
+                        <span className="inline-block w-6 h-0.5 bg-green-400 mr-2"></span>
+                        Example
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Order Amount:</span>
+                          <span className="text-base font-medium bg-green-50 px-3 py-0.5 rounded-full">1,000 DZD</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Points Earned:</span>
+                          <span className="text-base font-medium text-green-600 bg-green-50 px-3 py-0.5 rounded-full">{calculatePoints(1000)} points</span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="border rounded-md p-3 bg-white">
-                      <span className="text-sm font-medium">Points Redemption:</span>
-                      <div className="flex justify-between mt-1">
-                        <span className="text-sm">1,000 Points =</span>
-                        <span className="text-sm font-medium">{calculateRedemptionValue(1000)} DZD</span>
-                      </div>
-                      <div className="flex justify-between mt-1">
-                        <span className="text-sm">Minimum to Redeem:</span>
-                        <span className="text-sm font-medium">100 points</span>
+                    <div className="group border rounded-lg p-5 bg-white shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden">
+                      <div className="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-blue-100 opacity-0 group-hover:opacity-30 transition-all duration-500"></div>
+                      <h4 className="text-sm font-semibold uppercase text-gray-500 mb-3 flex items-center">
+                        <span className="inline-block w-6 h-0.5 bg-blue-400 mr-2"></span>
+                        Redemption Value
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">1,000 Points =</span>
+                          <span className="text-base font-medium bg-blue-50 px-3 py-0.5 rounded-full">{calculateRedemptionValue(1000)} DZD</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm">Minimum to Redeem:</span>
+                          <span className="text-base font-medium bg-blue-50 px-3 py-0.5 rounded-full">100 points</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">Loyalty Tiers</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <h3 className="text-lg font-semibold mb-5">Loyalty Tiers</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Silver Tier */}
-                    <Card className="border-l-4 border-l-slate-400">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <div className="p-1.5 rounded-full bg-slate-100">
-                            <Award className="h-5 w-5 text-slate-500" />
+                    <div className="group relative transition-all duration-300 hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden">
+                      <Card className="border-l-4 border-l-slate-400 h-full">
+                        <div className="absolute -top-8 -left-8 bg-slate-100 rounded-full w-16 h-16 opacity-20 group-hover:opacity-40 transition-all duration-300"></div>
+                        <CardContent className="p-6">
+                          <div className="flex items-center space-x-3 mb-4">
+                            <div className="p-2 rounded-full bg-slate-100 group-hover:bg-slate-200 transition-colors duration-300">
+                              <Award className="h-6 w-6 text-slate-500 group-hover:text-slate-700 transition-all" />
+                            </div>
+                            <h4 className="text-lg font-semibold">Silver</h4>
                           </div>
-                          <h4 className="text-base font-semibold">Silver</h4>
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          <div className="flex justify-between">
-                            <span>Qualification:</span>
-                            <span className="font-medium">1 - 20,000 points</span>
+                          <div className="space-y-3 text-sm">
+                            <div>
+                              <span className="text-slate-500 text-xs uppercase font-semibold">Qualification</span>
+                              <div className="font-medium text-base mt-1">1 - 20,000 points</div>
+                            </div>
+                            <div className="pt-2 text-slate-600 text-sm transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                              Entry tier for all customers who make purchases
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
                     
                     {/* Gold Tier */}
-                    <Card className="border-l-4 border-l-amber-400">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <div className="p-1.5 rounded-full bg-amber-100">
-                            <Award className="h-5 w-5 text-amber-500" />
+                    <div className="group relative transition-all duration-300 hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden">
+                      <Card className="border-l-4 border-l-amber-400 h-full">
+                        <div className="absolute -top-8 -left-8 bg-amber-100 rounded-full w-16 h-16 opacity-20 group-hover:opacity-40 transition-all duration-300"></div>
+                        <CardContent className="p-6">
+                          <div className="flex items-center space-x-3 mb-4">
+                            <div className="p-2 rounded-full bg-amber-100 group-hover:bg-amber-200 transition-colors duration-300">
+                              <Award className="h-6 w-6 text-amber-500 group-hover:text-amber-700 transition-all" />
+                            </div>
+                            <h4 className="text-lg font-semibold">Gold</h4>
                           </div>
-                          <h4 className="text-base font-semibold">Gold</h4>
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          <div className="flex justify-between">
-                            <span>Qualification:</span>
-                            <span className="font-medium">20,000 - 50,000 points</span>
+                          <div className="space-y-3 text-sm">
+                            <div>
+                              <span className="text-amber-500 text-xs uppercase font-semibold">Qualification</span>
+                              <div className="font-medium text-base mt-1">20,000 - 50,000 points</div>
+                            </div>
+                            <div className="pt-2 text-amber-700 text-sm transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                              Mid-tier rewards for loyal customers
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
                     
                     {/* Platinum Tier */}
-                    <Card className="border-l-4 border-l-purple-400">
-                      <CardContent className="p-4">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <div className="p-1.5 rounded-full bg-purple-100">
-                            <Award className="h-5 w-5 text-purple-500" />
+                    <div className="group relative transition-all duration-300 hover:scale-105 hover:shadow-lg rounded-lg overflow-hidden">
+                      <Card className="border-l-4 border-l-purple-400 h-full">
+                        <div className="absolute -top-8 -left-8 bg-purple-100 rounded-full w-16 h-16 opacity-20 group-hover:opacity-40 transition-all duration-300"></div>
+                        <CardContent className="p-6">
+                          <div className="flex items-center space-x-3 mb-4">
+                            <div className="p-2 rounded-full bg-purple-100 group-hover:bg-purple-200 transition-colors duration-300">
+                              <Award className="h-6 w-6 text-purple-500 group-hover:text-purple-700 transition-all" />
+                            </div>
+                            <h4 className="text-lg font-semibold">Platinum</h4>
                           </div>
-                          <h4 className="text-base font-semibold">Platinum</h4>
-                        </div>
-                        <div className="space-y-1 text-sm">
-                          <div className="flex justify-between">
-                            <span>Qualification:</span>
-                            <span className="font-medium">50,000+ points</span>
+                          <div className="space-y-3 text-sm">
+                            <div>
+                              <span className="text-purple-500 text-xs uppercase font-semibold">Qualification</span>
+                              <div className="font-medium text-base mt-1">50,000+ points</div>
+                            </div>
+                            <div className="pt-2 text-purple-700 text-sm transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                              Premium tier with exclusive benefits
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </div>
               </CardContent>
