@@ -194,22 +194,30 @@ class EcoTrackExcelExporter:
                     customer = order['customer']
                     self._set_cell_value(sheet, row_num, 'name', customer.get('name', ''))
                     
-                    # Fix for customer phone - ensure primary phone number is included
-                    # Direct handling for phone number to guarantee it's set as text
-                    phone = customer.get('phone', '')
+                    # Fix for customer phone - ensure it's directly from customer object
+                    # Get phone directly from 'phone' property, with strict fallbacks
+                    phone = ''
+                    if 'phone' in customer and customer['phone']:
+                        phone = str(customer['phone'])
+                    elif order.get('customer', {}).get('phone'):
+                        # Extra fallback if nested differently
+                        phone = str(order['customer']['phone'])
+                        
+                    # Log the phone value for debugging
+                    logger.info(f"Customer phone for row {row_num}: Raw value='{phone}'")
                     
-                    # Format the phone number as text to preserve leading zeros
-                    # If it doesn't start with a single quote, add one
-                    if phone and not phone.startswith("'"):
-                        phone = f"'{phone}"
-                    
-                    logger.info(f"Customer phone for row {row_num}: {phone}")
+                    # We no longer add a leading apostrophe - we'll handle this in the cell formatting
+                    # Instead, ensure it's a clean string value
                     self._set_cell_value(sheet, row_num, 'phone', phone)
                     
-                    # Format phone2 as text as well
-                    phone2 = customer.get('phone2', '')
-                    if phone2 and not phone2.startswith("'"):
-                        phone2 = f"'{phone2}"
+                    # Same approach for phone2
+                    phone2 = ''
+                    if 'phone2' in customer and customer['phone2']:
+                        phone2 = str(customer['phone2'])
+                    elif order.get('customer', {}).get('phone2'):
+                        # Extra fallback if nested differently
+                        phone2 = str(order['customer']['phone2'])
+                    
                     self._set_cell_value(sheet, row_num, 'phone2', phone2)
                     
                     # Handle address data
@@ -220,19 +228,33 @@ class EcoTrackExcelExporter:
                     
                     self._set_cell_value(sheet, row_num, 'wilaya', wilaya_name)
                     
-                    # Fix commune format: remove the wilaya code suffix (e.g., "_16")
-                    # For commune data, be very specific about extracting only the commune name
-                    commune = customer.get('commune', '')
-                    if commune and '_' in commune:
-                        commune = commune.split('_')[0].strip()  # Take only the part before the underscore and trim whitespace
+                    # Fix commune handling by ensuring exact commune value from customer records
+                    commune = ''
                     
-                    # Add additional logging to debug commune issues
-                    logger.info(f"Commune for row {row_num}: Original='{customer.get('commune', '')}', Processed='{commune}'")
+                    # First, try to get the commune directly from the order data
+                    if 'commune' in customer and customer['commune']:
+                        commune = str(customer['commune'])
+                        
+                        # Remove any suffix with wilaya code (format: "CommuneName_16")
+                        if '_' in commune:
+                            commune = commune.split('_')[0].strip()
                     
-                    # Only set if we have a valid commune
-                    if commune:
-                        self._set_cell_value(sheet, row_num, 'commune', commune)
-                    self._set_cell_value(sheet, row_num, 'address', customer.get('address', ''))
+                    # Fallback to order.customer.commune if needed
+                    elif order.get('customer', {}).get('commune'):
+                        commune = str(order['customer']['commune'])
+                        # Process the same way
+                        if '_' in commune:
+                            commune = commune.split('_')[0].strip()
+                    
+                    # Add detailed logging to debug commune issues
+                    logger.info(f"Commune for row {row_num}: Original='{customer.get('commune', '')}', Final='{commune}'")
+                    
+                    # Always set the commune value if we have one
+                    self._set_cell_value(sheet, row_num, 'commune', commune)
+                    
+                    # Set the address
+                    address = customer.get('address', '')
+                    self._set_cell_value(sheet, row_num, 'address', address)
                 
                 # Set product value as "livres" instead of book titles
                 self._set_cell_value(sheet, row_num, 'product', "livres")
@@ -283,8 +305,13 @@ class EcoTrackExcelExporter:
                     # Convert to string and ensure proper formatting
                     if field == 'phone' or field == 'phone2' or field == 'wilaya_code':
                         # Ensure phone numbers and wilaya codes are treated as text
-                        sheet.cell(row=row, column=column).value = str(value)
-                        sheet.cell(row=row, column=column).number_format = '@'
+                        # Use a clean string value (no apostrophe prefix)
+                        clean_value = str(value)
+                        if clean_value.startswith("'"):
+                            clean_value = clean_value[1:]  # Remove leading apostrophe if present
+                            
+                        sheet.cell(row=row, column=column).value = clean_value
+                        sheet.cell(row=row, column=column).number_format = '@'  # Format as text
                     else:
                         sheet.cell(row=row, column=column).value = str(value)
             except Exception as e:
