@@ -58,6 +58,7 @@ export default function ExportCsv() {
   const [templateFile, setTemplateFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [keepTemplateAsDefault, setKeepTemplateAsDefault] = useState(true);
   const { toast } = useToast();
 
   // Fetch orders for export
