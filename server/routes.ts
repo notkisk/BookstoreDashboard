@@ -855,6 +855,128 @@ print(output_path)
       res.status(500).json({ message: "Failed to export orders to Excel" });
     }
   });
+  
+  // Export orders to EcoTrack Excel format
+  app.get("/api/orders/export/ecotrack", async (req, res) => {
+    try {
+      // Get orders with all details similar to regular Excel export
+      const orders = await storage.getOrders();
+      const ordersWithDetails = [];
+      
+      for (const order of orders) {
+        const orderWithItems = await storage.getOrderWithItems(order.id);
+        if (orderWithItems) {
+          const customer = await storage.getCustomerById(order.customerId);
+          if (customer) {
+            // Ensure the finalAmount is correctly calculated if not already present
+            let finalAmount = order.finalAmount;
+            
+            // If finalAmount is not set or is zero, calculate it
+            if (!finalAmount || finalAmount === 0) {
+              finalAmount = order.totalAmount;
+              
+              // Apply percentage discount if any
+              if (order.discountPercentage && order.discountPercentage > 0) {
+                finalAmount -= (order.totalAmount * order.discountPercentage / 100);
+              }
+              
+              // Apply fixed discount if any
+              if (order.discountAmount && order.discountAmount > 0) {
+                finalAmount -= order.discountAmount;
+              }
+              
+              // Add delivery price
+              if (order.deliveryPrice && order.deliveryPrice > 0) {
+                finalAmount += order.deliveryPrice;
+              }
+            }
+            
+            // Format the order with all required fields
+            ordersWithDetails.push({
+              ...orderWithItems,
+              reference: order.reference,
+              finalAmount: Math.round(finalAmount), // Round to nearest integer
+              customer: {
+                ...customer,
+                // Ensure all customer fields needed for export exist
+                phone2: customer.phone2 || ""
+              },
+              // Include items for product description
+              items: orderWithItems.items || []
+            });
+          }
+        }
+      }
+      
+      // Use the new EcoTrack export module
+      const { execSync } = require('child_process');
+      const path = require('path');
+      const fs = require('fs');
+      
+      // Create a temporary JSON file with order data
+      const timestamp = new Date().getTime();
+      const tempJsonPath = path.join(__dirname, `../temp_orders_${timestamp}.json`);
+      fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
+      
+      // Create exports directory if it doesn't exist
+      const exportsDir = path.join(__dirname, '../exports');
+      if (!fs.existsSync(exportsDir)) {
+        fs.mkdirSync(exportsDir, { recursive: true });
+      }
+      
+      // Define the output path
+      const outputPath = path.join(exportsDir, `ecotrack_export_${timestamp}.xlsx`);
+      
+      // Define the template path
+      const templatePath = path.join(__dirname, '../templates/upload_ecotrack_v31.xlsx');
+      
+      // Check if the template exists, if not provide instructions
+      if (!fs.existsSync(templatePath)) {
+        console.error("EcoTrack template file not found at:", templatePath);
+        return res.status(400).json({ 
+          message: "EcoTrack template file not found. Please upload the template file to /templates/upload_ecotrack_v31.xlsx." 
+        });
+      }
+      
+      // Execute our specialized Python module for EcoTrack exports
+      try {
+        const command = `python -c "from server.ecotrack_excel_export import export_orders_to_ecotrack; import json; with open('${tempJsonPath}', 'r') as f: orders = json.load(f); print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))"`;
+        const output = execSync(command).toString().trim();
+        
+        // Clean up temporary files
+        fs.unlinkSync(tempJsonPath);
+        
+        // Make sure the file exists
+        if (fs.existsSync(output)) {
+          // Send the file to the client
+          res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          res.setHeader('Content-Disposition', `attachment; filename="ecotrack_export_${timestamp}.xlsx"`);
+          
+          const fileStream = fs.createReadStream(output);
+          fileStream.pipe(res);
+          
+          // Set up cleanup after file is sent
+          res.on('finish', () => {
+            try {
+              // Clean up temporary files after sending
+              fs.unlinkSync(output);
+            } catch (err) {
+              console.error("Error cleaning up EcoTrack export file:", err);
+            }
+          });
+        } else {
+          throw new Error("EcoTrack Excel file not generated");
+        }
+      } catch (error) {
+        console.error("Error generating EcoTrack Excel file:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        res.status(500).json({ message: "Failed to generate EcoTrack Excel file: " + errorMessage });
+      }
+    } catch (error) {
+      console.error("Error exporting orders to EcoTrack Excel:", error);
+      res.status(500).json({ message: "Failed to export orders to EcoTrack Excel" });
+    }
+  });
 
   // ==================== Analytics API ====================
   
