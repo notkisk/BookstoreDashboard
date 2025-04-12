@@ -75,6 +75,8 @@ export default function HistoricalSales() {
   const [dateRange, setDateRange] = useState<string>("all");
   const [groupBy, setGroupBy] = useState<string>("day");
   const [dataFormat, setDataFormat] = useState<SalesDataItem[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10; // Fixed at 10 entries per page
 
   // Query for sales data
   const { data: salesData, isLoading } = useQuery({
@@ -178,6 +180,9 @@ export default function HistoricalSales() {
   
   // Use real data if available, otherwise generate realistic sample data
   useEffect(() => {
+    // Reset to first page when filters change
+    setCurrentPage(1);
+    
     if (salesData && Array.isArray(salesData) && salesData.length > 0) {
       setDataFormat(salesData);
     } else {
@@ -451,7 +456,10 @@ export default function HistoricalSales() {
                       </tr>
                     ))
                   ) : (
-                    dataFormat.map((data, index) => (
+                    // Show only 10 entries per page
+                    dataFormat
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map((data, index) => (
                       <tr 
                         key={index} 
                         className={highestSalesPeriod?.date === data.date ? "bg-blue-50" : ""}
@@ -478,13 +486,30 @@ export default function HistoricalSales() {
               </table>
             </div>
             
+            {/* Pagination controls */}
             <div className="flex justify-between items-center pt-4">
               <div className="text-sm text-gray-700">
-                Showing <span className="font-medium">{dataFormat.length || 0}</span> entries
+                Showing <span className="font-medium">
+                  {Math.min((currentPage - 1) * itemsPerPage + 1, dataFormat.length)} to {Math.min(currentPage * itemsPerPage, dataFormat.length)}
+                </span> of <span className="font-medium">{dataFormat.length || 0}</span> entries
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm" disabled={true}>Previous</Button>
-                <Button variant="outline" size="sm" disabled={true}>Next</Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                >
+                  Previous
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  disabled={currentPage >= Math.ceil(dataFormat.length / itemsPerPage)}
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dataFormat.length / itemsPerPage)))}
+                >
+                  Next
+                </Button>
               </div>
             </div>
           </CardContent>
