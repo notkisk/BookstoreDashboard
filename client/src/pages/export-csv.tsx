@@ -93,17 +93,18 @@ export default function ExportCsv() {
   });
 
   // Transform orders into CSV export format
-  const prepareOrdersForExport = () => {
+  // Prepare data for both CSV and Excel exports
+  const prepareOrderData = () => {
     if (!filteredOrders?.length) {
       toast({
         title: "No orders to export",
         description: "There are no orders matching your filter criteria.",
         variant: "destructive",
       });
-      return;
+      return null;
     }
 
-    const csvData = filteredOrders.map((order) => {
+    return filteredOrders.map((order) => {
       // Shipping notes - only include what's needed for the specific field
       const remarks = order.notes || "";
 
@@ -162,29 +163,64 @@ export default function ExportCsv() {
         ? customer.commune.split('_')[0] // Extract name part from ID if in format "Name_WilayaId"
         : customer.commune;
       
-      // Format using EXACT column names as required by the delivery company
+      // Format the wilaya name
+      const wilayaName = getWilayaName(customer.wilaya);
+      
+      // Return a shared data object that can be used by different export formats
       return {
-        "reference commande": order.reference,
-        "nom et prénom du destinataire*": customer.name,
-        "telephone*": primaryPhone,
-        "telephone 2": secondaryPhone,
-        "code wilaya*": customer.wilaya,
-        "wilaya de livraison": getWilayaName(customer.wilaya),
-        "commune de livraison*": communeName,
-        "adresse de livraison*": customer.address,
-        "produit*": productDescription, 
-        "poids(kg)": "", // optional, leave empty
-        "montant du colis*": Math.round(orderAmount), // Round to nearest whole number
-        "remarque": remarks,
-        "FRAGILE (si oui mettez OUI sinon laissez vide)": order.fragile ? "OUI" : "",
-        "ECHANGE (si oui mettez OUI sinon laissez vide)": order.echange ? "OUI" : "",
-        "PICK UP (si oui mettez OUI sinon laissez vide)": order.pickup ? "OUI" : "",
-        "RECOUVREMENT (si oui mettez OUI sinon laissez vide)": order.recouvrement ? "OUI" : "",
-        "STOP DESK (si oui mettez OUI sinon laissez vide)": order.stopDesk ? "OUI" : "",
-        "Lien map": "" // Optional map link
+        // Order details
+        reference: order.reference,
+        name: customer.name,
+        phone: customer.phone,
+        phone2: customer.phone2 || "",
+        wilayaCode: customer.wilaya,
+        wilaya: wilayaName,
+        commune: communeName,
+        address: customer.address,
+        product: productDescription,
+        weight: "",
+        amount: Math.round(orderAmount),
+        remarks: remarks,
+        fragile: order.fragile,
+        echange: order.echange,
+        pickup: order.pickup,
+        recouvrement: order.recouvrement,
+        stopDesk: order.stopDesk,
+        mapLink: "",
+        
+        // Additional data for CSV format
+        csvData: {
+          "reference commande": order.reference,
+          "nom et prénom du destinataire*": customer.name,
+          "telephone*": primaryPhone,
+          "telephone 2": secondaryPhone,
+          "code wilaya*": customer.wilaya,
+          "wilaya de livraison": wilayaName,
+          "commune de livraison*": communeName,
+          "adresse de livraison*": customer.address,
+          "produit*": productDescription, 
+          "poids(kg)": "", // optional, leave empty
+          "montant du colis*": Math.round(orderAmount), // Round to nearest whole number
+          "remarque": remarks,
+          "FRAGILE (si oui mettez OUI sinon laissez vide)": order.fragile ? "OUI" : "",
+          "ECHANGE (si oui mettez OUI sinon laissez vide)": order.echange ? "OUI" : "",
+          "PICK UP (si oui mettez OUI sinon laissez vide)": order.pickup ? "OUI" : "",
+          "RECOUVREMENT (si oui mettez OUI sinon laissez vide)": order.recouvrement ? "OUI" : "",
+          "STOP DESK (si oui mettez OUI sinon laissez vide)": order.stopDesk ? "OUI" : "",
+          "Lien map": "" // Optional map link
+        }
       };
     });
+  };
 
+  // Export to CSV
+  const exportToCsv = () => {
+    const orderData = prepareOrderData();
+    if (!orderData) return;
+    
+    // Extract CSV data from the shared object
+    const csvData = orderData.map(data => data.csvData);
+    
     // Generate and download the CSV with utf-8 encoding for Arabic characters
     generateCSV(
       csvData,
@@ -192,9 +228,35 @@ export default function ExportCsv() {
     );
 
     toast({
-      title: "Export successful",
-      description: `${csvData.length} orders have been exported.`,
+      title: "CSV Export successful",
+      description: `${csvData.length} orders have been exported as CSV.`,
     });
+  };
+  
+  // Export to Excel using template
+  const exportToExcel = async () => {
+    try {
+      const orderData = prepareOrderData();
+      if (!orderData) return;
+      
+      // Generate Excel file using the template
+      await generateExcelFromTemplate(
+        orderData,
+        `orders_excel_export_${new Date().toISOString().slice(0, 10)}.xlsx`
+      );
+      
+      toast({
+        title: "Excel Export successful",
+        description: `${orderData.length} orders have been exported in delivery company format.`,
+      });
+    } catch (error) {
+      console.error('Excel export error:', error);
+      toast({
+        title: "Export failed",
+        description: "There was an error generating the Excel file. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Helper function to get wilaya name from code
@@ -207,9 +269,9 @@ export default function ExportCsv() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-1">CSV Export</h2>
+        <h2 className="text-xl font-semibold text-gray-800 mb-1">Order Export</h2>
         <p className="text-sm text-gray-500">
-          Export your orders data in delivery-ready CSV format
+          Export your orders in delivery company-compatible CSV or Excel format
         </p>
       </div>
 
@@ -355,14 +417,24 @@ export default function ExportCsv() {
               <p className="text-xs text-gray-500 mt-2">* Required fields</p>
             </div>
 
-            <Alert className="bg-primary-50 border-primary-200">
+            <Alert className="bg-primary-50 border-primary-200 mb-3">
               <Info className="h-4 w-4 text-primary-600" />
               <AlertDescription className="text-primary-700">
-                The exported CSV follows the exact format required by the delivery company, 
+                The CSV export follows the exact format required by the delivery company, 
                 including all column names and special fields. The "montant du colis" field
                 now correctly shows the final order amount after discounts and including delivery fees.
-                For compatibility with Excel, the file uses semicolons as separators and includes 
-                special characters for Arabic text.
+                For compatibility with Excel, the file uses semicolons as separators and properly
+                formats phone numbers as text to prevent display issues.
+              </AlertDescription>
+            </Alert>
+            
+            <Alert className="bg-green-50 border-green-200">
+              <FileSpreadsheet className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-700">
+                <strong>New!</strong> Excel template export is now available. This format uses the delivery 
+                company's exact Excel template, ensuring 100% compatibility with their systems. Phone numbers
+                are properly formatted as text, and all delivery options are marked correctly. The Excel version 
+                is recommended for delivery submissions.
               </AlertDescription>
             </Alert>
           </div>
@@ -393,15 +465,25 @@ export default function ExportCsv() {
           <div className="flex justify-end space-x-3">
             <Button variant="outline">Cancel</Button>
             <Button
-              onClick={prepareOrdersForExport}
+              onClick={exportToCsv}
               disabled={
                 isLoading || !filteredOrders || filteredOrders.length === 0
               }
               className="bg-primary-300 hover:bg-primary-400 text-black"
               variant="outline"
             >
-              <Download className="mr-2 h-4 w-4" />
-              Export Orders
+              <FileText className="mr-2 h-4 w-4" />
+              Export CSV
+            </Button>
+            <Button
+              onClick={exportToExcel}
+              disabled={
+                isLoading || !filteredOrders || filteredOrders.length === 0
+              }
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Export Excel
             </Button>
           </div>
         </CardContent>
