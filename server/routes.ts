@@ -627,6 +627,245 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to export orders" });
     }
   });
+  
+  // Export orders to Excel using template
+  app.get("/api/orders/export/excel", async (req, res) => {
+    try {
+      // Get orders with all details similar to CSV export
+      const orders = await storage.getOrders();
+      const ordersWithDetails = [];
+      
+      for (const order of orders) {
+        const orderWithItems = await storage.getOrderWithItems(order.id);
+        if (orderWithItems) {
+          const customer = await storage.getCustomerById(order.customerId);
+          if (customer) {
+            // Ensure the finalAmount is correctly calculated if not already present
+            let finalAmount = order.finalAmount;
+            
+            // If finalAmount is not set or is zero, calculate it
+            if (!finalAmount || finalAmount === 0) {
+              finalAmount = order.totalAmount;
+              
+              // Apply percentage discount if any
+              if (order.discountPercentage && order.discountPercentage > 0) {
+                finalAmount -= (order.totalAmount * order.discountPercentage / 100);
+              }
+              
+              // Apply fixed discount if any
+              if (order.discountAmount && order.discountAmount > 0) {
+                finalAmount -= order.discountAmount;
+              }
+              
+              // Add delivery price
+              if (order.deliveryPrice && order.deliveryPrice > 0) {
+                finalAmount += order.deliveryPrice;
+              }
+            }
+            
+            // Get wilaya and commune info if available
+            let wilayaId = "";
+            let wilayaName = "";
+            let communeName = "";
+            let address = "";
+            
+            // Format the order with all required fields
+            ordersWithDetails.push({
+              ...orderWithItems,
+              reference: order.reference,
+              finalAmount: Math.round(finalAmount), // Round to nearest integer
+              customer: {
+                ...customer,
+                // Ensure all customer fields needed for export exist
+                phone2: customer.phone2 || "",
+                address: {
+                  wilayaId: wilayaId,
+                  wilayaName: wilayaName,
+                  communeName: communeName,
+                  streetAddress: address
+                }
+              },
+              // Include items for product description
+              items: orderWithItems.items || []
+            });
+          }
+        }
+      }
+      
+      // Use Python script to generate Excel file
+      const { execSync } = require('child_process');
+      const path = require('path');
+      const fs = require('fs');
+      
+      // Create a temporary JSON file with order data
+      const timestamp = new Date().getTime();
+      const tempJsonPath = path.join(__dirname, `../temp_orders_${timestamp}.json`);
+      fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
+      
+      // Execute Python script to generate Excel file
+      const outputPath = path.join(__dirname, `../exports/orders_export_${timestamp}.xlsx`);
+      const pythonScript = `
+import sys
+import json
+import openpyxl
+from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+from datetime import datetime
+
+# Load order data from JSON
+with open('${tempJsonPath}', 'r') as f:
+    orders = json.load(f)
+
+# Template path
+template_path = 'templates/order_export_template.xlsx'
+
+# Output path
+output_path = '${outputPath}'
+
+# Load the template workbook with all its formatting
+workbook = openpyxl.load_workbook(template_path)
+sheet = workbook.active
+
+# Determine the row to start adding data (usually row 2, after headers)
+start_row = 2
+
+# Get styles from header row to maintain formatting consistency
+header_cell = sheet.cell(row=1, column=1)
+header_font = Font(name=header_cell.font.name, size=header_cell.font.size)
+header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+thin_border = Border(
+    left=Side(style='thin'),
+    right=Side(style='thin'),
+    top=Side(style='thin'),
+    bottom=Side(style='thin')
+)
+
+# Add order data starting from row 2
+for i, order in enumerate(orders):
+    row_num = start_row + i
+    
+    # Map order data to the columns
+    # Column 1: reference commande
+    sheet.cell(row=row_num, column=1).value = order.get('reference', '')
+    
+    # Column 2: nom et prenom du destinataire*
+    customer_name = ''
+    if 'customer' in order and order['customer']:
+        customer_name = order['customer'].get('name', '')
+    sheet.cell(row=row_num, column=2).value = customer_name
+    
+    # Column 3: telephone*
+    customer_phone = ''
+    if 'customer' in order and order['customer']:
+        customer_phone = order['customer'].get('phone', '')
+    sheet.cell(row=row_num, column=3).value = customer_phone
+    
+    # Column 4: telephone 2
+    customer_phone2 = ''
+    if 'customer' in order and order['customer']:
+        customer_phone2 = order['customer'].get('phone2', '')
+    sheet.cell(row=row_num, column=4).value = customer_phone2
+    
+    # Column 5-8: Address information
+    # These would come from the order's delivery information
+    sheet.cell(row=row_num, column=5).value = '' # code wilaya
+    sheet.cell(row=row_num, column=6).value = '' # wilaya name
+    sheet.cell(row=row_num, column=7).value = '' # commune
+    sheet.cell(row=row_num, column=8).value = '' # address
+    
+    # Column 9: produit*
+    products = ''
+    if 'items' in order and order['items']:
+        product_list = []
+        for item in order['items']:
+            if 'book' in item and 'quantity' in item:
+                book_title = item['book'].get('title', '')
+                quantity = item.get('quantity', 0)
+                if book_title and quantity:
+                    product_list.append(f"{book_title} (x{quantity})")
+        products = ", ".join(product_list)
+    sheet.cell(row=row_num, column=9).value = products
+    
+    # Column 10: poids (kg) - assuming 0.5kg per book
+    weight = 0.5  # Default weight
+    if 'items' in order and order['items']:
+        weight = sum([item.get('quantity', 0) * 0.5 for item in order['items']])
+    sheet.cell(row=row_num, column=10).value = weight
+    
+    # Column 11: montant du colis*
+    amount = 0
+    if 'finalAmount' in order:
+        amount = order['finalAmount']
+    elif 'totalAmount' in order:
+        amount = order['totalAmount']
+    sheet.cell(row=row_num, column=11).value = amount
+    
+    # Column 12: remarque
+    sheet.cell(row=row_num, column=12).value = order.get('notes', '')
+    
+    # Columns 13-17: special flags (defaulting to empty)
+    for col in range(13, 18):
+        sheet.cell(row=row_num, column=col).value = ''
+    
+    # Column 18: Lien map
+    sheet.cell(row=row_num, column=18).value = ''
+    
+    # Apply styling to all cells in this row
+    for col in range(1, 19):
+        cell = sheet.cell(row=row_num, column=col)
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = thin_border
+
+# Save the workbook to the output path
+workbook.save(output_path)
+
+# Clean up temporary JSON file
+import os
+os.remove('${tempJsonPath}')
+
+print(output_path)
+      `.trim();
+      
+      const pythonScriptPath = path.join(__dirname, `../temp_excel_script_${timestamp}.py`);
+      fs.writeFileSync(pythonScriptPath, pythonScript);
+      
+      try {
+        // Execute the Python script
+        const output = execSync(`python ${pythonScriptPath}`).toString().trim();
+        
+        // Clean up temporary files
+        fs.unlinkSync(pythonScriptPath);
+        
+        // Make sure the file exists
+        if (fs.existsSync(output)) {
+          // Send the file to the client
+          res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          res.setHeader('Content-Disposition', `attachment; filename="orders_export_${timestamp}.xlsx"`);
+          
+          const fileStream = fs.createReadStream(output);
+          fileStream.pipe(res);
+          
+          // Set up cleanup after file is sent
+          res.on('finish', () => {
+            try {
+              // Clean up temporary files
+              fs.unlinkSync(output);
+            } catch (err) {
+              console.error("Error cleaning up export file:", err);
+            }
+          });
+        } else {
+          throw new Error("Excel file not generated");
+        }
+      } catch (error) {
+        console.error("Error generating Excel file:", error);
+        res.status(500).json({ message: "Failed to generate Excel file" });
+      }
+    } catch (error) {
+      console.error("Error exporting orders to Excel:", error);
+      res.status(500).json({ message: "Failed to export orders to Excel" });
+    }
+  });
 
   // ==================== Analytics API ====================
   
