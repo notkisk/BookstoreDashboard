@@ -122,15 +122,15 @@ export default function Dashboard() {
   const typedStats = stats as DashboardStats | undefined;
   const typedOrders = orders as Order[] | undefined;
 
-  // Transform data for the chart
+  // Transform data for the chart with Arabic day names
   const salesData = [
-    { name: "Mon", sales: 1200 },
-    { name: "Tue", sales: 1900 },
-    { name: "Wed", sales: 1500 },
-    { name: "Thu", sales: 2400 },
-    { name: "Fri", sales: 2100 },
-    { name: "Sat", sales: 3000 },
-    { name: "Sun", sales: 2500 },
+    { name: "الاثنين", sales: 1200 },
+    { name: "الثلاثاء", sales: 1900 },
+    { name: "الأربعاء", sales: 1500 },
+    { name: "الخميس", sales: 2400 },
+    { name: "الجمعة", sales: 2100 },
+    { name: "السبت", sales: 3000 },
+    { name: "الأحد", sales: 2500 },
   ];
 
   const queryClient = useQueryClient();
@@ -919,9 +919,30 @@ export default function Dashboard() {
           {/* Best Selling Books */}
           <Card>
             <CardContent className="p-5">
-              <h4 className="text-sm font-medium text-gray-500 mb-4">
-                Best Selling Books
-              </h4>
+              <div className="flex justify-between items-center mb-4">
+                <h4 className="text-sm font-medium text-gray-500">
+                  Best Selling Books
+                </h4>
+                <Link href="/books">
+                  <Button variant="link" size="sm" className="text-primary-600 font-medium flex items-center">
+                    View More
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4 ml-1"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </Button>
+                </Link>
+              </div>
               {statsLoading ? (
                 <div className="space-y-4">
                   {[1, 2, 3, 4].map((i) => (
@@ -972,9 +993,30 @@ export default function Dashboard() {
 
       {/* Orders by Wilaya */}
       <div className="mb-8">
-        <h3 className="text-base font-semibold text-gray-800 mb-4">
-          Orders by Wilaya
-        </h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-base font-semibold text-gray-800">
+            Orders by Wilaya
+          </h3>
+          <Link href="/orders">
+            <Button variant="outline" size="sm" className="flex items-center">
+              View More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 ml-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Button>
+          </Link>
+        </div>
         <Card>
           <CardContent className="p-5">
             {statsLoading ? (

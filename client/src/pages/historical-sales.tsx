@@ -242,12 +242,14 @@ export default function HistoricalSales() {
         <div>
           <Select value={dateRange} onValueChange={setDateRange}>
             <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Date Range" />
+              <SelectValue placeholder="Time Period" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="30days">Last 30 Days</SelectItem>
+              <SelectItem value="day">Today</SelectItem>
+              <SelectItem value="week">This Week</SelectItem>
+              <SelectItem value="month">This Month</SelectItem>
               <SelectItem value="90days">Last 90 Days</SelectItem>
-              <SelectItem value="6months">Last 6 Months</SelectItem>
+              <SelectItem value="year">Year to Date</SelectItem>
               <SelectItem value="all">All Time</SelectItem>
             </SelectContent>
           </Select>
@@ -404,116 +406,6 @@ export default function HistoricalSales() {
               ) : (
                 formatCurrency(avgOrderValue)
               )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Daily Sales Details */}
-      <div className="mb-8">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium text-gray-900">Sales Breakdown</h2>
-              <div className="flex space-x-2">
-                <Button variant="outline" size="sm" className="flex items-center gap-1">
-                  <Download className="h-4 w-4" />
-                  Export CSV
-                </Button>
-              </div>
-            </div>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {groupBy === 'day' ? 'Date' : groupBy === 'week' ? 'Week' : 'Month'}
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Order Reference
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Orders Count
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Revenue
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Books Sold
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Avg. Order Value
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {isLoading ? (
-                    Array(7).fill(0).map((_, i) => (
-                      <tr key={i}>
-                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-24" /></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-20" /></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-12" /></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-20" /></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-12" /></td>
-                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-16" /></td>
-                      </tr>
-                    ))
-                  ) : (
-                    // Sort data by date (newest first) to always show most recent first
-                    [...dataFormat]
-                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                      .map((data, index) => (
-                      <tr 
-                        key={index} 
-                        className={index === 0 ? "bg-blue-50" : ""} // Highlight most recent entry
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {data.date}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-600">
-                          {index === 0 ? "ORD-QBDKSO4H" : `ORD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {data.ordersCount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatCurrency(data.sales)}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {data.booksCount}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatCurrency(data.avgOrderValue)}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-            
-            {/* Pagination controls */}
-            <div className="flex justify-end items-center pt-4">
-              <div className="flex space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                >
-                  Previous
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  disabled={currentPage >= Math.ceil(dataFormat.length / itemsPerPage)}
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dataFormat.length / itemsPerPage)))}
-                >
-                  Next
-                </Button>
-              </div>
             </div>
           </CardContent>
         </Card>
