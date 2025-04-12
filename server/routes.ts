@@ -1395,6 +1395,36 @@ print(output_path)
     next();
   }, express.static('uploads'));
   
+  // Upload template for EcoTrack
+  app.post('/api/templates/ecotrack-upload', upload.single('template'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+      
+      // Create templates directory if it doesn't exist
+      const templatesDir = path.join(__dirname, '../templates');
+      if (!fs.existsSync(templatesDir)) {
+        fs.mkdirSync(templatesDir, { recursive: true });
+      }
+      
+      // Move the file to templates directory with the correct name
+      const targetPath = path.join(templatesDir, 'upload_ecotrack_v31.xlsx');
+      fs.copyFileSync(req.file.path, targetPath);
+      
+      // Clean up the temporary file
+      fs.unlinkSync(req.file.path);
+      
+      res.status(200).json({ 
+        message: 'EcoTrack template uploaded successfully',
+        path: targetPath
+      });
+    } catch (error) {
+      console.error('Error uploading EcoTrack template:', error);
+      res.status(500).json({ message: 'Failed to upload EcoTrack template' });
+    }
+  });
+  
   // Serve templates
   app.use('/templates', (req, res, next) => {
     // Add cache control headers
