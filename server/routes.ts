@@ -908,14 +908,11 @@ print(output_path)
         }
       }
       
-      // Use the new EcoTrack export module
-      const { execSync } = require('child_process');
-      const path = require('path');
-      const fs = require('fs');
+      // Use the new EcoTrack export module through child_process
       
       // Create a temporary JSON file with order data
       const timestamp = new Date().getTime();
-      const tempJsonPath = path.join(__dirname, `../temp_orders_${timestamp}.json`);
+      const tempJsonPath = path.join(process.cwd(), `temp_orders_${timestamp}.json`);
       fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
       
       // Create exports directory if it doesn't exist
