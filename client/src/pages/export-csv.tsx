@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, Download, FilePlus2, FileSpreadsheet, FileText, Info } from "lucide-react";
+import { AlertCircle, Download, FilePlus2, FileSpreadsheet, FileText, Info, Upload } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { generateCSV } from "@/lib/utils";
@@ -55,6 +55,9 @@ export default function ExportCsv() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [status, setStatus] = useState("all");
+  const [templateFile, setTemplateFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const { toast } = useToast();
 
   // Fetch orders for export
@@ -318,6 +321,73 @@ export default function ExportCsv() {
     const wilaya = getWilayaById(wilayaCode);
     return wilaya?.name || wilayaCode;
   };
+  
+  // Handle template file selection
+  const handleTemplateFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      
+      // Only accept .xlsx files
+      if (file.name.endsWith('.xlsx')) {
+        setTemplateFile(file);
+      } else {
+        toast({
+          title: "Invalid file format",
+          description: "Please select an Excel (.xlsx) file.",
+          variant: "destructive",
+        });
+        // Reset the file input
+        e.target.value = '';
+        setTemplateFile(null);
+      }
+    }
+  };
+  
+  // Upload the selected template file
+  const uploadTemplateFile = async () => {
+    if (!templateFile) return;
+    
+    setIsUploading(true);
+    
+    try {
+      // Create a FormData object to send the file
+      const formData = new FormData();
+      formData.append('template', templateFile);
+      
+      // Make the upload request
+      const response = await fetch('/api/templates/ecotrack-upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+      
+      const result = await response.json();
+      
+      toast({
+        title: "Template uploaded successfully",
+        description: "The EcoTrack template has been uploaded and will be used for exports.",
+      });
+      
+      // Reset the file input
+      setTemplateFile(null);
+      // Reset the file input element
+      const fileInput = document.getElementById('template-upload') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+      
+    } catch (error) {
+      console.error('Template upload error:', error);
+      toast({
+        title: "Upload failed",
+        description: error instanceof Error ? error.message : "There was an error uploading the template file.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div>
@@ -486,9 +556,47 @@ export default function ExportCsv() {
               <AlertDescription className="text-green-700">
                 <strong>NEW!</strong> Use the EcoTrack Format button to export orders using the EcoTrack Excel template.
                 This export maintains all formatting, formulas, validation rules, and macros from the original template.
-                Please place the EcoTrack template at <code className="bg-green-100 p-1 rounded">templates/upload_ecotrack_v31.xlsx</code> before using this feature.
               </AlertDescription>
             </Alert>
+            
+            {/* EcoTrack Template Upload Section */}
+            <div className="mt-4 p-4 border rounded-md bg-gray-50">
+              <h4 className="font-medium text-gray-700 mb-2">Upload EcoTrack Template</h4>
+              <p className="text-sm text-gray-600 mb-3">
+                Upload the official EcoTrack Excel template file to ensure your exports match their required format exactly.
+              </p>
+              
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="file"
+                  id="template-upload"
+                  accept=".xlsx"
+                  className="max-w-md"
+                  onChange={handleTemplateFileChange}
+                />
+                <Button 
+                  onClick={uploadTemplateFile}
+                  disabled={!templateFile || isUploading}
+                  className="bg-green-100 hover:bg-green-200 text-green-800 border-green-300"
+                >
+                  {isUploading ? (
+                    <>
+                      <span className="animate-spin mr-2">⏳</span>
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload Template
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              <p className="text-xs text-gray-500 mt-2">
+                Accepted format: .xlsx (Excel) files only. This template will be used for all EcoTrack exports.
+              </p>
+            </div>
             
 
           </div>
