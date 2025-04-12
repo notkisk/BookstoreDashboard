@@ -125,7 +125,7 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
       </div>
       
       <div className="flex items-center">
-        <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${step === 'mapping' ? 'bg-primary-300 text-white' : 'bg-gray-300 text-gray-600'}`}>
+        <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${step === 'mapping' ? 'bg-primary-300 text-black' : 'bg-gray-300 text-gray-600'}`}>
           2
         </div>
         <div className="ml-2 mr-4">
@@ -137,7 +137,7 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
       </div>
       
       <div className="flex items-center">
-        <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${step === 'preview' ? 'bg-primary-300 text-white' : 'bg-gray-300 text-gray-600'}`}>
+        <div className={`flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${step === 'preview' ? 'bg-primary-300 text-black' : 'bg-gray-300 text-gray-600'}`}>
           3
         </div>
         <div className="ml-2">
@@ -304,7 +304,7 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
         
         <Button 
           onClick={handleMapping}
-          className="bg-primary-300 hover:bg-primary-400 text-primary-foreground"
+          className="bg-primary-300 hover:bg-primary-400 text-black"
         >
           Next: Preview <ChevronRight className="ml-1 h-4 w-4" />
         </Button>
@@ -373,7 +373,7 @@ export function CsvParser({ onDataMapped, requiredFields, fieldLabels }: CsvPars
         
         <Button 
           onClick={handleFinish}
-          className="bg-primary-300 hover:bg-primary-400 text-primary-foreground"
+          className="bg-primary-300 hover:bg-primary-400 text-black"
         >
           Import Data
         </Button>
