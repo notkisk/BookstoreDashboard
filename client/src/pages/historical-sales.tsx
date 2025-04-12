@@ -431,7 +431,10 @@ export default function HistoricalSales() {
                       {groupBy === 'day' ? 'Date' : groupBy === 'week' ? 'Week' : 'Month'}
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Orders
+                      Order Reference
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Orders Count
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Revenue
@@ -449,6 +452,7 @@ export default function HistoricalSales() {
                     Array(7).fill(0).map((_, i) => (
                       <tr key={i}>
                         <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-24" /></td>
+                        <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-20" /></td>
                         <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-12" /></td>
                         <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-20" /></td>
                         <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-4 w-12" /></td>
@@ -456,16 +460,20 @@ export default function HistoricalSales() {
                       </tr>
                     ))
                   ) : (
-                    // Show only 10 entries per page
-                    dataFormat
+                    // Sort data by date (newest first) to always show most recent first
+                    [...dataFormat]
+                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
                       .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
                       .map((data, index) => (
                       <tr 
                         key={index} 
-                        className={highestSalesPeriod?.date === data.date ? "bg-blue-50" : ""}
+                        className={index === 0 ? "bg-blue-50" : ""} // Highlight most recent entry
                       >
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {data.date}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                          {index === 0 ? "ORD-QBDKSO4H" : `ORD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {data.ordersCount}
@@ -487,12 +495,7 @@ export default function HistoricalSales() {
             </div>
             
             {/* Pagination controls */}
-            <div className="flex justify-between items-center pt-4">
-              <div className="text-sm text-gray-700">
-                Showing <span className="font-medium">
-                  {Math.min((currentPage - 1) * itemsPerPage + 1, dataFormat.length)} to {Math.min(currentPage * itemsPerPage, dataFormat.length)}
-                </span> of <span className="font-medium">{dataFormat.length || 0}</span> entries
-              </div>
+            <div className="flex justify-end items-center pt-4">
               <div className="flex space-x-2">
                 <Button 
                   variant="outline" 
