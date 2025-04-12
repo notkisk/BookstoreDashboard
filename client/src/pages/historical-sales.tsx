@@ -472,7 +472,7 @@ export default function HistoricalSales() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {data.date}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black-600">
                           {index === 0 ? "ORD-QBDKSO4H" : `ORD-${Math.random().toString(36).substring(2, 10).toUpperCase()}`}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

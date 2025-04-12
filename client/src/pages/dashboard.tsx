@@ -204,7 +204,7 @@ export default function Dashboard() {
         return (
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="link" className="p-0 h-auto text-left font-normal text-blue-600 hover:underline">
+              <Button variant="link" className="p-0 h-auto text-left font-normal text-black-600 hover:underline">
                 {order.items[0].book.title} {order.items.length > 1 ? `(+${order.items.length - 1} more)` : ""}
               </Button>
             </PopoverTrigger>
@@ -570,7 +570,7 @@ export default function Dashboard() {
             Recent Orders
           </h3>
           <Link href="/view-orders">
-            <span className="text-sm font-medium text-primary-600 hover:text-primary-800 cursor-pointer">
+            <span className="text-sm font-medium text-primary-600 hover:text-primary-800 black">
               View All
             </span>
           </Link>
