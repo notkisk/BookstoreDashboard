@@ -146,9 +146,11 @@ export class DatabaseStorage implements IStorage {
     
     try {
       // Use the IN operator for efficient bulk deletion
+      // The placeholders should be handled properly with an array parameter
+      const placeholders = ids.map(() => '?').join(',');
       const result = await db
         .delete(books)
-        .where(sqlBuilder`${books.id} IN (${ids.join(',')})`)
+        .where(sqlBuilder`${books.id} IN (${placeholders})`, ...ids)
         .returning({ id: books.id });
       
       // Return the success count based on how many records were actually deleted
