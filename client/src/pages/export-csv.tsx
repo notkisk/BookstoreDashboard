@@ -260,9 +260,16 @@ export default function ExportCsv() {
   
   // Export to EcoTrack Excel format using server-side template
   const exportToEcoTrack = async () => {
+    if (isExporting) return; // Prevent multiple exports simultaneously
+    
+    setIsExporting(true);
+    
     try {
       const orderData = prepareOrderData();
-      if (!orderData) return;
+      if (!orderData) {
+        setIsExporting(false);
+        return;
+      }
       
       // Show toast indicating export is starting
       toast({
@@ -303,7 +310,7 @@ export default function ExportCsv() {
       
       toast({
         title: "EcoTrack Export successful",
-        description: `${orderData.length} orders have been exported in EcoTrack format.`,
+        description: `${orderData.length} orders have been exported in EcoTrack format with preserved template formatting.`,
       });
     } catch (error) {
       console.error('EcoTrack export error:', error);
@@ -312,6 +319,8 @@ export default function ExportCsv() {
         description: error instanceof Error ? error.message : "There was an error generating the EcoTrack file. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -653,13 +662,22 @@ export default function ExportCsv() {
             <Button
               onClick={exportToEcoTrack}
               disabled={
-                isLoading || !filteredOrders || filteredOrders.length === 0
+                isLoading || !filteredOrders || filteredOrders.length === 0 || isExporting
               }
               className="bg-green-300 hover:bg-green-400 text-black"
               variant="outline"
             >
-              <FilePlus2 className="mr-2 h-4 w-4" />
-              EcoTrack Format
+              {isExporting ? (
+                <>
+                  <span className="animate-spin mr-2">⏳</span>
+                  Exporting...
+                </>
+              ) : (
+                <>
+                  <FilePlus2 className="mr-2 h-4 w-4" />
+                  EcoTrack Format
+                </>
+              )}
             </Button>
           </div>
         </CardContent>
