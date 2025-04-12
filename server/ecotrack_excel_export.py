@@ -28,8 +28,8 @@ logger = logging.getLogger('ecotrack_export')
 
 # Constants
 TEMPLATE_FILENAME = 'upload_ecotrack_v31.xlsx'
-DEFAULT_TEMPLATE_PATH = os.path.join('templates', TEMPLATE_FILENAME)
-ERROR_LOG_PATH = os.path.join('exports', 'ecotrack_export_errors.log')
+DEFAULT_TEMPLATE_PATH = os.path.join(os.getcwd(), 'templates', TEMPLATE_FILENAME)
+ERROR_LOG_PATH = os.path.join(os.getcwd(), 'exports', 'ecotrack_export_errors.log')
 
 class EcoTrackExcelExporter:
     """Handles exporting orders to the EcoTrack template Excel file."""
@@ -63,7 +63,7 @@ class EcoTrackExcelExporter:
             # If no output path specified, create one with timestamp
             if not output_path:
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-                output_dir = 'exports'
+                output_dir = os.path.join(os.getcwd(), 'exports')
                 # Create exports directory if it doesn't exist
                 os.makedirs(output_dir, exist_ok=True)
                 output_path = os.path.join(output_dir, f'ecotrack_export_{timestamp}.xlsx')

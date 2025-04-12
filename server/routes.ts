@@ -1400,7 +1400,7 @@ print(output_path)
       }
       
       // Create templates directory if it doesn't exist
-      const templatesDir = path.join(__dirname, '../templates');
+      const templatesDir = path.join(process.cwd(), 'templates');
       if (!fs.existsSync(templatesDir)) {
         fs.mkdirSync(templatesDir, { recursive: true });
       }
