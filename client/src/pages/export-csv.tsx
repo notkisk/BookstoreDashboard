@@ -142,16 +142,8 @@ export default function ExportCsv() {
         }
       }
       
-      // Calculate product description
+      // Always use "livres" for product description as requested
       let productDescription = "livres";
-      if (order.items && order.items.length > 0) {
-        // If we have specific items, try to include some detail
-        if (order.items.length === 1) {
-          productDescription = "livre";
-        } else {
-          productDescription = `${order.items.length} livres`;
-        }
-      }
       
       // Format phone numbers to ensure they're exported as text
       // Excel sometimes treats leading zeros as significant and formats them incorrectly
@@ -195,7 +187,7 @@ export default function ExportCsv() {
           "telephone*": primaryPhone,
           "telephone 2": secondaryPhone,
           "code wilaya*": customer.wilaya,
-          "wilaya de livraison": wilayaName,
+          "wilaya de livraison": "",
           "commune de livraison*": communeName,
           "adresse de livraison*": customer.address,
           "produit*": productDescription, 
@@ -359,9 +351,6 @@ export default function ExportCsv() {
                 Your CSV will contain the following columns in this order:
               </p>
               <div className="flex flex-wrap gap-2">
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  reference commande
-                </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   nom et prénom du destinataire*
                 </span>
@@ -386,14 +375,17 @@ export default function ExportCsv() {
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   produit*
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  poids(kg)
-                </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   montant du colis*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  poids(kg)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                   remarque
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  reference commande
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                   FRAGILE (si oui mettez OUI sinon laissez vide)
