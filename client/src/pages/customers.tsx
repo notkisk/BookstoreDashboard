@@ -53,7 +53,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { wilayas, getCommunesByWilayaId } from "@/data/algeria";
+import { wilayas, getCommunesByWilayaId, getWilayaById, getCommuneById } from "@/data/algeria";
 
 interface Customer {
   id: number;
@@ -265,15 +265,23 @@ export default function Customers() {
     {
       header: "Address",
       accessorKey: "address" as const,
-      cell: (customer: Customer) => (
-        <div className="flex items-start">
-          <MapPin className="h-4 w-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" />
-          <div className="text-sm">
-            <p className="text-gray-600">{customer.address}</p>
-            <p className="text-gray-500 text-xs">{customer.commune}, {customer.wilaya}</p>
+      cell: (customer: Customer) => {
+        // Get proper wilaya and commune names using helper functions
+        const wilaya = getWilayaById(customer.wilaya);
+        const commune = getCommuneById(customer.commune);
+        
+        return (
+          <div className="flex items-start">
+            <MapPin className="h-4 w-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="text-gray-600">{customer.address}</p>
+              <p className="text-gray-500 text-xs">
+                {commune?.name || customer.commune}, {wilaya?.name || customer.wilaya}
+              </p>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       header: "Loyalty",
@@ -541,7 +549,13 @@ export default function Customers() {
                   </div>
                 </div>
                 <p className="text-sm text-gray-600 ml-11">{selectedCustomer.address}</p>
-                <p className="text-xs text-gray-500 ml-11">{selectedCustomer.commune}, {selectedCustomer.wilaya}</p>
+                <p className="text-xs text-gray-500 ml-11">
+                  {(() => {
+                    const wilaya = getWilayaById(selectedCustomer.wilaya);
+                    const commune = getCommuneById(selectedCustomer.commune);
+                    return `${commune?.name || selectedCustomer.commune}, ${wilaya?.name || selectedCustomer.wilaya}`;
+                  })()}
+                </p>
               </div>
             )}
           </div>
