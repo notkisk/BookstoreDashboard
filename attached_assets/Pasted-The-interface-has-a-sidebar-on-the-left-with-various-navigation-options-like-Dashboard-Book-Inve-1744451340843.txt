@@ -1,0 +1,24 @@
+The interface has a sidebar on the left with various navigation options like "Dashboard," "Book Inventory," "Orders," "Customers," and "Loyalty Program." When the user clicks on "Loyalty Program," a secondary sidebar appears on the right side of the screen, containing the "Loyalty Program" settings. This secondary sidebar includes options like "Program Configuration" and "Tier Settings."
+
+The Core Issue: Nested Sidebars
+The primary issue here is the introduction of a second sidebar when the "Loyalty Program" tab is clicked. This design choice creates a nested sidebar structure, which is problematic for several reasons:
+
+Redundant Navigation Layers:
+The left sidebar already serves as the main navigation for the application. Adding another sidebar for the "Loyalty Program" creates an unnecessary layer of navigation. This redundancy confuses the user because they now have two sidebars to manage, which feels disjointed.
+Typically, a single sidebar should suffice for navigation, and clicking an option like "Loyalty Program" should load the relevant content in the main content area (the large space in the center), not spawn another sidebar.
+Screen Real Estate Wastage:
+The second sidebar takes up additional screen space on the right, shrinking the main content area. In this case, the "Loyalty Program" settings are displayed in the secondary sidebar, leaving the main content area underutilized.
+A better design would use the main content area to display the "Loyalty Program" settings, keeping the UI clean and maximizing the use of available space.
+Cognitive Overload:
+Users expect a consistent navigation pattern. When a second sidebar appears, it breaks the mental model of how the application should work. The user has to reorient themselves to this new navigation structure, which increases cognitive load and makes the interface feel less intuitive.
+For example, if the user wants to switch from "Loyalty Program" to "Customers," they might first need to close or navigate out of the secondary sidebar, adding an extra step.
+Inconsistent Behavior:
+It’s unclear if other tabs (like "Book Inventory" or "Orders") also spawn secondary sidebars. If they don’t, this inconsistency makes the UI unpredictable. If they do, the problem is compounded, as the user might end up with multiple nested sidebars, further cluttering the interface.
+Lack of Visual Hierarchy:
+The two sidebars compete for attention, making it harder for the user to understand the hierarchy of the interface. The left sidebar should be the primary navigation, and the main content area should display the selected content. Introducing a second sidebar disrupts this hierarchy and makes the UI feel cluttered.
+Suggested Improvement
+To fix this, the UI should follow a more standard design pattern:
+
+When the user clicks "Loyalty Program" in the left sidebar, the settings (like "Program Configuration" and "Tier Settings") should load in the main content area, not in a secondary sidebar.
+The left sidebar should remain the sole navigation panel, keeping the structure simple and predictable.
+If the "Loyalty Program" section has subcategories (like "Program Configuration" and "Tier Settings"), these can be displayed as tabs, cards, or sections within the main content area, rather than in a separate sidebar.
