@@ -905,18 +905,24 @@ print(output_path)
       const range = req.query.range as string || 'all';
       const groupBy = req.query.groupBy as string || 'month';
       
-      // Get all orders
+      // Get all orders with items
       const allOrders = await storage.getOrders();
       
-      // Create monthly sales data
-      const monthlyData: { month: string; sales: number }[] = [];
+      // Create monthly sales data with extended metrics
+      const monthlyData: { month: string; sales: number; ordersCount: number; booksCount: number; avgOrderValue: number }[] = [];
       
       // Define month names
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       
       // Initialize monthly data with zeros for all months
       for (let i = 0; i < 12; i++) {
-        monthlyData.push({ month: monthNames[i], sales: 0 });
+        monthlyData.push({ 
+          month: monthNames[i], 
+          sales: 0,
+          ordersCount: 0,
+          booksCount: 0,
+          avgOrderValue: 0
+        });
       }
       
       // Only include actual sales from orders in the current year
@@ -929,17 +935,34 @@ print(output_path)
         // Only count orders from the current year
         if (orderYear === currentYear) {
           const monthIndex = orderDate.getMonth();
-          monthlyData[monthIndex].sales += Number(order.totalAmount) || 0;
+          
+          // Add sales metrics
+          monthlyData[monthIndex].sales += Number(order.finalAmount) || Number(order.totalAmount) || 0;
+          monthlyData[monthIndex].ordersCount += 1;
+          
+          // Count books in this order
+          if (order.items && Array.isArray(order.items)) {
+            // Sum the quantities of all items
+            const bookCount = order.items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            monthlyData[monthIndex].booksCount += bookCount;
+          }
+        }
+      }
+      
+      // Calculate average order value for each month
+      for (const monthData of monthlyData) {
+        if (monthData.ordersCount > 0) {
+          monthData.avgOrderValue = Math.round(monthData.sales / monthData.ordersCount);
         }
       }
       
       // Filter data based on period if needed
       let filteredData = [...monthlyData];
-      if (period === 'month') {
+      if (period === 'month' || range === 'month') {
         // Last month only
         const currentMonth = new Date().getMonth();
         filteredData = [monthlyData[currentMonth === 0 ? 11 : currentMonth - 1]];
-      } else if (period === 'quarter') {
+      } else if (period === 'quarter' || range === '90days') {
         // Last 3 months
         const currentMonth = new Date().getMonth();
         filteredData = [];
@@ -948,7 +971,7 @@ print(output_path)
           const monthIndex = (currentMonth - i + 12) % 12;
           filteredData.unshift(monthlyData[monthIndex]);
         }
-      } else if (period === 'year') {
+      } else if (period === 'year' || range === 'year') {
         // All 12 months (already set)
         // Keep only months up to the current month
         const currentMonth = new Date().getMonth();
@@ -959,6 +982,9 @@ print(output_path)
         // Previous months should show 0 to avoid misleading data
         for (let i = currentMonth + 1; i < 12; i++) {
           monthlyData[i].sales = 0;
+          monthlyData[i].ordersCount = 0;
+          monthlyData[i].booksCount = 0;
+          monthlyData[i].avgOrderValue = 0;
         }
       }
       
