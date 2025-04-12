@@ -765,25 +765,14 @@ for i, order in enumerate(orders):
         customer_phone2 = order['customer'].get('phone2', '')
     sheet.cell(row=row_num, column=4).value = customer_phone2
     
-    # Column 5-8: Address information
-    # These would come from the order's delivery information
-    sheet.cell(row=row_num, column=5).value = '' # code wilaya
-    sheet.cell(row=row_num, column=6).value = '' # wilaya name
-    sheet.cell(row=row_num, column=7).value = '' # commune
-    sheet.cell(row=row_num, column=8).value = '' # address
+    # Column 5-8: Leave wilaya info empty as requested
+    sheet.cell(row=row_num, column=5).value = '' # code wilaya (empty as requested)
+    sheet.cell(row=row_num, column=6).value = '' # wilaya name (empty as requested)
+    sheet.cell(row=row_num, column=7).value = '' # commune (empty as requested)
+    sheet.cell(row=row_num, column=8).value = '' # address (empty as requested)
     
-    # Column 9: produit*
-    products = ''
-    if 'items' in order and order['items']:
-        product_list = []
-        for item in order['items']:
-            if 'book' in item and 'quantity' in item:
-                book_title = item['book'].get('title', '')
-                quantity = item.get('quantity', 0)
-                if book_title and quantity:
-                    product_list.append(f"{book_title} (x{quantity})")
-        products = ", ".join(product_list)
-    sheet.cell(row=row_num, column=9).value = products
+    # Column 9: produit* - Simply use "livres" as requested
+    sheet.cell(row=row_num, column=9).value = "livres"
     
     # Column 10: poids (kg) - assuming 0.5kg per book
     weight = 0.5  # Default weight

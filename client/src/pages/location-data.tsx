@@ -386,18 +386,9 @@ export default function LocationData() {
   return (
     <div className="space-y-6">
       <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">Why Location Data Is Important</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">Algeria Location Data</h2>
         <p className="text-sm text-gray-600 mb-4">
-          Accurate location data is essential for order processing and delivery management. The system requires wilaya (province) and commune (municipality) information to:
-        </p>
-        <ul className="list-disc ml-6 text-sm text-gray-600 space-y-1 mb-2">
-          <li>Enable customers to select their correct delivery location</li>
-          <li>Organize shipments by geographic region</li>
-          <li>Calculate appropriate delivery fees based on location</li>
-          <li>Provide accurate delivery information to shipping partners</li>
-        </ul>
-        <p className="text-sm text-gray-600 font-medium">
-          You must upload location data before creating orders or the order form will display an error.
+          Manage wilayas and communes for delivery locations.
         </p>
       </div>
       
@@ -411,7 +402,7 @@ export default function LocationData() {
             <CardHeader>
               <CardTitle>Location Data Status</CardTitle>
               <CardDescription>
-                Overview of the Algeria wilayas and communes data available in the system.
+                Available wilayas and communes
               </CardDescription>
             </CardHeader>
             <CardContent>
