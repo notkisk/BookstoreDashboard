@@ -16,7 +16,9 @@ import {
   Plus, 
   FileText, 
   Search, 
-  Filter 
+  Filter,
+  Download,
+  FileSpreadsheet
 } from "lucide-react";
 import { formatCurrency, formatDate, getStatusColor } from "@/lib/utils";
 
@@ -94,7 +96,7 @@ export default function Orders() {
     },
     {
       header: "Address",
-      accessorKey: "address" as const,
+      accessorKey: "customer.address" as any,
       cell: (order: Order) => (
         <div className="max-w-xs truncate">
           <p className="text-sm">
@@ -169,11 +171,18 @@ export default function Orders() {
               <Plus className="mr-1 h-4 w-4" /> New Order
             </Button>
           </Link>
-          <Link href="/export">
-            <Button variant="outline">
-              <FileText className="mr-1 h-4 w-4" /> Export
-            </Button>
-          </Link>
+          <div className="flex space-x-2">
+            <a href="/api/orders/export/excel" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
+                <FileSpreadsheet className="mr-1 h-4 w-4" /> Excel Export
+              </Button>
+            </a>
+            <a href="/api/orders/export/csv" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline">
+                <Download className="mr-1 h-4 w-4" /> CSV Export
+              </Button>
+            </a>
+          </div>
         </div>
       </div>
 
