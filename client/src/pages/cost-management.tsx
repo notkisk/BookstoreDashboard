@@ -41,6 +41,7 @@ interface MonthlyData {
   revenue: number;
   profit: number;
   profitMargin: number;
+  editable?: boolean;
 }
 
 export default function CostManagement() {
@@ -137,21 +138,39 @@ export default function CostManagement() {
   const profit = revenue - totalCosts;
   const profitMargin = revenue > 0 ? (profit / revenue) * 100 : 0;
   
-  // Generate monthly data for charts/reports
-  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([
-    { month: "Jan", costs: 85000, revenue: 120000, profit: 35000, profitMargin: 29.17 },
-    { month: "Feb", costs: 90000, revenue: 140000, profit: 50000, profitMargin: 35.71 },
-    { month: "Mar", costs: 95000, revenue: 160000, profit: 65000, profitMargin: 40.63 },
-    { month: "Apr", costs: totalCosts, revenue: revenue, profit: profit, profitMargin: profitMargin },
-    { month: "May", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Jun", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Jul", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Aug", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Sep", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Oct", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Nov", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-    { month: "Dec", costs: 0, revenue: 0, profit: 0, profitMargin: 0 },
-  ]);
+  // Generate monthly data array with initial values
+  const allMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  
+  // Create empty monthly data structure with current month having actual cost data
+  const generateInitialMonthlyData = () => {
+    const currentDate = new Date();
+    const currentMonthIndex = currentDate.getMonth();
+    
+    return allMonths.map((month, index) => {
+      // Current month gets actual cost data, others get 0
+      if (index === currentMonthIndex) {
+        return {
+          month,
+          costs: totalCosts,
+          revenue: revenue,
+          profit: profit,
+          profitMargin: profitMargin,
+          editable: true
+        };
+      } else {
+        return {
+          month,
+          costs: 0,
+          revenue: 0, 
+          profit: 0,
+          profitMargin: 0,
+          editable: true
+        };
+      }
+    });
+  };
+  
+  const [monthlyData, setMonthlyData] = useState<(MonthlyData & { editable?: boolean })[]>(generateInitialMonthlyData());
 
   const handleAddCost = () => {
     if (!newCost.name) {
@@ -541,21 +560,71 @@ export default function CostManagement() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {monthlyData.map((item) => (
+                {monthlyData.map((item, index) => (
                   <TableRow key={item.month}>
                     <TableCell className="font-medium">{item.month}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(item.costs)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(item.revenue)}</TableCell>
+                    <TableCell className="text-right">
+                      {item.editable ? (
+                        <Input 
+                          type="number"
+                          className="h-8 w-28 text-sm text-right"
+                          value={item.costs || ""}
+                          onChange={(e) => {
+                            const newValue = parseFloat(e.target.value) || 0;
+                            const updatedData = [...monthlyData];
+                            updatedData[index] = {
+                              ...updatedData[index],
+                              costs: newValue,
+                              profit: updatedData[index].revenue - newValue,
+                              profitMargin: updatedData[index].revenue > 0 
+                                ? ((updatedData[index].revenue - newValue) / updatedData[index].revenue) * 100 
+                                : 0
+                            };
+                            setMonthlyData(updatedData);
+                          }}
+                        />
+                      ) : (
+                        formatCurrency(item.costs)
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {item.editable ? (
+                        <Input 
+                          type="number"
+                          className="h-8 w-28 text-sm text-right"
+                          value={item.revenue || ""}
+                          onChange={(e) => {
+                            const newValue = parseFloat(e.target.value) || 0;
+                            const updatedData = [...monthlyData];
+                            updatedData[index] = {
+                              ...updatedData[index],
+                              revenue: newValue,
+                              profit: newValue - updatedData[index].costs,
+                              profitMargin: newValue > 0 
+                                ? ((newValue - updatedData[index].costs) / newValue) * 100 
+                                : 0
+                            };
+                            setMonthlyData(updatedData);
+                          }}
+                        />
+                      ) : (
+                        formatCurrency(item.revenue)
+                      )}
+                    </TableCell>
                     <TableCell className={`text-right ${item.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {formatCurrency(item.profit)}
                     </TableCell>
                     <TableCell className="text-right">
-                      {item.revenue > 0 ? `${item.profitMargin.toFixed(2)}%` : 'N/A'}
+                      {item.revenue > 0 ? `${item.profitMargin.toFixed(2)}%` : '0.00%'}
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+          </div>
+          <div className="mt-4 text-sm text-gray-500 bg-gray-50 p-3 rounded-md border border-gray-200">
+            <p><strong>Interactive Monthly Analysis:</strong> Enter your estimated costs and revenue for each month to see projected profits and margins. The current month shows actual data from your added costs.</p>
+            <p className="mt-1">Tip: Use this tool to plan your business finances and set monthly targets.</p>
           </div>
         </CardContent>
       </Card>
