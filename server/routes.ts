@@ -699,11 +699,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create a temporary JSON file with order data
       const timestamp = new Date().getTime();
-      const tempJsonPath = path.join(__dirname, `../temp_orders_${timestamp}.json`);
+      const tempJsonPath = path.join(process.cwd(), `temp_orders_${timestamp}.json`);
       fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
       
       // Execute Python script to generate Excel file
-      const outputPath = path.join(__dirname, `../exports/orders_export_${timestamp}.xlsx`);
+      const outputPath = path.join(process.cwd(), `exports/orders_export_${timestamp}.xlsx`);
       const pythonScript = `
 import sys
 import json
@@ -916,7 +916,7 @@ print(output_path)
       fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
       
       // Create exports directory if it doesn't exist
-      const exportsDir = path.join(__dirname, '../exports');
+      const exportsDir = path.join(process.cwd(), 'exports');
       if (!fs.existsSync(exportsDir)) {
         fs.mkdirSync(exportsDir, { recursive: true });
       }
@@ -925,7 +925,7 @@ print(output_path)
       const outputPath = path.join(exportsDir, `ecotrack_export_${timestamp}.xlsx`);
       
       // Define the template path
-      const templatePath = path.join(__dirname, '../templates/upload_ecotrack_v31.xlsx');
+      const templatePath = path.join(process.cwd(), 'templates/upload_ecotrack_v31.xlsx');
       
       // Check if the template exists, if not provide instructions
       if (!fs.existsSync(templatePath)) {
