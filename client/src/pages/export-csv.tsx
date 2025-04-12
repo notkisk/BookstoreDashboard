@@ -271,7 +271,7 @@ export default function ExportCsv() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-1">Order Export</h2>
         <p className="text-sm text-gray-500">
-          Export your orders in delivery company-compatible CSV or Excel format
+          Export your orders in delivery company-compatible CSV format
         </p>
       </div>
 
@@ -428,15 +428,7 @@ export default function ExportCsv() {
               </AlertDescription>
             </Alert>
             
-            <Alert className="bg-green-50 border-green-200">
-              <FileSpreadsheet className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-700">
-                <strong>New!</strong> Excel template export is now available. This format uses the delivery 
-                company's exact Excel template, ensuring 100% compatibility with their systems. Phone numbers
-                are properly formatted as text, and all delivery options are marked correctly. The Excel version 
-                is recommended for delivery submissions.
-              </AlertDescription>
-            </Alert>
+
           </div>
 
           {/* Orders to be exported */}
@@ -475,16 +467,7 @@ export default function ExportCsv() {
               <FileText className="mr-2 h-4 w-4" />
               Export CSV
             </Button>
-            <Button
-              onClick={exportToExcel}
-              disabled={
-                isLoading || !filteredOrders || filteredOrders.length === 0
-              }
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Export Excel
-            </Button>
+
           </div>
         </CardContent>
       </Card>
