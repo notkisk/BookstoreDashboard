@@ -100,12 +100,7 @@ export function AlgeriaDataUploader() {
       <CardHeader>
         <CardTitle>Upload Algeria Location Data</CardTitle>
         <CardDescription>
-          Upload an Excel file containing wilayas and communes data for Algeria.
-          <br /><br />
-          The expected file format is a spreadsheet with columns for commune names and wilaya codes.
-          Each row should contain a commune name followed by its corresponding wilaya code.
-          <br /><br />
-          Example format: "nom communes code wilayas" where each row has [commune name] [wilaya code]
+          Upload Excel file with commune names and wilaya codes.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
