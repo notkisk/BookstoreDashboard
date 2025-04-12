@@ -172,8 +172,13 @@ export default function HistoricalSales() {
     // Sort by date (using original keys to sort)
     const monthKeys = Array.from(monthMap.keys());
     return result.sort((a, b) => {
-      const keyA = monthKeys.find(key => monthMap.get(key) === a)!;
-      const keyB = monthKeys.find(key => monthMap.get(key) === b)!;
+      const keyA = monthKeys.find(key => monthMap.get(key) === a);
+      const keyB = monthKeys.find(key => monthMap.get(key) === b);
+      
+      // Check if keys are undefined before using localeCompare
+      if (keyA === undefined || keyB === undefined) {
+        return 0; // If one of the keys is undefined, consider them equal
+      }
       return keyA.localeCompare(keyB);
     });
   }

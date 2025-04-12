@@ -122,15 +122,15 @@ export default function Dashboard() {
   const typedStats = stats as DashboardStats | undefined;
   const typedOrders = orders as Order[] | undefined;
 
-  // Transform data for the chart with Arabic day names
+  // Transform data for the chart with Arabic day names in correct order
   const salesData = [
+    { name: "السبت", sales: 3000 },
+    { name: "الاحد", sales: 2800 },
     { name: "الاثنين", sales: 1200 },
     { name: "الثلاثاء", sales: 1900 },
-    { name: "الأربعاء", sales: 1500 },
+    { name: "الاربعاء", sales: 1500 },
     { name: "الخميس", sales: 2400 },
     { name: "الجمعة", sales: 2100 },
-    { name: "السبت", sales: 3000 },
-    { name: "الأحد", sales: 2500 },
   ];
 
   const queryClient = useQueryClient();
