@@ -150,10 +150,10 @@ export default function ExportCsv() {
       // Always use "livres" for product description as requested
       let productDescription = "livres";
       
-      // Format phone numbers to ensure they're exported as text
-      // Excel sometimes treats leading zeros as significant and formats them incorrectly
-      const primaryPhone = typeof customer.phone === 'string' ? `'${customer.phone}` : `'${customer.phone || ""}`;
-      const secondaryPhone = customer.phone2 ? `'${customer.phone2}` : "";
+      // Format phone numbers without leading apostrophes - formatting handled in backend
+      // This ensures the phone numbers are passed as-is from the database
+      const primaryPhone = typeof customer.phone === 'string' ? customer.phone : (customer.phone || "");
+      const secondaryPhone = customer.phone2 || "";
       
       // Get the proper commune name using the helper function
       const commune = getCommuneById(customer.commune);
