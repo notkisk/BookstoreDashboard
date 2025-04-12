@@ -815,7 +815,7 @@ os.remove('${tempJsonPath}')
 print(output_path)
       `.trim();
       
-      const pythonScriptPath = path.join(__dirname, `../temp_excel_script_${timestamp}.py`);
+      const pythonScriptPath = path.join(process.cwd(), `temp_excel_script_${timestamp}.py`);
       fs.writeFileSync(pythonScriptPath, pythonScript);
       
       try {
