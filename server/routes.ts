@@ -7,6 +7,8 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import { storage } from "./storage";
+import { execSync } from "child_process";
+import * as xlsx from "xlsx";
 import { 
   insertBookSchema, 
   insertCustomerSchema, 
@@ -693,9 +695,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Use Python script to generate Excel file
-      const { execSync } = require('child_process');
-      const path = require('path');
-      const fs = require('fs');
+      // Using the imports from the top of the file (execSync, path, fs)
       
       // Create a temporary JSON file with order data
       const timestamp = new Date().getTime();
@@ -1342,7 +1342,7 @@ print(output_path)
   // Provide a sample file for location data
   app.get('/api/location/sample', (req, res) => {
     try {
-      const xlsx = require('xlsx');
+      // Using the xlsx import from the top of the file
       
       // Create a sample workbook
       const wb = xlsx.utils.book_new();
