@@ -32,7 +32,11 @@ interface Order {
   reference: string;
   customerId: number;
   totalAmount: number;
+  discountAmount?: number;
+  discountPercentage?: number;
+  finalAmount: number;
   deliveryType: string;
+  deliveryPrice?: number;
   fragile: boolean;
   echange: boolean;
   pickup: boolean;
@@ -42,6 +46,7 @@ interface Order {
   status: string;
   createdAt: string;
   customer?: Customer;
+  items?: any[];
 }
 
 export default function ExportCsv() {
@@ -98,16 +103,8 @@ export default function ExportCsv() {
     }
 
     const csvData = filteredOrders.map((order) => {
-      // Create remarks field containing shipping options
-      const remarks = [
-        order.fragile ? "FRAGILE" : "",
-        order.echange ? "ECHANGE" : "",
-        order.pickup ? "PICK UP" : "",
-        order.recouvrement ? "RECOUVREMENT" : "",
-        order.stopDesk ? "STOP DESK" : "",
-      ]
-        .filter(Boolean)
-        .join(", ");
+      // Shipping notes - only include what's needed for the specific field
+      const remarks = order.notes || "";
 
       // Customer info
       const customer = order.customer || {
@@ -118,31 +115,66 @@ export default function ExportCsv() {
         commune: "",
         address: "",
       };
-
-      // Format based on requirement format in task description
+      
+      // Calculate the final amount properly
+      // If finalAmount is directly available, use it
+      // Otherwise, calculate it from totalAmount minus discounts
+      let orderAmount = 0;
+      if (typeof order.finalAmount === 'number' && order.finalAmount > 0) {
+        orderAmount = order.finalAmount;
+      } else {
+        // Calculate after applying discounts
+        let discountedAmount = order.totalAmount;
+        if (order.discountPercentage && order.discountPercentage > 0) {
+          discountedAmount -= (order.totalAmount * order.discountPercentage / 100);
+        }
+        if (order.discountAmount && order.discountAmount > 0) {
+          discountedAmount -= order.discountAmount;
+        }
+        
+        // Add delivery price if present
+        if (order.deliveryPrice && order.deliveryPrice > 0) {
+          orderAmount = discountedAmount + order.deliveryPrice;
+        } else {
+          orderAmount = discountedAmount;
+        }
+      }
+      
+      // Calculate product description
+      let productDescription = "livres";
+      if (order.items && order.items.length > 0) {
+        // If we have specific items, try to include some detail
+        if (order.items.length === 1) {
+          productDescription = "livre";
+        } else {
+          productDescription = `${order.items.length} livres`;
+        }
+      }
+      
+      // Format using EXACT column names as required by the delivery company
       return {
         "reference commande": order.reference,
-        "nom et prenom du destinataire": customer.name,
-        telephone: customer.phone,
+        "nom et prénom du destinataire*": customer.name,
+        "telephone*": customer.phone,
         "telephone 2": customer.phone2 || "",
-        "code wilaya": customer.wilaya,
+        "code wilaya*": customer.wilaya,
         "wilaya de livraison": getWilayaName(customer.wilaya),
-        "commune de livraison": customer.commune,
-        "adresse de livraison": customer.address,
-        produit: "livres", // default as specified
-        "poids (kg)": "", // optional, leave empty
-        "montant du colis": order.totalAmount,
-        remarque: remarks,
-        FRAGILE: order.fragile ? "OUI" : "",
-        ECHANGE: order.echange ? "OUI" : "",
-        "PICK UP": order.pickup ? "OUI" : "",
-        RECOUVREMENT: order.recouvrement ? "OUI" : "",
-        "STOP DESK": order.stopDesk ? "OUI" : "",
-        "Lien map": "", // Optional map link
+        "commune de livraison*": customer.commune,
+        "adresse de livraison*": customer.address,
+        "produit*": productDescription, 
+        "poids(kg)": "", // optional, leave empty
+        "montant du colis*": Math.round(orderAmount), // Round to nearest whole number
+        "remarque": remarks,
+        "FRAGILE (si oui mettez OUI sinon laissez vide)": order.fragile ? "OUI" : "",
+        "ECHANGE (si oui mettez OUI sinon laissez vide)": order.echange ? "OUI" : "",
+        "PICK UP (si oui mettez OUI sinon laissez vide)": order.pickup ? "OUI" : "",
+        "RECOUVREMENT (si oui mettez OUI sinon laissez vide)": order.recouvrement ? "OUI" : "",
+        "STOP DESK (si oui mettez OUI sinon laissez vide)": order.stopDesk ? "OUI" : "",
+        "Lien map": "" // Optional map link
       };
     });
 
-    // Generate and download the CSV
+    // Generate and download the CSV with utf-8 encoding for Arabic characters
     generateCSV(
       csvData,
       `orders_export_${new Date().toISOString().slice(0, 10)}.csv`,
@@ -258,7 +290,7 @@ export default function ExportCsv() {
                   reference commande
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
-                  nom et prenom du destinataire*
+                  nom et prénom du destinataire*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   telephone*
@@ -282,13 +314,31 @@ export default function ExportCsv() {
                   produit*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  poids (kg)
+                  poids(kg)
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   montant du colis*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                   remarque
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  FRAGILE (si oui mettez OUI sinon laissez vide)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  ECHANGE (si oui mettez OUI sinon laissez vide)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  PICK UP (si oui mettez OUI sinon laissez vide)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  RECOUVREMENT (si oui mettez OUI sinon laissez vide)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  STOP DESK (si oui mettez OUI sinon laissez vide)
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                  Lien map
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-2">* Required fields</p>
@@ -297,10 +347,11 @@ export default function ExportCsv() {
             <Alert className="bg-primary-50 border-primary-200">
               <Info className="h-4 w-4 text-primary-600" />
               <AlertDescription className="text-primary-700">
-                The exported CSV will automatically format your order data
-                according to the delivery service requirements. All shipping
-                options (FRAGILE, ECHANGE, etc.) will be included in the
-                "remarque" field.
+                The exported CSV follows the exact format required by the delivery company, 
+                including all column names and special fields. The "montant du colis" field
+                now correctly shows the final order amount after discounts and including delivery fees.
+                For compatibility with Excel, the file uses semicolons as separators and includes 
+                special characters for Arabic text.
               </AlertDescription>
             </Alert>
           </div>

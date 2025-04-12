@@ -574,7 +574,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // This returns all orders. In a real implementation, we might want to add filters
       const orders = await storage.getOrders();
       
-      // We'll fetch information for all orders including customer data
+      // We'll fetch information for all orders including customer data and order items
       const ordersWithDetails = [];
       
       for (const order of orders) {
@@ -582,9 +582,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (orderWithItems) {
           const customer = await storage.getCustomerById(order.customerId);
           if (customer) {
+            // Ensure the finalAmount is correctly calculated if not already present
+            let finalAmount = order.finalAmount;
+            
+            // If finalAmount is not set or is zero, calculate it
+            if (!finalAmount || finalAmount === 0) {
+              finalAmount = order.totalAmount;
+              
+              // Apply percentage discount if any
+              if (order.discountPercentage && order.discountPercentage > 0) {
+                finalAmount -= (order.totalAmount * order.discountPercentage / 100);
+              }
+              
+              // Apply fixed discount if any
+              if (order.discountAmount && order.discountAmount > 0) {
+                finalAmount -= order.discountAmount;
+              }
+              
+              // Add delivery price
+              if (order.deliveryPrice && order.deliveryPrice > 0) {
+                finalAmount += order.deliveryPrice;
+              }
+            }
+            
+            // Format the order with all required fields
             ordersWithDetails.push({
               ...orderWithItems,
-              customer
+              finalAmount: Math.round(finalAmount), // Round to nearest integer
+              customer: {
+                ...customer,
+                // Ensure all customer fields needed for export exist
+                phone2: customer.phone2 || ""
+              },
+              // Include items for product description
+              items: orderWithItems.items || []
             });
           }
         }
