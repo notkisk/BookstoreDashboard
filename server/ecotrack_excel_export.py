@@ -155,14 +155,44 @@ class EcoTrackExcelExporter:
         
         logger.info(f"Detected header row at row {self.header_row}, data starts at row {self.data_start_row}")
         
-        # Map column indices to our field names
+        # Map column indices to our field names, with special handling for phone/phone2
+        # Track which columns we've already mapped to avoid duplicates
+        mapped_columns = set()
+        
+        # First, look for exact matches for telephone and telephone2
         for col in range(1, sheet.max_column + 1):
             cell_value = sheet.cell(row=header_row, column=col).value
             if cell_value is not None:
                 cell_text = str(cell_value).lower().strip()
+                
+                # Special handling for phone columns
+                if cell_text == 'telephone' or cell_text == 'téléphone' or cell_text == 'telephone*' or cell_text == 'téléphone*':
+                    self.column_mapping['phone'] = col
+                    mapped_columns.add(col)
+                    logger.info(f"Mapped 'phone' to column {get_column_letter(col)} (column {col})")
+                elif cell_text == 'telephone 2' or cell_text == 'téléphone 2' or cell_text == 'telephone2' or cell_text == 'téléphone2':
+                    self.column_mapping['phone2'] = col  
+                    mapped_columns.add(col)
+                    logger.info(f"Mapped 'phone2' to column {get_column_letter(col)} (column {col})")
+        
+        # Then map the rest of the columns
+        for col in range(1, sheet.max_column + 1):
+            if col in mapped_columns:
+                continue
+                
+            cell_value = sheet.cell(row=header_row, column=col).value
+            if cell_value is not None:
+                cell_text = str(cell_value).lower().strip()
+                
+                # Try to map this column to a field by matching against synonyms
                 for field, synonyms in header_synonyms.items():
+                    # Skip already mapped fields
+                    if field in self.column_mapping:
+                        continue
+                        
                     if any(synonym in cell_text for synonym in synonyms):
                         self.column_mapping[field] = col
+                        mapped_columns.add(col)
                         logger.info(f"Mapped '{field}' to column {get_column_letter(col)} (column {col})")
                         break
         
