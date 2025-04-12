@@ -964,8 +964,20 @@ export class DatabaseStorage implements IStorage {
       return 0; // Loyalty program is not active
     }
     
-    // Calculate points based on order amount - 1 point per 1 DZD as per new requirements
-    const pointsToAdd = Math.round(orderAmount); // 1:1 ratio, so just use the amount directly
+    // Get the order to exclude delivery price from loyalty calculation
+    const orderResult = await db.select().from(orders).where(eq(orders.id, orderId));
+    if (!orderResult.length) {
+      return 0; // Order not found
+    }
+    
+    const order = orderResult[0];
+    
+    // Calculate points based only on order amount EXCLUDING delivery price
+    // We use the order's totalAmount, which is the subtotal before delivery price
+    const pureOrderAmount = order.totalAmount || 0;
+    
+    // Calculate points - 1 point per 1 DZD as per requirements
+    const pointsToAdd = Math.round(pureOrderAmount); // 1:1 ratio, so just use the amount directly
     
     // Create transaction record
     await db.insert(loyaltyTransactions).values({
