@@ -19,7 +19,7 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
-import { wilayas } from "@/data/algeria";
+import { wilayas, getWilayaById, getCommuneById } from "@/data/algeria";
 
 interface Order {
   id: number;
@@ -167,17 +167,23 @@ export default function ViewOrders() {
     {
       header: "Location",
       accessorKey: "customerId" as const, // Use customerId as the accessor key since we need a valid Order key
-      cell: (order: Order) => (
-        <div>
-          <p>{order.customer?.wilaya || "Unknown"}</p>
-          <p className="text-sm text-gray-500">{order.customer?.commune || "Unknown"}</p>
-          {order.customer?.address && (
-            <p className="text-xs text-gray-400 truncate max-w-[200px]" title={order.customer.address}>
-              {order.customer.address}
-            </p>
-          )}
-        </div>
-      ),
+      cell: (order: Order) => {
+        // Get proper wilaya and commune names using helper functions
+        const wilaya = order.customer?.wilaya ? getWilayaById(order.customer.wilaya) : null;
+        const commune = order.customer?.commune ? getCommuneById(order.customer.commune) : null;
+        
+        return (
+          <div>
+            <p>{wilaya?.name || order.customer?.wilaya || "Unknown"}</p>
+            <p className="text-sm text-gray-500">{commune?.name || order.customer?.commune || "Unknown"}</p>
+            {order.customer?.address && (
+              <p className="text-xs text-gray-400 truncate max-w-[200px]" title={order.customer.address}>
+                {order.customer.address}
+              </p>
+            )}
+          </div>
+        );
+      },
     },
     {
       header: "Books",
