@@ -151,15 +151,25 @@ export default function ExportCsv() {
         }
       }
       
+      // Format phone numbers to ensure they're exported as text
+      // Excel sometimes treats leading zeros as significant and formats them incorrectly
+      const primaryPhone = typeof customer.phone === 'string' ? `'${customer.phone}` : `'${customer.phone || ""}`;
+      const secondaryPhone = customer.phone2 ? `'${customer.phone2}` : "";
+      
+      // Get the commune name - either use the full name from the data or the ID stored
+      const communeName = customer.commune.includes('_') 
+        ? customer.commune.split('_')[0] // Extract name part from ID if in format "Name_WilayaId"
+        : customer.commune;
+      
       // Format using EXACT column names as required by the delivery company
       return {
         "reference commande": order.reference,
         "nom et prénom du destinataire*": customer.name,
-        "telephone*": customer.phone,
-        "telephone 2": customer.phone2 || "",
+        "telephone*": primaryPhone,
+        "telephone 2": secondaryPhone,
         "code wilaya*": customer.wilaya,
         "wilaya de livraison": getWilayaName(customer.wilaya),
-        "commune de livraison*": customer.commune,
+        "commune de livraison*": communeName,
         "adresse de livraison*": customer.address,
         "produit*": productDescription, 
         "poids(kg)": "", // optional, leave empty
