@@ -17,6 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { generateCSV } from "@/lib/utils";
 import { generateExcelFromTemplate } from "@/lib/excel-export";
+import { getWilayaById, getCommuneById } from "@/data/algeria";
 
 interface Customer {
   id: number;
@@ -150,10 +151,13 @@ export default function ExportCsv() {
       const primaryPhone = typeof customer.phone === 'string' ? `'${customer.phone}` : `'${customer.phone || ""}`;
       const secondaryPhone = customer.phone2 ? `'${customer.phone2}` : "";
       
-      // Get the commune name - either use the full name from the data or the ID stored
-      const communeName = customer.commune.includes('_') 
-        ? customer.commune.split('_')[0] // Extract name part from ID if in format "Name_WilayaId"
-        : customer.commune;
+      // Get the proper commune name using the helper function
+      const commune = getCommuneById(customer.commune);
+      const communeName = commune?.name || (
+        customer.commune.includes('_')
+          ? customer.commune.split('_')[0] // Extract name part from ID if in format "Name_WilayaId"
+          : customer.commune
+      );
       
       // Format the wilaya name
       const wilayaName = getWilayaName(customer.wilaya);
@@ -253,9 +257,9 @@ export default function ExportCsv() {
 
   // Helper function to get wilaya name from code
   const getWilayaName = (wilayaCode: string): string => {
-    // This would normally look up the wilaya name from a list
-    // For now, just return the code if we don't have the mapping
-    return wilayaCode;
+    // Use the helper function to get proper wilaya name
+    const wilaya = getWilayaById(wilayaCode);
+    return wilaya?.name || wilayaCode;
   };
 
   return (
