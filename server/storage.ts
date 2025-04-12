@@ -9,9 +9,12 @@ import {
   loyaltySettings, type LoyaltySettings, type InsertLoyaltySettings
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, like, desc, sql as sqlBuilder, count } from "drizzle-orm";
+import { eq, and, like, desc, sql as sqlBuilder, count, inArray } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import bcrypt from "bcrypt";
+
+// Fix for the "in" function since we can't import it as "in"
+const inOp = inArray;
 
 // Interface for all storage operations
 export interface IStorage {
@@ -538,68 +541,63 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    // Build the order IDs query
-    const orderIdsQuery = db.select({ id: orders.id }).from(orders);
+    // Get all delivered orders
+    let ordersQuery = db
+      .select({
+        id: orders.id,
+        total: orders.totalAmount
+      })
+      .from(orders)
+      .where(eq(orders.status, 'delivered'));
     
     // Add date filter if period is specified
     if (fromDate) {
-      // Convert dates to ISO string for proper SQL compatibility
       const fromDateStr = fromDate.toISOString();
       const nowStr = now.toISOString();
       
-      orderIdsQuery.where(
-        and(
-          sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
-          sqlBuilder`${orders.createdAt} <= ${nowStr}`
-        )
-      );
-    }
-    
-    const orderIds = await orderIdsQuery;
-    
-    if (orderIds.length === 0) return 0;
-    
-    // Process each order ID individually to avoid array parameter issues
-    let salesTotal = 0;
-    let costTotal = 0;
-    
-    // Process orders one by one instead of with a list
-    for (const orderIdObj of orderIds) {
-      const id = orderIdObj.id;
-      
-      // Get order details
-      const orderResult = await db
-        .select({ total: orders.totalAmount, status: orders.status })
-        .from(orders)
-        .where(eq(orders.id, id));
-        
-      if (orderResult.length > 0 && orderResult[0].status === 'delivered') {
-        salesTotal += Number(orderResult[0].total) || 0;
-      }
-      
-      // Get order items and calculate costs
-      const itemsResult = await db
-        .select({ 
-          quantity: orderItems.quantity,
-          bookId: orderItems.bookId
+      ordersQuery = db
+        .select({
+          id: orders.id,
+          total: orders.totalAmount
         })
-        .from(orderItems)
-        .where(eq(orderItems.orderId, id));
-        
-      for (const item of itemsResult) {
-        const bookResult = await db
-          .select({ buyPrice: books.buyPrice })
-          .from(books)
-          .where(eq(books.id, item.bookId));
-          
-        if (bookResult.length > 0) {
-          costTotal += (Number(item.quantity) || 0) * (Number(bookResult[0].buyPrice) || 0);
-        }
-      }
+        .from(orders)
+        .where(
+          and(
+            eq(orders.status, 'delivered'),
+            sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
+            sqlBuilder`${orders.createdAt} <= ${nowStr}`
+          )
+        );
     }
     
-    // We return salesTotal - costTotal for a correct profit calculation
-    // Math.abs ensures the result is positive
+    const deliveredOrders = await ordersQuery;
+    
+    if (deliveredOrders.length === 0) return 0;
+    
+    // Calculate total sales from delivered orders
+    const salesTotal = deliveredOrders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+    
+    // Get all order items in a single query with join to books
+    const orderIds = deliveredOrders.map(order => order.id);
+    
+    // Direct join query to get all items and their book costs in one go
+    // This avoids multiple individual queries
+    const orderItemsResult = await db
+      .select({
+        quantity: orderItems.quantity,
+        buyPrice: books.buyPrice
+      })
+      .from(orderItems)
+      .where(inArray(orderItems.orderId, orderIds))
+      .innerJoin(books, eq(orderItems.bookId, books.id));
+    
+    // Calculate total cost of all items
+    let costTotal = 0;
+    for (const item of orderItemsResult) {
+      costTotal += (Number(item.quantity) || 0) * (Number(item.buyPrice) || 0);
+    }
+    
+    // Return profit (sales minus costs)
     return Math.abs(salesTotal - costTotal);
   }
     
@@ -660,33 +658,40 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBestSellingBooks(limit: number = 5): Promise<{ book: Book; soldCount: number }[]> {
-    // Use a different approach to avoid IN clause with multiple IDs
-    // First, get all books
-    const allBooks = await db.select().from(books);
-    
-    // For each book, calculate the sold count
-    const results: { book: Book; soldCount: number }[] = [];
-    
-    for (const book of allBooks) {
-      const soldItems = await db
-        .select({
-          quantity: orderItems.quantity
-        })
-        .from(orderItems)
-        .where(eq(orderItems.bookId, book.id));
-        
-      const soldCount = soldItems.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+    // Get the total sold quantity for each book in one query
+    const bookSales = await db
+      .select({
+        bookId: orderItems.bookId,
+        totalQuantity: sqlBuilder`SUM(${orderItems.quantity})`
+      })
+      .from(orderItems)
+      .groupBy(orderItems.bookId)
+      .orderBy(sqlBuilder`SUM(${orderItems.quantity}) DESC`)
+      .limit(limit);
       
-      results.push({
-        book,
-        soldCount
-      });
-    }
+    if (bookSales.length === 0) return [];
     
-    // Sort by sold count and limit
-    return results
-      .sort((a, b) => b.soldCount - a.soldCount)
-      .slice(0, limit);
+    // Get the book details for these top-selling books
+    const bookIds = bookSales.map(sale => sale.bookId);
+    const topBooks = await db
+      .select()
+      .from(books)
+      .where(inArray(books.id, bookIds));
+      
+    // Create a map for easy lookup of book sales
+    const salesMap = new Map();
+    bookSales.forEach(sale => {
+      salesMap.set(sale.bookId, Number(sale.totalQuantity) || 0);
+    });
+    
+    // Build the result array with book info and sales counts
+    const results = topBooks.map(book => ({
+      book,
+      soldCount: salesMap.get(book.id) || 0
+    }));
+    
+    // Sort by sold count (in case the database sort order is different)
+    return results.sort((a, b) => b.soldCount - a.soldCount);
   }
   
   async getOrdersByStatus(): Promise<{ status: string; count: number }[]> {
