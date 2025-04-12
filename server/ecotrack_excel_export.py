@@ -195,9 +195,10 @@ class EcoTrackExcelExporter:
                     self._set_cell_value(sheet, row_num, 'name', customer.get('name', ''))
                     
                     # Fix for customer phone - ensure primary phone number is included
+                    # Direct handling for phone number to guarantee it's set
                     phone = customer.get('phone', '')
-                    if phone:
-                        self._set_cell_value(sheet, row_num, 'phone', phone)
+                    logger.info(f"Customer phone for row {row_num}: {phone}")
+                    self._set_cell_value(sheet, row_num, 'phone', phone)
                     
                     self._set_cell_value(sheet, row_num, 'phone2', customer.get('phone2', ''))
                     
@@ -210,11 +211,17 @@ class EcoTrackExcelExporter:
                     self._set_cell_value(sheet, row_num, 'wilaya', wilaya_name)
                     
                     # Fix commune format: remove the wilaya code suffix (e.g., "_16")
+                    # For commune data, be very specific about extracting only the commune name
                     commune = customer.get('commune', '')
                     if commune and '_' in commune:
-                        commune = commune.split('_')[0]  # Take only the part before the underscore
+                        commune = commune.split('_')[0].strip()  # Take only the part before the underscore and trim whitespace
                     
-                    self._set_cell_value(sheet, row_num, 'commune', commune)
+                    # Add additional logging to debug commune issues
+                    logger.info(f"Commune for row {row_num}: Original='{customer.get('commune', '')}', Processed='{commune}'")
+                    
+                    # Only set if we have a valid commune
+                    if commune:
+                        self._set_cell_value(sheet, row_num, 'commune', commune)
                     self._set_cell_value(sheet, row_num, 'address', customer.get('address', ''))
                 
                 # Set product value as "livres" instead of book titles
