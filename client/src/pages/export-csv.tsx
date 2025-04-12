@@ -12,10 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertCircle, Download, FileText, Info } from "lucide-react";
+import { AlertCircle, Download, FilePlus2, FileSpreadsheet, FileText, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { generateCSV } from "@/lib/utils";
+import { generateExcelFromTemplate } from "@/lib/excel-export";
 
 interface Customer {
   id: number;

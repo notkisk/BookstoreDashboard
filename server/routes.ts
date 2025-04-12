@@ -675,6 +675,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const period = req.query.period as string || 'year';
       const range = req.query.range as string || 'all';
+      const groupBy = req.query.groupBy as string || 'month';
       
       // Get all orders
       const allOrders = await storage.getOrders();
@@ -685,16 +686,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Define month names
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       
-      // Initialize monthly data
+      // Initialize monthly data with zeros for all months
       for (let i = 0; i < 12; i++) {
         monthlyData.push({ month: monthNames[i], sales: 0 });
       }
       
-      // Calculate monthly sales from orders
+      // Only include actual sales from orders in the current year
+      const currentYear = new Date().getFullYear();
+      
       for (const order of allOrders) {
         const orderDate = new Date(order.createdAt);
-        const monthIndex = orderDate.getMonth();
-        monthlyData[monthIndex].sales += Number(order.totalAmount) || 0;
+        const orderYear = orderDate.getFullYear();
+        
+        // Only count orders from the current year
+        if (orderYear === currentYear) {
+          const monthIndex = orderDate.getMonth();
+          monthlyData[monthIndex].sales += Number(order.totalAmount) || 0;
+        }
       }
       
       // Filter data based on period if needed
@@ -714,6 +722,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       } else if (period === 'year') {
         // All 12 months (already set)
+        // Keep only months up to the current month
+        const currentMonth = new Date().getMonth();
+        for (let i = 0; i <= currentMonth; i++) {
+          // Keep actual data for these months
+        }
+        
+        // Previous months should show 0 to avoid misleading data
+        for (let i = currentMonth + 1; i < 12; i++) {
+          monthlyData[i].sales = 0;
+        }
       }
       
       res.json(filteredData);
@@ -1000,6 +1018,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.setHeader('Cache-Control', 'public, max-age=86400'); // 24 hours
     next();
   }, express.static('uploads'));
+  
+  // Serve templates
+  app.use('/templates', (req, res, next) => {
+    // Add cache control headers
+    res.setHeader('Cache-Control', 'public, max-age=86400'); // 24 hours
+    next();
+  }, express.static('templates'));
 
   // ==================== Authentication Setup ====================
   
