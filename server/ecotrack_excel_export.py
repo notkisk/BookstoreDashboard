@@ -195,12 +195,22 @@ class EcoTrackExcelExporter:
                     self._set_cell_value(sheet, row_num, 'name', customer.get('name', ''))
                     
                     # Fix for customer phone - ensure primary phone number is included
-                    # Direct handling for phone number to guarantee it's set
+                    # Direct handling for phone number to guarantee it's set as text
                     phone = customer.get('phone', '')
+                    
+                    # Format the phone number as text to preserve leading zeros
+                    # If it doesn't start with a single quote, add one
+                    if phone and not phone.startswith("'"):
+                        phone = f"'{phone}"
+                    
                     logger.info(f"Customer phone for row {row_num}: {phone}")
                     self._set_cell_value(sheet, row_num, 'phone', phone)
                     
-                    self._set_cell_value(sheet, row_num, 'phone2', customer.get('phone2', ''))
+                    # Format phone2 as text as well
+                    phone2 = customer.get('phone2', '')
+                    if phone2 and not phone2.startswith("'"):
+                        phone2 = f"'{phone2}"
+                    self._set_cell_value(sheet, row_num, 'phone2', phone2)
                     
                     # Handle address data
                     self._set_cell_value(sheet, row_num, 'wilaya_code', customer.get('wilaya', ''))

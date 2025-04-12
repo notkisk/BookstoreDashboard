@@ -363,6 +363,7 @@ export default function ExportCsv() {
       // Create a FormData object to send the file
       const formData = new FormData();
       formData.append('template', templateFile);
+      formData.append('keepAsDefault', keepTemplateAsDefault.toString());
       
       // Make the upload request
       const response = await fetch('/api/templates/ecotrack-upload', {
@@ -601,6 +602,19 @@ export default function ExportCsv() {
                     </>
                   )}
                 </Button>
+              </div>
+              
+              <div className="flex items-center mt-3">
+                <input 
+                  type="checkbox"
+                  id="keep-template"
+                  checked={keepTemplateAsDefault}
+                  onChange={(e) => setKeepTemplateAsDefault(e.target.checked)}
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                />
+                <label htmlFor="keep-template" className="ml-2 block text-sm text-gray-700">
+                  Save as default template (you won't need to upload it again)
+                </label>
               </div>
               
               <p className="text-xs text-gray-500 mt-2">

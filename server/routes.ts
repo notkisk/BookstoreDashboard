@@ -924,15 +924,25 @@ print(output_path)
       // Define the output path
       const outputPath = path.join(exportsDir, `ecotrack_export_${timestamp}.xlsx`);
       
-      // Define the template path
+      // Define the template paths
       const templatePath = path.join(process.cwd(), 'templates/upload_ecotrack_v31.xlsx');
+      const defaultTemplatePath = path.join(process.cwd(), 'templates/upload_ecotrack_v31_default.xlsx');
       
-      // Check if the template exists, if not provide instructions
+      // Check if the template exists, if not check for default template
       if (!fs.existsSync(templatePath)) {
-        console.error("EcoTrack template file not found at:", templatePath);
-        return res.status(400).json({ 
-          message: "EcoTrack template file not found. Please upload the template file to /templates/upload_ecotrack_v31.xlsx." 
-        });
+        console.log("Primary EcoTrack template not found, checking for default template...");
+        
+        // Try to use the default template if available
+        if (fs.existsSync(defaultTemplatePath)) {
+          console.log("Using default EcoTrack template:", defaultTemplatePath);
+          // Copy the default template to the standard location
+          fs.copyFileSync(defaultTemplatePath, templatePath);
+        } else {
+          console.error("EcoTrack template file not found at:", templatePath);
+          return res.status(400).json({ 
+            message: "EcoTrack template file not found. Please upload the template file to /templates/upload_ecotrack_v31.xlsx." 
+          });
+        }
       }
       
       // Execute our specialized Python module for EcoTrack exports
@@ -1412,16 +1422,31 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
         fs.mkdirSync(templatesDir, { recursive: true });
       }
       
+      // Check if we should keep this as the default template
+      const keepAsDefault = req.body.keepAsDefault === 'true';
+      
       // Move the file to templates directory with the correct name
       const targetPath = path.join(templatesDir, 'upload_ecotrack_v31.xlsx');
+      
+      // Copy the file to the templates directory
       fs.copyFileSync(req.file.path, targetPath);
+      
+      // If keep as default is selected, create a backup copy with different name
+      if (keepAsDefault) {
+        const backupPath = path.join(templatesDir, 'upload_ecotrack_v31_default.xlsx');
+        fs.copyFileSync(req.file.path, backupPath);
+        console.log('Created backup of template as default:', backupPath);
+      }
       
       // Clean up the temporary file
       fs.unlinkSync(req.file.path);
       
       res.status(200).json({ 
-        message: 'EcoTrack template uploaded successfully',
-        path: targetPath
+        message: keepAsDefault 
+          ? 'EcoTrack template uploaded successfully and saved as default' 
+          : 'EcoTrack template uploaded successfully',
+        path: targetPath,
+        isDefault: keepAsDefault
       });
     } catch (error) {
       console.error('Error uploading EcoTrack template:', error);
