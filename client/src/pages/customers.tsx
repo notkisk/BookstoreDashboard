@@ -282,7 +282,7 @@ export default function Customers() {
         // Define colors based on loyalty tier
         const tierColors = {
           regular: "bg-gray-100 text-gray-800",
-          silver: "bg-slate-100 text-slate-800",
+          silver: "bg-slate-300 text-slate-800", // Updated silver background to be more visible
           gold: "bg-amber-100 text-amber-800",
           platinum: "bg-purple-100 text-purple-800"
         };
@@ -609,50 +609,45 @@ export default function Customers() {
             <div className="flex flex-wrap gap-3 items-center">
               <div className="flex items-center">
                 <Award className="h-4 w-4 mr-1.5 text-amber-500" />
-                <span className="text-sm font-medium">Loyalty Filters:</span>
+                <span className="text-sm font-medium">Loyalty Tier:</span>
               </div>
               
               <div className="flex flex-wrap gap-2">
-                <Button 
-                  size="sm" 
-                  variant={loyaltyFilter === "all" ? "default" : "outline"}
-                  className="px-3 h-8 text-xs"
-                  onClick={() => setLoyaltyFilter("all")}
+                <Select
+                  value={loyaltyFilter}
+                  onValueChange={setLoyaltyFilter}
                 >
-                  All Tiers
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant={loyaltyFilter === "regular" ? "default" : "outline"}
-                  className="px-3 h-8 text-xs bg-gray-100 text-gray-800 hover:bg-gray-200 hover:text-gray-900 border-gray-200"
-                  onClick={() => setLoyaltyFilter("regular")}
-                >
-                  <span className={loyaltyFilter === "regular" ? "text-white" : ""}>Regular</span>
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant={loyaltyFilter === "silver" ? "default" : "outline"}
-                  className="px-3 h-8 text-xs bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border-slate-200"
-                  onClick={() => setLoyaltyFilter("silver")}
-                >
-                  <span className={loyaltyFilter === "silver" ? "text-white" : ""}>Silver</span>
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant={loyaltyFilter === "gold" ? "default" : "outline"}
-                  className="px-3 h-8 text-xs bg-amber-100 text-amber-800 hover:bg-amber-200 hover:text-amber-900 border-amber-200"
-                  onClick={() => setLoyaltyFilter("gold")}
-                >
-                  <span className={loyaltyFilter === "gold" ? "text-white" : ""}>Gold</span>
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant={loyaltyFilter === "platinum" ? "default" : "outline"}
-                  className="px-3 h-8 text-xs bg-purple-100 text-purple-800 hover:bg-purple-200 hover:text-purple-900 border-purple-200"
-                  onClick={() => setLoyaltyFilter("platinum")}
-                >
-                  <span className={loyaltyFilter === "platinum" ? "text-white" : ""}>Platinum</span>
-                </Button>
+                  <SelectTrigger className="w-[180px] h-9">
+                    <SelectValue placeholder="Select tier" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Tiers</SelectItem>
+                    <SelectItem value="regular">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 rounded-full bg-gray-200 mr-2"></div>
+                        Regular
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="silver">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 rounded-full bg-slate-300 mr-2"></div>
+                        Silver
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="gold">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 rounded-full bg-amber-200 mr-2"></div>
+                        Gold
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="platinum">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 rounded-full bg-purple-200 mr-2"></div>
+                        Platinum
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
               <div className="flex items-center ml-2">

@@ -171,6 +171,11 @@ export default function ViewOrders() {
         <div>
           <p>{order.customer?.wilaya || "Unknown"}</p>
           <p className="text-sm text-gray-500">{order.customer?.commune || "Unknown"}</p>
+          {order.customer?.address && (
+            <p className="text-xs text-gray-400 truncate max-w-[200px]" title={order.customer.address}>
+              {order.customer.address}
+            </p>
+          )}
         </div>
       ),
     },
