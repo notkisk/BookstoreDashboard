@@ -937,7 +937,14 @@ print(output_path)
       
       // Execute our specialized Python module for EcoTrack exports
       try {
-        const command = `python -c "from server.ecotrack_excel_export import export_orders_to_ecotrack; import json; with open('${tempJsonPath}', 'r') as f: orders = json.load(f); print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))"`;
+        // Use a Python script with multiple lines properly formatted
+        const command = `python -c "
+from server.ecotrack_excel_export import export_orders_to_ecotrack
+import json
+with open('${tempJsonPath}', 'r') as f:
+    orders = json.load(f)
+print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
+"`;
         const output = execSync(command).toString().trim();
         
         // Clean up temporary files
