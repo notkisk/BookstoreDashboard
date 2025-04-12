@@ -1060,15 +1060,18 @@ export class DatabaseStorage implements IStorage {
     // Get loyalty settings
     const settings = await this.getLoyaltySettings();
     
-    // Determine the tier based on current points
+    // Determine the tier based on current points according to new requirements:
+    // - Silver tier: 1-20,000 points
+    // - Gold tier: 20,000-50,000 points
+    // - Platinum tier: Above 50,000 points
     let newTier = 'regular';
     const points = customer.loyaltyPoints || 0;
     
-    if (points >= settings.platinumThreshold) {
+    if (points >= 50000) {
       newTier = 'platinum';
-    } else if (points >= settings.goldThreshold) {
+    } else if (points >= 20000) {
       newTier = 'gold';
-    } else if (points >= settings.silverThreshold) {
+    } else if (points >= 1) {
       newTier = 'silver';
     }
     
