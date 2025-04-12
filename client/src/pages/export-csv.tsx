@@ -254,6 +254,63 @@ export default function ExportCsv() {
       });
     }
   };
+  
+  // Export to EcoTrack Excel format using server-side template
+  const exportToEcoTrack = async () => {
+    try {
+      const orderData = prepareOrderData();
+      if (!orderData) return;
+      
+      // Show toast indicating export is starting
+      toast({
+        title: "Export started",
+        description: "Generating EcoTrack formatted file. Please wait...",
+      });
+      
+      // Make a direct GET request to the server endpoint
+      // The server will generate the Excel file using the EcoTrack template
+      const response = await fetch('/api/orders/export/ecotrack');
+      
+      if (!response.ok) {
+        // Get the error message from the response if possible
+        let errorMessage = "Failed to generate EcoTrack file";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          // If we can't parse JSON, use the status text
+          errorMessage = response.statusText || errorMessage;
+        }
+        
+        throw new Error(errorMessage);
+      }
+      
+      // Convert response to blob
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ecotrack_export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "EcoTrack Export successful",
+        description: `${orderData.length} orders have been exported in EcoTrack format.`,
+      });
+    } catch (error) {
+      console.error('EcoTrack export error:', error);
+      toast({
+        title: "Export failed",
+        description: error instanceof Error ? error.message : "There was an error generating the EcoTrack file. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Helper function to get wilaya name from code
   const getWilayaName = (wilayaCode: string): string => {
@@ -424,6 +481,15 @@ export default function ExportCsv() {
               </AlertDescription>
             </Alert>
             
+            <Alert className="bg-green-50 border-green-200 mb-3">
+              <Info className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-700">
+                <strong>NEW!</strong> Use the EcoTrack Format button to export orders using the EcoTrack Excel template.
+                This export maintains all formatting, formulas, validation rules, and macros from the original template.
+                Please place the EcoTrack template at <code className="bg-green-100 p-1 rounded">templates/upload_ecotrack_v31.xlsx</code> before using this feature.
+              </AlertDescription>
+            </Alert>
+            
 
           </div>
 
@@ -463,7 +529,30 @@ export default function ExportCsv() {
               <FileText className="mr-2 h-4 w-4" />
               Export CSV
             </Button>
-
+            
+            <Button
+              onClick={exportToExcel}
+              disabled={
+                isLoading || !filteredOrders || filteredOrders.length === 0
+              }
+              className="bg-blue-300 hover:bg-blue-400 text-black"
+              variant="outline"
+            >
+              <FileSpreadsheet className="mr-2 h-4 w-4" />
+              Export Excel
+            </Button>
+            
+            <Button
+              onClick={exportToEcoTrack}
+              disabled={
+                isLoading || !filteredOrders || filteredOrders.length === 0
+              }
+              className="bg-green-300 hover:bg-green-400 text-black"
+              variant="outline"
+            >
+              <FilePlus2 className="mr-2 h-4 w-4" />
+              EcoTrack Format
+            </Button>
           </div>
         </CardContent>
       </Card>
