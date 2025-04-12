@@ -193,7 +193,12 @@ class EcoTrackExcelExporter:
                 if 'customer' in order:
                     customer = order['customer']
                     self._set_cell_value(sheet, row_num, 'name', customer.get('name', ''))
-                    self._set_cell_value(sheet, row_num, 'phone', customer.get('phone', ''))
+                    
+                    # Fix for customer phone - ensure primary phone number is included
+                    phone = customer.get('phone', '')
+                    if phone:
+                        self._set_cell_value(sheet, row_num, 'phone', phone)
+                    
                     self._set_cell_value(sheet, row_num, 'phone2', customer.get('phone2', ''))
                     
                     # Handle address data
@@ -203,25 +208,20 @@ class EcoTrackExcelExporter:
                     wilaya_name = customer.get('wilayaName', '')
                     
                     self._set_cell_value(sheet, row_num, 'wilaya', wilaya_name)
-                    self._set_cell_value(sheet, row_num, 'commune', customer.get('communeName', customer.get('commune', '')))
+                    
+                    # Fix commune format: remove the wilaya code suffix (e.g., "_16")
+                    commune = customer.get('commune', '')
+                    if commune and '_' in commune:
+                        commune = commune.split('_')[0]  # Take only the part before the underscore
+                    
+                    self._set_cell_value(sheet, row_num, 'commune', commune)
                     self._set_cell_value(sheet, row_num, 'address', customer.get('address', ''))
                 
-                # Handle product data - combine all items
-                if 'items' in order and order['items']:
-                    products = []
-                    for item in order['items']:
-                        if 'book' in item and 'quantity' in item:
-                            book_title = item['book'].get('title', 'Unknown book')
-                            quantity = item.get('quantity', 1)
-                            products.append(f"{book_title} (x{quantity})")
-                    
-                    self._set_cell_value(sheet, row_num, 'product', ", ".join(products))
+                # Set product value as "livres" instead of book titles
+                self._set_cell_value(sheet, row_num, 'product', "livres")
                 
-                # Calculate weight based on number of books (0.5kg per book)
-                weight = 0.5  # Default weight
-                if 'items' in order and order['items']:
-                    weight = sum([item.get('quantity', 1) * 0.5 for item in order['items']])
-                self._set_cell_value(sheet, row_num, 'weight', weight)
+                # Don't set any weight value - leave it empty
+                # Weight column will be left blank as requested
                 
                 # Set amount
                 amount = order.get('finalAmount', order.get('totalAmount', 0))
