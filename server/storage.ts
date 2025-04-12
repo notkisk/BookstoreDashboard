@@ -957,25 +957,8 @@ export class DatabaseStorage implements IStorage {
       return 0; // Loyalty program is not active
     }
     
-    // Calculate points based on order amount and customer's tier multiplier
-    const basePoints = Math.round(orderAmount * settings.pointsPerDinar);
-    let pointsMultiplier = 1.0; // Default multiplier for regular tier
-    
-    // Apply tier-based multiplier
-    switch (customer.loyaltyTier) {
-      case 'silver':
-        pointsMultiplier = settings.silverMultiplier;
-        break;
-      case 'gold':
-        pointsMultiplier = settings.goldMultiplier;
-        break;
-      case 'platinum':
-        pointsMultiplier = settings.platinumMultiplier;
-        break;
-    }
-    
-    // Calculate final points with multiplier
-    const pointsToAdd = Math.round(basePoints * pointsMultiplier);
+    // Calculate points based on order amount - 1 point per 1 DZD as per new requirements
+    const pointsToAdd = Math.round(orderAmount); // 1:1 ratio, so just use the amount directly
     
     // Create transaction record
     await db.insert(loyaltyTransactions).values({
