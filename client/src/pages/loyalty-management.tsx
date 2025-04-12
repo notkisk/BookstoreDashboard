@@ -27,7 +27,6 @@ export default function LoyaltyManagement() {
   };
 
   return (
-    <DashboardLayout>
       <div className="flex flex-col space-y-6 p-6">
         <div className="flex justify-between items-center">
           <div>
@@ -213,6 +212,5 @@ export default function LoyaltyManagement() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
   );
 }
