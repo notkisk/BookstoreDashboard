@@ -44,8 +44,8 @@ class EcoTrackExcelExporter:
         """
         self.template_path = template_path or DEFAULT_TEMPLATE_PATH
         self.column_mapping = {}
-        self.header_row = None
-        self.data_start_row = None
+        self.header_row = 1  # Default to first row if not detected
+        self.data_start_row = 2  # Default to second row if not detected
         self.log_errors = []
         
     def export_orders(self, orders, output_path=None):
@@ -182,6 +182,8 @@ class EcoTrackExcelExporter:
             orders: List of order objects
         """
         for i, order in enumerate(orders):
+            if self.data_start_row is None:
+                self.data_start_row = 2  # Default to row 2 if header detection failed
             row_num = self.data_start_row + i
             
             try:
@@ -198,14 +200,7 @@ class EcoTrackExcelExporter:
                     self._set_cell_value(sheet, row_num, 'wilaya_code', customer.get('wilaya', ''))
                     
                     # Look up wilaya name if available
-                    wilaya_name = ''
-                    try:
-                        from client.src.data.algeria import getWilayaById
-                        wilaya = getWilayaById(customer.get('wilaya', ''))
-                        if wilaya:
-                            wilaya_name = wilaya.get('name', '')
-                    except:
-                        wilaya_name = customer.get('wilayaName', '')
+                    wilaya_name = customer.get('wilayaName', '')
                     
                     self._set_cell_value(sheet, row_num, 'wilaya', wilaya_name)
                     self._set_cell_value(sheet, row_num, 'commune', customer.get('communeName', customer.get('commune', '')))
