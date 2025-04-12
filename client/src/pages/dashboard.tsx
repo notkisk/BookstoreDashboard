@@ -78,8 +78,12 @@ interface Order {
   reference: string;
   customerId: number;
   totalAmount: number;
+  finalAmount?: number;
   status: string;
   createdAt: string;
+  deliveryPrice?: number;
+  discountAmount?: number;
+  discountPercentage?: number;
   customer?: {
     name: string;
     phone: string;
@@ -87,6 +91,7 @@ interface Order {
   items?: {
     book: {
       title: string;
+      price?: number;
     };
     quantity: number;
   }[];
@@ -194,7 +199,62 @@ export default function Dashboard() {
       accessorKey: "items" as const,
       cell: (order: Order) => {
         if (!order.items?.length) return "N/A";
-        return order.items.map((item) => item.book.title).join(", ");
+        
+        // Show only the first book title with a popup for details
+        return (
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="link" className="p-0 h-auto text-left font-normal text-blue-600 hover:underline">
+                {order.items[0].book.title} {order.items.length > 1 ? `(+${order.items.length - 1} more)` : ""}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="space-y-2">
+                <h3 className="font-medium text-base border-b pb-2">Order Details</h3>
+                <div className="text-sm">
+                  <p className="font-semibold">Reference: {order.reference}</p>
+                  <p>Customer: {order.customer?.name || "Unknown"}</p>
+                  <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+                  <p>Status: {order.status.charAt(0).toUpperCase() + order.status.slice(1)}</p>
+                  <div className="mt-2">
+                    <p className="font-semibold mb-1">Items:</p>
+                    <ul className="space-y-1">
+                      {order.items.map((item, index) => (
+                        <li key={index} className="flex justify-between">
+                          <span>{item.book.title}</span>
+                          <span>x{item.quantity}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="mt-2 border-t pt-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span>{formatCurrency(order.totalAmount)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Delivery:</span>
+                      <span>{formatCurrency(order.deliveryPrice || 0)}</span>
+                    </div>
+                    <div className="flex justify-between text-gray-600">
+                      <span>Discount:</span>
+                      <span>
+                        {formatCurrency(
+                          (order.discountAmount || 0) + 
+                          ((order.discountPercentage || 0) / 100 * order.totalAmount)
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-semibold mt-1 pt-1 border-t">
+                      <span>Total:</span>
+                      <span>{formatCurrency(order.finalAmount || order.totalAmount)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        );
       },
     },
     {
