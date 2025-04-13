@@ -53,7 +53,7 @@ export default function CostManagement() {
     { id: "2", name: "Utilities", amount: 5000, type: "variable", date: "2025-04-05" },
     { id: "3", name: "Staff Salaries", amount: 60000, type: "fixed", date: "2025-04-10" },
     { id: "4", name: "Marketing", amount: 15000, type: "variable", date: "2025-04-15" },
-    { id: "5", name: "Shipping per Order", amount: 500, type: "per-order", date: "2025-04-20", orderCount: 40 },
+    { id: "5", name: "Shipping per Order", amount: 500, type: "per-order", date: "2025-04-20", orderCount: 40, autoTrack: true },
   ]);
   
   // Tab state for month selection
