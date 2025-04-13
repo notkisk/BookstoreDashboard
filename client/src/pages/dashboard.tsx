@@ -145,14 +145,14 @@ export default function Dashboard() {
   const typedStats = stats as DashboardStats | undefined;
   const typedOrders = orders as Order[] | undefined;
 
-  // Transform data for the chart with Arabic day names in correct order
+  // Transform data for the chart with Arabic day names in correct order (Sunday first)
   const salesData = [
-    { name: "السبت", sales: 3000 },
-    { name: "الاحد", sales: 2800 },
-    { name: "الاثنين", sales: 1200 },
-    { name: "الثلاثاء", sales: 1900 },
-    { name: "الاربعاء", sales: 1500 },
-    { name: "الخميس", sales: 2400 },
+    { name: "الاحد", sales: 3000 },
+    { name: "الاثنين", sales: 2800 },
+    { name: "الثلاثاء", sales: 1200 },
+    { name: "الاربعاء", sales: 1900 },
+    { name: "الخميس", sales: 1500 },
+    { name: "السبت", sales: 2400 },
     { name: "الجمعة", sales: 2100 },
   ];
 
@@ -1003,8 +1003,9 @@ export default function Dashboard() {
                     categories={["sales"]}
                     index="name"
                     colors={["#3b82f6"]}
-                    valueFormatter={(value: number) => `${value} DA`}
-                    yAxisWidth={65}
+                    valueFormatter={(value: number) => `${value.toLocaleString()} DA`}
+                    yAxisWidth={75}
+                    chartType="bar"
                   />
                 )}
               </div>
