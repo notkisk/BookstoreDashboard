@@ -896,6 +896,8 @@ print(output_path)
               ...orderWithItems,
               reference: order.reference,
               finalAmount: Math.round(finalAmount), // Round to nearest integer
+              // Add commune directly from customer to the order object for EcoTrack export
+              commune: customer.commune,
               customer: {
                 ...customer,
                 // Ensure all customer fields needed for export exist
