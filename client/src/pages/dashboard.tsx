@@ -460,7 +460,7 @@ export default function Dashboard() {
                   {statsLoading ? (
                     <Skeleton className="h-8 w-16 mt-1" />
                   ) : (
-                    <p className="text-2xl font-semibold text-gray-800">
+                    <p className="text-2xl font-semibold text-gray-800 text-right">
                       {typedStats?.totalBooksSold || 0}
                     </p>
                   )}
@@ -508,7 +508,7 @@ export default function Dashboard() {
                   {statsLoading ? (
                     <Skeleton className="h-8 w-16 mt-1" />
                   ) : (
-                    <p className="text-2xl font-semibold text-gray-800">
+                    <p className="text-2xl font-semibold text-gray-800 text-right">
                       {typedStats?.ordersCount || 0}
                     </p>
                   )}
