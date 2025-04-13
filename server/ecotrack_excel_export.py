@@ -159,21 +159,40 @@ class EcoTrackExcelExporter:
         # Track which columns we've already mapped to avoid duplicates
         mapped_columns = set()
         
+        # Log all column headers to identify the exact value of the telephone column
+        logger.info(f"===== COLUMN HEADERS DEBUG START =====")
+        for col in range(1, sheet.max_column + 1):
+            cell_value = sheet.cell(row=header_row, column=col).value
+            if cell_value is not None:
+                logger.info(f"Column {get_column_letter(col)} (col {col}): '{cell_value}'")
+        logger.info(f"===== COLUMN HEADERS DEBUG END =====")
+                
         # First, look for exact matches for telephone and telephone2
         for col in range(1, sheet.max_column + 1):
             cell_value = sheet.cell(row=header_row, column=col).value
             if cell_value is not None:
                 cell_text = str(cell_value).lower().strip()
+                logger.info(f"Processing column {get_column_letter(col)} (col {col}) with text: '{cell_text}'")
                 
-                # Special handling for phone columns
-                if cell_text == 'telephone' or cell_text == 'téléphone' or cell_text == 'telephone*' or cell_text == 'téléphone*':
+                # Expanded phone column matching with more variations
+                if (cell_text == 'telephone' or 
+                    cell_text == 'téléphone' or 
+                    cell_text == 'telephone*' or 
+                    cell_text == 'téléphone*' or
+                    'telephone*' in cell_text or 
+                    'téléphone*' in cell_text):
                     self.column_mapping['phone'] = col
                     mapped_columns.add(col)
-                    logger.info(f"Mapped 'phone' to column {get_column_letter(col)} (column {col})")
-                elif cell_text == 'telephone 2' or cell_text == 'téléphone 2' or cell_text == 'telephone2' or cell_text == 'téléphone2':
+                    logger.info(f"✓ Mapped 'phone' to column {get_column_letter(col)} (column {col})")
+                elif (cell_text == 'telephone 2' or 
+                      cell_text == 'téléphone 2' or 
+                      cell_text == 'telephone2' or 
+                      cell_text == 'téléphone2' or
+                      'telephone 2' in cell_text or
+                      'téléphone 2' in cell_text):
                     self.column_mapping['phone2'] = col  
                     mapped_columns.add(col)
-                    logger.info(f"Mapped 'phone2' to column {get_column_letter(col)} (column {col})")
+                    logger.info(f"✓ Mapped 'phone2' to column {get_column_letter(col)} (column {col})")
         
         # Then map the rest of the columns
         for col in range(1, sheet.max_column + 1):
@@ -195,6 +214,14 @@ class EcoTrackExcelExporter:
                         mapped_columns.add(col)
                         logger.info(f"Mapped '{field}' to column {get_column_letter(col)} (column {col})")
                         break
+        
+        # Add one more debug logging of the complete mapping
+        logger.info(f"===== FINAL COLUMN MAPPING =====")
+        for field, col in self.column_mapping.items():
+            column_letter = get_column_letter(col)
+            header_value = sheet.cell(row=header_row, column=col).value
+            logger.info(f"Field '{field}' mapped to column {column_letter} (col {col}) with header: '{header_value}'")
+        logger.info(f"===== END FINAL COLUMN MAPPING =====")
         
         # Log missing mappings as warnings
         for field in header_synonyms.keys():
