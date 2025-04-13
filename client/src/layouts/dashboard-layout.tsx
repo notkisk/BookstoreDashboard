@@ -33,10 +33,10 @@ interface NavLinkProps {
 const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => (
   <Link href={href}>
     <div className={cn(
-      "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer",
+      "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors",
       isActive 
-        ? "text-primary-800" 
-        : "text-gray-600 hover:bg-gray-100"
+        ? "text-gray-900 bg-gray-100" 
+        : "text-gray-600 hover:bg-gray-50"
     )}>
       <span className="mr-3 text-lg">{icon}</span>
       {children}
