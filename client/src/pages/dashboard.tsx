@@ -621,7 +621,7 @@ export default function Dashboard() {
                   {statsLoading ? (
                     <Skeleton className="h-8 w-24 mt-1" />
                   ) : (
-                    <p className="text-2xl font-semibold text-gray-800 text-right">
+                    <p className="text-2xl font-semibold text-gray-800">
                       {formatCurrency(typedStats?.profit || 0)}
                     </p>
                   )}
