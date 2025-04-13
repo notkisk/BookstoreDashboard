@@ -455,11 +455,49 @@ export default function Dashboard() {
     },
   ];
 
+  // Function to manually refresh data
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/analytics/dashboard'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/orders'] });
+    toast({
+      title: "Refreshing data",
+      description: "Dashboard data is being updated...",
+    });
+  };
+  
   return (
     <div>
+      {/* Header with refresh button */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-gray-900">Dashboard</h2>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1 animate-pulse-subtle hover:animate-none"
+            onClick={refreshData}
+          >
+            <RefreshCcw className="h-4 w-4" />
+            <span className="hidden sm:inline">Refresh Data</span>
+          </Button>
+        </div>
+      </div>
+      
       {/* Overview Cards */}
       <div className="mb-8">
-        <h3 className="text-base font-semibold text-gray-800 mb-4">Overview</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-base font-semibold text-gray-800">Overview</h3>
+          <Select value={period} onValueChange={setPeriod}>
+            <SelectTrigger className="w-[120px] h-8">
+              <SelectValue placeholder="Period" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="day">Today</SelectItem>
+              <SelectItem value="week">This Week</SelectItem>
+              <SelectItem value="month">This Month</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 dashboard-grid">
           {/* Total Books Card */}
           <Card className="dashboard-card">
