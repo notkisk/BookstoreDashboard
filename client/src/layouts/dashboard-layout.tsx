@@ -17,7 +17,7 @@ import {
   Award,
   BarChart
 } from "lucide-react";
-import gazalLogo from "../assets/gazal-logo-no-text.png";
+import gazalLogo from "../assets/gazal-logo-fixed.png";
 import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -152,7 +152,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
             <div className="h-14 w-14 flex items-center justify-center">
-              <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-14 object-contain" />
+              <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain invert" />
             </div>
             <h1 className="ml-2 font-semibold text-lg text-black">GazalBookStore</h1>
           </div>
@@ -227,7 +227,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="p-4 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center">
               <div className="h-14 w-14 flex items-center justify-center">
-                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-14 object-contain" />
+                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain invert" />
               </div>
               <h1 className="ml-2 font-semibold text-lg text-black">GazalBookStore</h1>
             </div>
@@ -281,9 +281,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto" style={{ backgroundColor: "#e2d1b5" }}>
-        {/* Top header bar */}
+        {/* Top header bar - height matches sidebar header */}
         <header className="border-b border-gray-200 shadow-sm" style={{ backgroundColor: "#e2d1b5" }}>
-          <div className="px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          <div className="px-4 flex items-center justify-between h-[69px]">
             <h2 className="text-lg font-semibold text-black">
               {getCurrentTitle()}
             </h2>
