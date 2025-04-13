@@ -71,6 +71,29 @@ interface DashboardStats {
     wilayaName: string;
     count: number;
   }[];
+  totalBooksSold?: number;
+  comparisons?: {
+    ordersCount: {
+      current: number;
+      previous: number;
+      percentChange: number;
+    };
+    totalSales: {
+      current: number;
+      previous: number;
+      percentChange: number;
+    };
+    profit: {
+      current: number;
+      previous: number;
+      percentChange: number;
+    };
+    totalBooksSold?: {
+      current: number;
+      previous: number;
+      percentChange: number;
+    };
+  };
 }
 
 interface Order {
@@ -377,10 +400,10 @@ export default function Dashboard() {
       {/* Overview Cards */}
       <div className="mb-8">
         <h3 className="text-base font-semibold text-gray-800 mb-4">Overview</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
           {/* Total Books Card */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">
@@ -390,7 +413,7 @@ export default function Dashboard() {
                     <Skeleton className="h-8 w-16 mt-1" />
                   ) : (
                     <p className="text-2xl font-semibold text-gray-800">
-                      {typedStats?.bestSellingBooks?.length || 0}
+                      {typedStats?.totalBooksSold || 0}
                     </p>
                   )}
                 </div>
@@ -447,12 +470,29 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="mt-2 flex items-center">
-                <span className="text-xs font-medium text-green-600 flex items-center">
-                  <ArrowUp className="h-3 w-3" /> 7%
-                </span>
-                <span className="text-xs text-gray-500 ml-1">
-                  from last month
-                </span>
+                {statsLoading ? (
+                  <Skeleton className="h-3 w-16" />
+                ) : typedStats?.comparisons?.ordersCount ? (
+                  <>
+                    <span className={`text-xs font-medium flex items-center ${
+                      typedStats.comparisons.ordersCount.percentChange >= 0 
+                        ? "text-green-600" 
+                        : "text-red-600"
+                    }`}>
+                      {typedStats.comparisons.ordersCount.percentChange >= 0 ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      )} 
+                      {Math.abs(typedStats.comparisons.ordersCount.percentChange)}%
+                    </span>
+                    <span className="text-xs text-gray-500 ml-1">
+                      from last {period}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-gray-500">No previous data for comparison</span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -476,12 +516,29 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="mt-2 flex items-center">
-                <span className="text-xs font-medium text-green-600 flex items-center">
-                  <ArrowUp className="h-3 w-3" /> 23%
-                </span>
-                <span className="text-xs text-gray-500 ml-1">
-                  from last month
-                </span>
+                {statsLoading ? (
+                  <Skeleton className="h-3 w-16" />
+                ) : typedStats?.comparisons?.totalSales ? (
+                  <>
+                    <span className={`text-xs font-medium flex items-center ${
+                      typedStats.comparisons.totalSales.percentChange >= 0 
+                        ? "text-green-600" 
+                        : "text-red-600"
+                    }`}>
+                      {typedStats.comparisons.totalSales.percentChange >= 0 ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      )} 
+                      {Math.abs(typedStats.comparisons.totalSales.percentChange)}%
+                    </span>
+                    <span className="text-xs text-gray-500 ml-1">
+                      from last {period}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-gray-500">No previous data for comparison</span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -527,12 +584,29 @@ export default function Dashboard() {
               </div>
               <div className="mt-2 flex items-center justify-between">
                 <div className="flex items-center">
-                  <span className="text-xs font-medium text-green-600 flex items-center">
-                    <ArrowUp className="h-3 w-3" /> 18%
-                  </span>
-                  <span className="text-xs text-gray-500 ml-1">
-                    from last month
-                  </span>
+                  {statsLoading ? (
+                    <Skeleton className="h-3 w-16" />
+                  ) : typedStats?.comparisons?.profit ? (
+                    <>
+                      <span className={`text-xs font-medium flex items-center ${
+                        typedStats.comparisons.profit.percentChange >= 0 
+                          ? "text-green-600" 
+                          : "text-red-600"
+                      }`}>
+                        {typedStats.comparisons.profit.percentChange >= 0 ? (
+                          <ArrowUp className="h-3 w-3" />
+                        ) : (
+                          <ArrowDown className="h-3 w-3" />
+                        )} 
+                        {Math.abs(typedStats.comparisons.profit.percentChange)}%
+                      </span>
+                      <span className="text-xs text-gray-500 ml-1">
+                        from last {period}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-xs text-gray-500">No previous data for comparison</span>
+                  )}
                 </div>
                 {!statsLoading && typedStats?.totalSales ? (
                   <span className="text-xs font-medium text-blue-600 flex items-center">
