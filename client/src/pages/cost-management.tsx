@@ -504,7 +504,7 @@ export default function CostManagement() {
                 </div>
 
                 <Button 
-                  className="w-full h-9 mt-4 text-sm text-black hover:text-black transition-all duration-300" 
+                  className="w-full h-16 mt-4 text-sm" 
                   onClick={handleAddCost}
                 >
                   <PlusCircle className="mr-2 h-3.5 w-3.5" />
@@ -629,7 +629,7 @@ export default function CostManagement() {
           </div>
         </CardContent>
       </Card>
-
+A
       {/* Tips and Information */}
       <Alert className="bg-blue-50 border-grey-200 mb-8">
         <AlertDescription className="text-grey-800">

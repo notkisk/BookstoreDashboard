@@ -729,7 +729,7 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                             }}
                           />
                         </FormControl>
-                        <FormLabel className="!mt-0">Stop Desk ✅</FormLabel>
+                        <FormLabel className="!mt-0">Stop Desk </FormLabel>
                       </FormItem>
                     )}
                   />

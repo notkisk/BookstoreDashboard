@@ -410,7 +410,7 @@ export default function Inventory() {
         <div className="flex space-x-3">
           <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
             <DialogTrigger asChild>
-              <Button className="bg-primary-300 hover:bg-primary-400 text-white">
+              <Button className="bg-primary-300 hover:bg-primary-400 text-black">
                 <Plus className="mr-1 h-4 w-4" /> Add Book
               </Button>
             </DialogTrigger>
