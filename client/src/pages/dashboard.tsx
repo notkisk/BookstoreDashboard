@@ -902,7 +902,7 @@ export default function Dashboard() {
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
-                <p className="text-2xl font-semibold text-gray-800">
+                <p className="text-2xl font-semibold text-gray-800 text-center">
                   {typedStats?.ordersByStatus?.find(
                     (s) => s.status === "pending",
                   )?.count || 0}
@@ -929,7 +929,7 @@ export default function Dashboard() {
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
-                <p className="text-2xl font-semibold text-gray-800">
+                <p className="text-2xl font-semibold text-gray-800 text-center">
                   {typedStats?.ordersByStatus?.find(
                     (s) => s.status === "delivering",
                   )?.count || 0}
@@ -956,7 +956,7 @@ export default function Dashboard() {
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
-                <p className="text-2xl font-semibold text-gray-800">
+                <p className="text-2xl font-semibold text-gray-800 text-center">
                   {typedStats?.ordersByStatus?.find(
                     (s) => s.status === "delivered",
                   )?.count || 0}
@@ -981,7 +981,7 @@ export default function Dashboard() {
               {statsLoading ? (
                 <Skeleton className="h-8 w-16 mt-1" />
               ) : (
-                <p className="text-2xl font-semibold text-gray-800">
+                <p className="text-2xl font-semibold text-gray-800 text-center">
                   {(typedStats?.ordersByStatus?.find(
                     (s) => s.status === "returned",
                   )?.count || 0) +
