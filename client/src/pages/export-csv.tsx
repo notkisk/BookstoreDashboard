@@ -535,7 +535,7 @@ export default function ExportCsv() {
                 <Button 
                   onClick={uploadTemplateFile}
                   disabled={!templateFile || isUploading}
-                  className="bg-green-100 hover:bg-green-200 text-green-800 border-green-300"
+                  className="bg-black-100 hover:bg-black-200 text-black-800 border-black-300"
                 >
                   {isUploading ? (
                     <>
@@ -557,9 +557,10 @@ export default function ExportCsv() {
                   id="keep-template"
                   checked={keepTemplateAsDefault}
                   onChange={(e) => setKeepTemplateAsDefault(e.target.checked)}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-primary-500 focus:ring-primary-500 border-grey-300 rounded accent-black
+"
                 />
-                <label htmlFor="keep-template" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="keep-template" className="ml-2 block text-sm text-black-700">
                   Save as default template
                 </label>
               </div>
@@ -598,7 +599,7 @@ export default function ExportCsv() {
               disabled={
                 isLoading || !filteredOrders || filteredOrders.length === 0 || isExporting
               }
-              className="bg-green-300 hover:bg-green-400 text-black"
+              className="bg-black-300 hover:bg-black-400 text-black"
               variant="outline"
             >
               {isExporting ? (

@@ -147,12 +147,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="h-screen flex overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="w-64 border-r border-gray-200 hidden md:block transition-all duration-300" style={{ backgroundColor: "#e2d1b5" }}>
+      <aside className="w-54 border-r border-gray-200 hidden md:block transition-all duration-300" style={{ backgroundColor: "#e2d1b5" }}>
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
-            <div className="h-14 w-14 flex items-center justify-center hover-scale">
-              <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain invert" />
+            <div className="h-9 w-14 flex items-center justify-center hover-scale">
+              <img src={gazalLogo} alt="Gazal Logo" className="h-18 w-auto object-contain invert" />
             </div>
             <h1 className="ml-2 font-semibold text-lg text-black animate-fade-in">GazalBookStore</h1>
           </div>

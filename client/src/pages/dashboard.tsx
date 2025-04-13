@@ -7,7 +7,7 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue,Sales Analytics
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Chart } from "@/components/ui/chart";
