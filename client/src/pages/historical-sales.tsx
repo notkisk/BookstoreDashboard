@@ -246,19 +246,8 @@ export default function HistoricalSales() {
               Back to Dashboard
             </Button>
           </Link>
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Historical Sales</h1>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="ml-4 flex items-center gap-1 animate-pulse-subtle hover:animate-none"
-              onClick={refreshData}
-            >
-              <RefreshCcw className="h-4 w-4" />
-              <span className="hidden sm:inline">Refresh Data</span>
-            </Button>
-          </div>
-          <p className="text-gray-600">Analyze your sales performance over time</p>
+          <h1 className="text-2xl font-bold text-gray-900">Historical Sales</h1>
+          <p className="text-gray-600 opacity-80">Analyze your sales performance over time • Pull down to refresh</p>
         </div>
       </div>
       
