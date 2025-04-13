@@ -399,12 +399,29 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="mt-2 flex items-center">
-                <span className="text-xs font-medium text-green-600 flex items-center">
-                  <ArrowUp className="h-3 w-3" /> 12%
-                </span>
-                <span className="text-xs text-gray-500 ml-1">
-                  from last month
-                </span>
+                {statsLoading ? (
+                  <Skeleton className="h-3 w-16" />
+                ) : typedStats?.comparisons?.totalBooksSold ? (
+                  <>
+                    <span className={`text-xs font-medium flex items-center ${
+                      typedStats.comparisons.totalBooksSold.percentChange >= 0 
+                        ? "text-green-600" 
+                        : "text-red-600"
+                    }`}>
+                      {typedStats.comparisons.totalBooksSold.percentChange >= 0 ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      )} 
+                      {Math.abs(typedStats.comparisons.totalBooksSold.percentChange)}%
+                    </span>
+                    <span className="text-xs text-gray-500 ml-1">
+                      from last {period}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-gray-500">No previous data for comparison</span>
+                )}
               </div>
             </CardContent>
           </Card>

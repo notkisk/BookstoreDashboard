@@ -1001,6 +1001,7 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
     try {
       const period = req.query.period as 'day' | 'week' | 'month' | undefined;
       
+      // Get current period data
       const [
         ordersCount,
         totalSales,
@@ -1019,6 +1020,57 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
         storage.getOrdersByWilaya(5)
       ]);
       
+      // Also get previous period data for comparison
+      // For example, if period is 'month', get data from previous month
+      let previousPeriod = 'month';
+      if (period === 'day') previousPeriod = 'day';
+      if (period === 'week') previousPeriod = 'week';
+      
+      const now = new Date();
+      let prevFromDate = new Date();
+      let prevToDate = new Date();
+      
+      if (previousPeriod === 'day') {
+        prevFromDate.setDate(now.getDate() - 2);
+        prevToDate.setDate(now.getDate() - 1);
+      } else if (previousPeriod === 'week') {
+        prevFromDate.setDate(now.getDate() - 14);
+        prevToDate.setDate(now.getDate() - 7);
+      } else if (previousPeriod === 'month') {
+        prevFromDate.setMonth(now.getMonth() - 2);
+        prevToDate.setMonth(now.getMonth() - 1);
+      }
+      
+      const [
+        prevOrdersCount,
+        prevTotalSales,
+        prevProfit,
+      ] = await Promise.all([
+        storage.getOrdersCount(previousPeriod as 'day' | 'week' | 'month'),
+        storage.getTotalSales(previousPeriod as 'day' | 'week' | 'month'),
+        storage.getProfit(previousPeriod as 'day' | 'week' | 'month'),
+      ]);
+      
+      // Calculate percent changes
+      let percentOrdersChange = 0;
+      let percentSalesChange = 0;
+      let percentProfitChange = 0;
+      
+      if (prevOrdersCount > 0) {
+        percentOrdersChange = Math.round(((ordersCount - prevOrdersCount) / prevOrdersCount) * 100);
+      }
+      
+      if (prevTotalSales > 0) {
+        percentSalesChange = Math.round(((totalSales - prevTotalSales) / prevTotalSales) * 100);
+      }
+      
+      if (prevProfit > 0) {
+        percentProfitChange = Math.round(((profit - prevProfit) / prevProfit) * 100);
+      }
+      
+      // Calculate total books sold from the bestSellingBooks data
+      const totalBooksSold = bestSellingBooks.reduce((total, item) => total + item.soldCount, 0);
+      
       res.json({
         ordersCount,
         totalSales,
@@ -1026,7 +1078,25 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
         discounts,
         bestSellingBooks,
         ordersByStatus,
-        ordersByWilaya
+        ordersByWilaya,
+        totalBooksSold,
+        comparisons: {
+          ordersCount: {
+            current: ordersCount,
+            previous: prevOrdersCount,
+            percentChange: percentOrdersChange
+          },
+          totalSales: {
+            current: totalSales,
+            previous: prevTotalSales,
+            percentChange: percentSalesChange
+          },
+          profit: {
+            current: profit,
+            previous: prevProfit,
+            percentChange: percentProfitChange
+          }
+        }
       });
     } catch (error) {
       console.error("Error fetching analytics:", error);
