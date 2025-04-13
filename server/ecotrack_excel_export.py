@@ -113,8 +113,8 @@ class EcoTrackExcelExporter:
         header_synonyms = {
             'ref': ['ref', 'reference', 'reference commande', 'commande ref', 'réf', 'référence'],
             'name': ['nom', 'destinataire', 'nom et prenom', 'nom et prénom', 'nom et prenom du destinataire', 'client'],
-            'phone': ['telephone', 'téléphone', 'tel', 'tél', 'tel1', 'numéro téléphone'],
-            'phone2': ['telephone2', 'téléphone2', 'tel2', 'tél2', 'numéro téléphone2', 'numéro secondaire'],
+            'phone': ['telephone*', 'téléphone*', 'telephone', 'téléphone', 'tel', 'tél', 'tel1', 'numéro téléphone'],
+            'phone2': ['telephone 2', 'téléphone 2', 'telephone2', 'téléphone2', 'tel2', 'tél2', 'numéro téléphone2', 'numéro secondaire'],
             'wilaya_code': ['code wilaya', 'wilaya code', 'code', 'cod wilaya'],
             'wilaya': ['wilaya', 'wilaya de livraison', 'w'],
             'commune': ['commune', 'commune de livraison', 'ville'],
