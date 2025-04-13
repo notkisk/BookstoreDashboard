@@ -469,7 +469,9 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    const query = db.select({ count: count() }).from(orders);
+    // Only count delivered orders
+    const query = db.select({ count: count() }).from(orders)
+      .where(eq(orders.status, 'delivered'));
     
     // Add date filter if period is specified
     if (fromDate) {
@@ -479,6 +481,7 @@ export class DatabaseStorage implements IStorage {
       
       query.where(
         and(
+          eq(orders.status, 'delivered'),
           sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
           sqlBuilder`${orders.createdAt} <= ${nowStr}`
         )
@@ -504,9 +507,11 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
+    // Only count delivered orders for total sales
     const query = db
       .select({ total: sqlBuilder`sum(${orders.totalAmount})` })
-      .from(orders);
+      .from(orders)
+      .where(eq(orders.status, 'delivered'));
     
     // Add date filter if period is specified
     if (fromDate) {
@@ -516,6 +521,7 @@ export class DatabaseStorage implements IStorage {
       
       query.where(
         and(
+          eq(orders.status, 'delivered'),
           sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
           sqlBuilder`${orders.createdAt} <= ${nowStr}`
         )
@@ -616,12 +622,14 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    // Build the query with date filter if specified
+    // Build the query with date filter and status filter for delivered orders only
     const query = db.select({
       totalAmount: sqlBuilder`SUM(${orders.totalAmount})`,
       totalDiscountAmount: sqlBuilder`SUM(${orders.discountAmount})`,
       totalDiscountPercentageValue: sqlBuilder`SUM(${orders.totalAmount} * ${orders.discountPercentage} / 100)`
-    }).from(orders);
+    })
+    .from(orders)
+    .where(eq(orders.status, 'delivered'));
     
     if (fromDate) {
       // Convert dates to ISO string for proper SQL compatibility
@@ -630,6 +638,7 @@ export class DatabaseStorage implements IStorage {
       
       query.where(
         and(
+          eq(orders.status, 'delivered'),
           sqlBuilder`${orders.createdAt} >= ${fromDateStr}`,
           sqlBuilder`${orders.createdAt} <= ${nowStr}`
         )
@@ -658,13 +667,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBestSellingBooks(limit: number = 5): Promise<{ book: Book; soldCount: number }[]> {
-    // Get the total sold quantity for each book in one query
+    // Get the total sold quantity for each book in one query, but only for delivered orders
     const bookSales = await db
       .select({
         bookId: orderItems.bookId,
         totalQuantity: sqlBuilder`SUM(${orderItems.quantity})`
       })
       .from(orderItems)
+      .innerJoin(orders, eq(orderItems.orderId, orders.id))
+      .where(eq(orders.status, 'delivered')) // Only count delivered orders
       .groupBy(orderItems.bookId)
       .orderBy(sqlBuilder`SUM(${orderItems.quantity}) DESC`)
       .limit(limit);
@@ -718,13 +729,14 @@ export class DatabaseStorage implements IStorage {
     const customerMap = new Map<number, string>();
     customerInfo.forEach((c: { id: number, wilaya: string }) => customerMap.set(c.id, c.wilaya));
     
-    // Get counts by customer ID
+    // Get counts by customer ID for delivered orders only
     const orderCounts = await db
       .select({
         customerId: orders.customerId,
         count: count(),
       })
       .from(orders)
+      .where(eq(orders.status, 'delivered')) // Only count delivered orders
       .groupBy(orders.customerId);
     
     // Group by wilaya
