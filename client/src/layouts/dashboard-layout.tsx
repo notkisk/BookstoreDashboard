@@ -278,7 +278,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto bg-gray-50">
+      <main className="flex-1 overflow-y-auto" style={{ backgroundColor: "#e2d1b5" }}>
         {/* Top header bar */}
         <header className="bg-white border-b border-gray-200 shadow-sm">
           <div className="px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">

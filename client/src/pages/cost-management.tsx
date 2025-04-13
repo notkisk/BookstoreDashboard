@@ -32,6 +32,7 @@ interface CostItem {
   type: "fixed" | "variable" | "per-order";
   date: string;
   orderCount?: number; // For per-order costs
+  autoTrack?: boolean; // Whether to automatically track delivered orders
 }
 
 // Monthly data interface
