@@ -240,69 +240,78 @@ export default function HistoricalSales() {
       </div>
       
       {/* Filter Controls */}
-      <div className="bg-white rounded-lg shadow p-4 mb-6 flex flex-wrap gap-4 items-center">
-        <div className="mr-2">
-          <Filter className="h-5 w-5 text-gray-500" />
+      <div className="bg-white rounded-lg shadow p-5 mb-6">
+        <div className="flex flex-wrap gap-5 items-center justify-start mb-4">
+          <div className="flex-1 min-w-[150px]">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Time Period</h3>
+            <Select value={dateRange} onValueChange={setDateRange}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Time Period" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">Today</SelectItem>
+                <SelectItem value="week">This Week</SelectItem>
+                <SelectItem value="month">This Month</SelectItem>
+                <SelectItem value="90days">Last 90 Days</SelectItem>
+                <SelectItem value="year">Year to Date</SelectItem>
+                <SelectItem value="all">All Time</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex-1 min-w-[150px]">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Group By</h3>
+            <Select value={groupBy} onValueChange={setGroupBy}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Grouping" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">Daily</SelectItem>
+                <SelectItem value="week">Weekly</SelectItem>
+                <SelectItem value="month">Monthly</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex-1 min-w-[150px]">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">Chart Type</h3>
+            <Select value={chartType} onValueChange={setChartType}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Chart Type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="line" className="flex items-center gap-1">
+                  <div className="flex items-center gap-1">
+                    <LineChart className="h-4 w-4" />
+                    <span>Line Chart</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="bar" className="flex items-center gap-1">
+                  <div className="flex items-center gap-1">
+                    <BarChart className="h-4 w-4" />
+                    <span>Bar Chart</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="area" className="flex items-center gap-1">
+                  <div className="flex items-center gap-1">
+                    <AreaChart className="h-4 w-4" />
+                    <span>Area Chart</span>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div>
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
+        
+        <div className="flex justify-start pt-2 border-t border-gray-100">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1 bg-white hover:bg-gray-50 transition-colors shadow-sm"
+          >
             <Download className="h-4 w-4" />
             <span>Export Data</span>
           </Button>
-        </div>
-        <div>
-          <Select value={dateRange} onValueChange={setDateRange}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Time Period" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="day">Today</SelectItem>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-              <SelectItem value="90days">Last 90 Days</SelectItem>
-              <SelectItem value="year">Year to Date</SelectItem>
-              <SelectItem value="all">All Time</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Select value={groupBy} onValueChange={setGroupBy}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Group By" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="day">Daily</SelectItem>
-              <SelectItem value="week">Weekly</SelectItem>
-              <SelectItem value="month">Monthly</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="min-w-[280px]">
-          <Select value={chartType} onValueChange={setChartType}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Chart Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="line" className="flex items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <LineChart className="h-4 w-4" />
-                  <span>Line Chart</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="bar" className="flex items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <BarChart className="h-4 w-4" />
-                  <span>Bar Chart</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="area" className="flex items-center gap-1">
-                <div className="flex items-center gap-1">
-                  <AreaChart className="h-4 w-4" />
-                  <span>Area Chart</span>
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
