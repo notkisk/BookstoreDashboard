@@ -22,14 +22,14 @@ import {
   Filter,
   ShoppingBag,
   BookOpen,
-  DollarSign,
-  RefreshCcw
+  DollarSign
 } from "lucide-react";
 import { Link } from "wouter";
 import { formatCurrency } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 
 interface SalesDataItem {
   date: string;
@@ -236,8 +236,17 @@ export default function HistoricalSales() {
     ? dataFormat.reduce((max, item) => item.sales > max.sales ? item : max, dataFormat[0])
     : null;
 
+  // Setup pull-to-refresh functionality
+  const { containerRef, refreshIndicator, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await refreshData();
+    }
+  });
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div ref={containerRef} className="container mx-auto px-4 py-8">
+      {refreshIndicator}
+      
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8">
         <div>
           <Link href="/dashboard">

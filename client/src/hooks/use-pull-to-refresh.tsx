@@ -1,18 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import { toast } from '@/hooks/use-toast';
+import { ChevronDown, RefreshCw } from 'lucide-react';
 
 interface PullToRefreshOptions {
   onRefresh: () => Promise<void> | void;
   pullDownThreshold?: number;
-  refreshingContent?: React.ReactNode;
-  pullingContent?: (pullDistance: number, threshold: number) => React.ReactNode;
 }
 
 export function usePullToRefresh({
   onRefresh,
-  pullDownThreshold = 80,
-  refreshingContent = 'Refreshing...',
-  pullingContent = (distance, threshold) => `Pull down to refresh (${Math.round((distance / threshold) * 100)}%)`
+  pullDownThreshold = 80
 }: PullToRefreshOptions) {
   const [isPulling, setIsPulling] = useState(false);
   const [pullDistance, setPullDistance] = useState(0);
@@ -106,27 +103,35 @@ export function usePullToRefresh({
     };
   }, [isPulling, pullDistance, pullDownThreshold, onRefresh]);
 
-  const refreshIndicatorStyle = {
-    height: `${pullDistance}px`,
-    transition: isRefreshing ? 'none' : 'height 0.2s ease-out',
-    overflow: 'hidden',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    fontWeight: 500,
-    color: '#666',
-    backgroundColor: 'rgba(238, 238, 238, 0.8)',
-    borderBottomLeftRadius: '8px',
-    borderBottomRightRadius: '8px',
-  };
+  // Calculate progress percentage
+  const progress = Math.min(100, Math.round((pullDistance / pullDownThreshold) * 100));
+  
+  // Determine if arrow should rotate based on progress
+  const arrowRotation = progress >= 100 ? 'rotate-180' : '';
 
   const refreshIndicator = (
-    <div style={refreshIndicatorStyle}>
-      {isRefreshing 
-        ? refreshingContent 
-        : pullingContent(pullDistance, pullDownThreshold)
-      }
+    <div 
+      className="pull-refresh-indicator"
+      style={{ 
+        height: `${pullDistance}px`,
+        opacity: pullDistance > 0 ? 1 : 0
+      }}
+    >
+      <div className="pull-refresh-content">
+        {isRefreshing ? (
+          <>
+            <RefreshCw className="pull-refresh-spinner" />
+            <span className="pull-refresh-text">Refreshing data...</span>
+          </>
+        ) : (
+          <>
+            <ChevronDown className={`pull-refresh-arrow ${arrowRotation}`} />
+            <span className="pull-refresh-text">
+              {progress >= 100 ? 'Release to refresh' : `Pull down to refresh (${progress}%)`}
+            </span>
+          </>
+        )}
+      </div>
     </div>
   );
 
