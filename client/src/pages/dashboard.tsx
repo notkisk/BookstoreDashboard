@@ -125,20 +125,32 @@ export default function Dashboard() {
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
   const [isChangingStatus, setIsChangingStatus] = useState(false);
   
-  // Fetch dashboard analytics
+  // Fetch dashboard analytics - improved with better caching and reduced fetching
   const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: [`/api/analytics/dashboard?period=${period}`],
+    queryKey: ['/api/analytics/dashboard', period],
+    queryFn: async () => {
+      // Use a small delay to prevent UI from freezing
+      await new Promise(resolve => setTimeout(resolve, 10));
+      return await apiRequest(`/api/analytics/dashboard?period=${period}`);
+    },
     enabled: true,
     retry: 1,
-    staleTime: 60000
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes to reduce server load
+    refetchOnWindowFocus: false // Don't refetch when user returns to the page
   });
 
-  // Fetch recent orders
+  // Fetch recent orders - improved with better caching
   const { data: orders, isLoading: ordersLoading } = useQuery({
     queryKey: ["/api/orders"],
+    queryFn: async () => {
+      // Use a small delay to prevent UI from freezing
+      await new Promise(resolve => setTimeout(resolve, 10));
+      return await apiRequest("/api/orders");
+    },
     enabled: true,
     retry: 1,
-    staleTime: 60000
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    refetchOnWindowFocus: false // Don't refetch when user returns to the page
   });
 
   // Safe casting
