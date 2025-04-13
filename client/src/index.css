@@ -24,6 +24,12 @@
   100% { box-shadow: 0 0 0 0 rgba(226, 209, 181, 0); }
 }
 
+@keyframes pulse-subtle {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
 /* Apply animations to elements */
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in-out;
@@ -47,6 +53,10 @@
 
 .animate-pulse-light {
   animation: pulse 2s infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s infinite;
 }
 
 /* Smooth transitions for all interactive elements */
@@ -266,11 +276,39 @@ button, a, .card, .nav-item {
 
 /* Responsive data tables */
 .responsive-table {
-  @apply overflow-x-auto -mx-4 sm:mx-0;
+  @apply overflow-x-auto -mx-4 sm:mx-0 rounded-lg;
 }
 
 .responsive-table table {
   @apply min-w-full;
+}
+
+/* Mobile optimizations for tables */
+@media (max-width: 640px) {
+  /* Better scrolling for tables on mobile */
+  .responsive-table {
+    @apply -mx-4 px-4 pb-4;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+  }
+  
+  /* Mobile-friendly data tables */
+  .responsive-table table {
+    @apply border-collapse;
+  }
+  
+  .responsive-table th,
+  .responsive-table td {
+    @apply whitespace-nowrap px-3 py-2 text-sm;
+    scroll-snap-align: start;
+  }
+  
+  /* Touch-friendly buttons */
+  .mobile-action-btn {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
 }
 
 /* Print-friendly styles */
