@@ -17,7 +17,7 @@ import {
   Award,
   BarChart
 } from "lucide-react";
-import gazalLogo from "../assets/gazal-logo-with-text.png";
+import gazalLogo from "../assets/gazal-black-logo.png";
 import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -151,8 +151,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
-            <div className="h-9 w-14 flex items-center justify-center hover-scale">
-              <img src={gazalLogo} alt="Gazal Logo" className="h-18 w-auto object-contain invert" />
+            <div className="h-9 w-14 flex items-center justify-center hover-scale animate-scale-in">
+              <img src={gazalLogo} alt="Gazal Logo" className="h-18 w-auto object-contain" />
             </div>
             <h1 className="ml-2 font-semibold text-lg text-black animate-fade-in">GazalBookStore</h1>
           </div>
@@ -226,14 +226,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           <div className="p-4 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center">
-              <div className="h-14 w-14 flex items-center justify-center hover-scale">
-                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain invert" />
+              <div className="h-14 w-14 flex items-center justify-center hover-scale animate-scale-in">
+                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain" />
               </div>
               <h1 className="ml-2 font-semibold text-lg text-black animate-fade-in">GazalBookStore</h1>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(false)}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-black hover:text-gray-800 hover-scale transition-all duration-300"
             >
               <X className="h-5 w-5" />
             </button>
