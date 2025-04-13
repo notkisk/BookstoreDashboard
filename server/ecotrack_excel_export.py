@@ -285,26 +285,31 @@ class EcoTrackExcelExporter:
                     
                     self._set_cell_value(sheet, row_num, 'wilaya', wilaya_name)
                     
-                    # Fix commune handling by ensuring exact commune value from customer records
+                    # Fix commune handling to use ONLY the raw commune name from the order/customer
+                    # This should match exactly what was selected in the order form
                     commune = ''
                     
-                    # First, try to get the commune directly from the order data
-                    if 'commune' in customer and customer['commune']:
+                    # First priority: Get the raw commune name from the order's commune field
+                    if 'commune' in order and order['commune']:
+                        commune = str(order['commune'])
+                        logger.info(f"Using order.commune: '{commune}'")
+                    # Second priority: Get from the customer commune field  
+                    elif 'commune' in customer and customer['commune']:
                         commune = str(customer['commune'])
-                        
-                        # Remove any suffix with wilaya code (format: "CommuneName_16")
-                        if '_' in commune:
-                            commune = commune.split('_')[0].strip()
-                    
-                    # Fallback to order.customer.commune if needed
+                        logger.info(f"Using customer.commune: '{commune}'")
+                    # Last fallback: Try customer's commune property
                     elif order.get('customer', {}).get('commune'):
                         commune = str(order['customer']['commune'])
-                        # Process the same way
-                        if '_' in commune:
-                            commune = commune.split('_')[0].strip()
+                        logger.info(f"Using order.customer.commune: '{commune}'")
                     
+                    # Clean the commune name - remove any suffix with wilaya code (format: "CommuneName_16")
+                    if '_' in commune:
+                        original_commune = commune
+                        commune = commune.split('_')[0].strip()
+                        logger.info(f"Cleaned commune from '{original_commune}' to '{commune}'")
+                        
                     # Add detailed logging to debug commune issues
-                    logger.info(f"Commune for row {row_num}: Original='{customer.get('commune', '')}', Final='{commune}'")
+                    logger.info(f"Commune for row {row_num}: Final='{commune}'")
                     
                     # Always set the commune value if we have one
                     self._set_cell_value(sheet, row_num, 'commune', commune)
