@@ -147,7 +147,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="h-screen flex overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="w-54 border-r border-gray-200 hidden md:block transition-all duration-300" style={{ backgroundColor: "#e2d1b5" }}>
+      <aside className="w-54 border-r border-gray-200 hidden md:block transition-all duration-300" style={{ backgroundColor: "#e1dbd0" }}>
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
@@ -221,7 +221,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           "fixed inset-y-0 left-0 w-64 z-50 transform transition-transform duration-300 md:hidden",
           mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         )}
-        style={{ backgroundColor: "#e2d1b5" }}
+        style={{ backgroundColor: "#e1dbd0" }}
       >
         <div className="h-full flex flex-col">
           <div className="p-4 flex items-center justify-between border-b border-gray-200">
