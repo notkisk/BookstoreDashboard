@@ -68,7 +68,11 @@ export function Chart({
         >
           {showGridLines && <CartesianGrid strokeDasharray="3 3" />}
           {showXAxis && <XAxis dataKey={index} />}
-          {showYAxis && <YAxis width={yAxisWidth} />}
+          {showYAxis && <YAxis 
+            width={yAxisWidth} 
+            tickFormatter={valueFormatter}
+            domain={['auto', 'auto']} // Use auto scaling based on data
+          />}
           {showTooltip && (
             <Tooltip
               content={({ active, payload, label }) => {

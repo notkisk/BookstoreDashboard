@@ -271,23 +271,32 @@ export default function HistoricalSales() {
             </SelectContent>
           </Select>
         </div>
-        <div>
-          <Tabs value={chartType} onValueChange={setChartType} className="w-[280px]">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="line" className="flex items-center gap-1">
-                <LineChart className="h-4 w-4" />
-                <span>Line</span>
-              </TabsTrigger>
-              <TabsTrigger value="bar" className="flex items-center gap-1">
-                <BarChart className="h-4 w-4" />
-                <span>Bar</span>
-              </TabsTrigger>
-              <TabsTrigger value="area" className="flex items-center gap-1">
-                <AreaChart className="h-4 w-4" />
-                <span>Area</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        <div className="min-w-[280px]">
+          <Select value={chartType} onValueChange={setChartType}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="Chart Type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="line" className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <LineChart className="h-4 w-4" />
+                  <span>Line Chart</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="bar" className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <BarChart className="h-4 w-4" />
+                  <span>Bar Chart</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="area" className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
+                  <AreaChart className="h-4 w-4" />
+                  <span>Area Chart</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="ml-auto">
           <Button variant="outline" size="sm" className="flex items-center gap-1">
@@ -320,8 +329,8 @@ export default function HistoricalSales() {
                 categories={["sales"]}
                 index="date"
                 colors={["#3b82f6"]}
-                valueFormatter={(value: number) => `${formatCurrency(value)}`}
-                yAxisWidth={65}
+                valueFormatter={(value: number) => `${value.toLocaleString()} DA`}
+                yAxisWidth={85}
                 chartType={chartType as "line" | "bar" | "area"}
               />
             )}
