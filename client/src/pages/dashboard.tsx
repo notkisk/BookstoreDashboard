@@ -400,7 +400,7 @@ export default function Dashboard() {
       {/* Overview Cards */}
       <div className="mb-8">
         <h3 className="text-base font-semibold text-gray-800 mb-4">Overview</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 md:gap-4 dashboard-grid">
           {/* Total Books Card */}
           <Card className="dashboard-card">
             <CardContent className="p-4 sm:p-5">
@@ -672,8 +672,8 @@ export default function Dashboard() {
         </div>
 
         {ordersLoading ? (
-          <Card>
-            <CardContent className="p-6">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-6">
               <Skeleton className="h-64 w-full" />
             </CardContent>
           </Card>
@@ -837,7 +837,7 @@ export default function Dashboard() {
         <h3 className="text-base font-semibold text-gray-800 mb-4">
           Order Status Overview
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 dashboard-grid">
           {/* Pending Orders */}
           <Card className="dashboard-card">
             <CardContent className="p-4 sm:p-5">
@@ -966,7 +966,7 @@ export default function Dashboard() {
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 dashboard-grid">
           {/* Sales Chart */}
           <Card className="dashboard-card">
             <CardContent className="p-4 sm:p-5">
@@ -1012,8 +1012,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Best Selling Books */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-sm font-medium text-gray-500">
                   Best Selling Books
@@ -1112,8 +1112,8 @@ export default function Dashboard() {
             </Button>
           </Link>
         </div>
-        <Card>
-          <CardContent className="p-5">
+        <Card className="dashboard-card">
+          <CardContent className="p-4 sm:p-5">
             {statsLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5].map((i) => (
