@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Chart } from "@/components/ui/chart";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 import {
   BookOpen,
   ShoppingBag,
@@ -465,22 +466,21 @@ export default function Dashboard() {
     });
   };
   
+  // Setup pull-to-refresh functionality
+  const { containerRef, refreshIndicator, isRefreshing } = usePullToRefresh({
+    onRefresh: async () => {
+      await refreshData();
+    }
+  });
+
   return (
-    <div>
-      {/* Header with refresh button */}
-      <div className="flex justify-between items-center mb-6">
+    <div ref={containerRef}>
+      {refreshIndicator}
+      
+      {/* Dashboard Header */}
+      <div className="mb-6">
         <h2 className="text-xl font-bold text-gray-900">Dashboard</h2>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex items-center gap-1 animate-pulse-subtle hover:animate-none"
-            onClick={refreshData}
-          >
-            <RefreshCcw className="h-4 w-4" />
-            <span className="hidden sm:inline">Refresh Data</span>
-          </Button>
-        </div>
+        <p className="text-sm text-gray-500 opacity-80">Pull down to refresh data</p>
       </div>
       
       {/* Overview Cards */}
