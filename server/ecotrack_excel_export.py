@@ -302,12 +302,47 @@ class EcoTrackExcelExporter:
                         commune = str(order['customer']['commune'])
                         logger.info(f"Using order.customer.commune: '{commune}'")
                     
-                    # Clean the commune name - remove any suffix with wilaya code (format: "CommuneName_16")
+                    # For the commune, we need to look up the real name from the ID
+                    # The commune is stored as an ID like "CommuneName_16"
                     if '_' in commune:
                         original_commune = commune
-                        commune = commune.split('_')[0].strip()
-                        logger.info(f"Cleaned commune from '{original_commune}' to '{commune}'")
+                        commune_id = commune
                         
+                        # First try to find the real commune name by loading the location data
+                        try:
+                            import json
+                            import os
+                            
+                            # Load location data to get real commune names
+                            location_data_path = os.path.join(os.getcwd(), 'client', 'src', 'data', 'algeria_location_data.json')
+                            
+                            if os.path.exists(location_data_path):
+                                with open(location_data_path, 'r', encoding='utf-8') as f:
+                                    location_data = json.load(f)
+                                    
+                                # Find the commune by ID
+                                commune_obj = next((c for c in location_data.get('communes', []) if c['id'] == commune_id), None)
+                                
+                                if commune_obj and 'name' in commune_obj:
+                                    # Use the real commune name from location data
+                                    commune = commune_obj['name']
+                                    logger.info(f"Found real commune name from location data: '{commune}'")
+                                else:
+                                    # Fallback to splitting if commune not found
+                                    commune = commune.split('_')[0].strip()
+                                    logger.info(f"Commune not found in location data, using fallback: '{commune}'")
+                            else:
+                                # Fallback if location data file not found
+                                commune = commune.split('_')[0].strip()
+                                logger.info(f"Location data file not found, using fallback: '{commune}'")
+                                
+                        except Exception as e:
+                            # Fallback if there's any error loading the data
+                            commune = commune.split('_')[0].strip()
+                            logger.error(f"Error finding real commune name: {e}. Using fallback: '{commune}'")
+                            
+                        logger.info(f"Processed commune from '{original_commune}' to '{commune}'")
+                    
                     # Add detailed logging to debug commune issues
                     logger.info(f"Commune for row {row_num}: Final='{commune}'")
                     
