@@ -311,6 +311,33 @@ button, a, .card, .nav-item {
   }
 }
 
+/* Pull-to-refresh styling */
+.pull-refresh-indicator {
+  @apply w-full flex items-center justify-center text-sm font-medium text-gray-500;
+  transition: height 0.3s ease-out;
+  overflow: hidden;
+  background-color: rgba(243, 244, 246, 0.8);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  backdrop-filter: blur(5px);
+}
+
+.pull-refresh-content {
+  @apply flex items-center justify-center gap-2;
+}
+
+.pull-refresh-spinner {
+  @apply animate-spin h-4 w-4 text-blue-600;
+}
+
+.pull-refresh-arrow {
+  @apply transition-transform duration-300 h-4 w-4 text-gray-400;
+}
+
+.pull-refresh-text {
+  @apply text-sm font-medium text-gray-500;
+}
+
 /* Print-friendly styles */
 @media print {
   .no-print {
