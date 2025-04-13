@@ -17,6 +17,7 @@ import {
   Award,
   BarChart
 } from "lucide-react";
+import gazalLogo from "../assets/gazal-logo.png";
 import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -150,10 +151,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
-            <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white">
-              <BookOpen className="h-5 w-5" />
+            <div className="h-10 w-10 flex items-center justify-center">
+              <img src={gazalLogo} alt="Gazal Logo" className="h-10 w-10 object-contain" />
             </div>
-            <h1 className="ml-2 font-semibold text-lg text-black">BookStore</h1>
+            <h1 className="ml-2 font-semibold text-lg text-black">GazalBookStore</h1>
           </div>
           
           {/* Navigation Links */}
@@ -200,7 +201,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="md:hidden fixed bottom-4 right-4 z-50">
         <button 
           onClick={() => setMobileMenuOpen(true)}
-          className="w-12 h-12 rounded-full bg-primary-300 flex items-center justify-center text-white shadow-lg"
+          className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -225,10 +226,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           <div className="p-4 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center">
-              <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-white">
-                <BookOpen className="h-5 w-5" />
+              <div className="h-10 w-10 flex items-center justify-center">
+                <img src={gazalLogo} alt="Gazal Logo" className="h-10 w-10 object-contain" />
               </div>
-              <h1 className="ml-2 font-semibold text-lg text-black">BookStore</h1>
+              <h1 className="ml-2 font-semibold text-lg text-black">GazalBookStore</h1>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(false)}
