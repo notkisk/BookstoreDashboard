@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
@@ -145,16 +145,64 @@ export default function Dashboard() {
   const typedStats = stats as DashboardStats | undefined;
   const typedOrders = orders as Order[] | undefined;
 
-  // Transform data for the chart with Arabic day names in correct order (Sunday first)
-  const salesData = [
-    { name: "الاحد", sales: 3000 },
-    { name: "الاثنين", sales: 2800 },
-    { name: "الثلاثاء", sales: 1200 },
-    { name: "الاربعاء", sales: 1900 },
-    { name: "الخميس", sales: 1500 },
-    { name: "السبت", sales: 2400 },
-    { name: "الجمعة", sales: 2100 },
-  ];
+  // Process the orders data to get sales by day of the week
+  const dailySalesByDay = useMemo(() => {
+    if (!typedOrders || typedOrders.length === 0) {
+      // Return default structure with zero values if no orders
+      return [
+        { name: "الاحد", sales: 0 },
+        { name: "الاثنين", sales: 0 },
+        { name: "الثلاثاء", sales: 0 },
+        { name: "الاربعاء", sales: 0 },
+        { name: "الخميس", sales: 0 },
+        { name: "الجمعة", sales: 0 },
+        { name: "السبت", sales: 0 }
+      ];
+    }
+
+    // Group orders by day of the week
+    const salesByDayOfWeek: Record<string, number> = {
+      "الاحد": 0,    // Sunday (0)
+      "الاثنين": 0,  // Monday (1)
+      "الثلاثاء": 0, // Tuesday (2)
+      "الاربعاء": 0, // Wednesday (3)
+      "الخميس": 0,   // Thursday (4)
+      "الجمعة": 0,   // Friday (5)
+      "السبت": 0     // Saturday (6)
+    };
+
+    // Map JS day index (0-6, Sun-Sat) to Arabic day names
+    const dayIndexToArabic = [
+      "الاحد",    // Sunday (0)
+      "الاثنين",  // Monday (1)
+      "الثلاثاء", // Tuesday (2)
+      "الاربعاء", // Wednesday (3)
+      "الخميس",   // Thursday (4)
+      "الجمعة",   // Friday (5)
+      "السبت"     // Saturday (6)
+    ];
+
+    // Calculate sales for each day of the week
+    typedOrders.forEach(order => {
+      const orderDate = new Date(order.createdAt);
+      const dayOfWeek = orderDate.getDay(); // 0-6 (Sunday-Saturday)
+      const dayName = dayIndexToArabic[dayOfWeek];
+      const amount = order.finalAmount || order.totalAmount || 0;
+      
+      salesByDayOfWeek[dayName] += Number(amount);
+    });
+
+    // Transform to array format required by chart component
+    return [
+      { name: "الاحد", sales: salesByDayOfWeek["الاحد"] },
+      { name: "الاثنين", sales: salesByDayOfWeek["الاثنين"] },
+      { name: "الثلاثاء", sales: salesByDayOfWeek["الثلاثاء"] },
+      { name: "الاربعاء", sales: salesByDayOfWeek["الاربعاء"] },
+      { name: "الخميس", sales: salesByDayOfWeek["الخميس"] },
+      { name: "الجمعة", sales: salesByDayOfWeek["الجمعة"] },
+      { name: "السبت", sales: salesByDayOfWeek["السبت"] }
+    ];
+  }, [typedOrders]);
 
   const queryClient = useQueryClient();
 
@@ -999,7 +1047,7 @@ export default function Dashboard() {
                   <Skeleton className="h-full w-full" />
                 ) : (
                   <Chart
-                    data={salesData}
+                    data={dailySalesByDay}
                     categories={["sales"]}
                     index="name"
                     colors={["#3b82f6"]}
