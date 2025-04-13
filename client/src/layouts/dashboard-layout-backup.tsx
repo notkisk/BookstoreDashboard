@@ -37,7 +37,7 @@ const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => (
       "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-all duration-300 hover-scale",
       isActive 
         ? "text-black bg-white" 
-        : "text-black hover:bg-white hover:bg-opacity-50"
+        : "text-gray-700 hover:bg-white hover:bg-opacity-50"
     )}>
       <span className="mr-3 text-lg transition-transform duration-300">{icon}</span>
       {children}
@@ -158,8 +158,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           
           {/* Navigation Links */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-1 animate-slide-in">
-            {routes.map((route, index) => (
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            {routes.map(route => (
               <NavLink 
                 key={route.path} 
                 href={route.path} 
@@ -173,21 +173,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           
           {/* User Profile */}
           <div className="p-4 pt-2 border-t border-gray-200">
-            <div className="flex items-center px-3 py-2 mb-1 animate-fade-in">
-              <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center shadow-md hover-scale transition-all duration-300">
+            <div className="flex items-center px-3 py-2 mb-1">
+              <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
               <div className="ml-3 flex-1 truncate">
-                <p className="text-sm font-medium text-black truncate">
+                <p className="text-sm font-medium text-gray-700 truncate">
                   {userLoading ? "Loading..." : user?.fullName || "User"}
                 </p>
-                <p className="text-xs text-black truncate opacity-70">
+                <p className="text-xs text-gray-500 truncate">
                   {user?.username || ""}
                 </p>
               </div>
             </div>
             <div 
-              className="flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer text-black hover:bg-white hover:bg-opacity-50 transition-all duration-300 hover-scale"
+              className="flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 transition-colors"
               onClick={handleLogout}
             >
               <span className="mr-3 text-lg"><LogOut className="h-4 w-4" /></span>
@@ -198,10 +198,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Mobile sidebar toggle */}
-      <div className="md:hidden fixed bottom-4 right-4 z-50 animate-pulse-light">
+      <div className="md:hidden fixed bottom-4 right-4 z-50">
         <button 
           onClick={() => setMobileMenuOpen(true)}
-          className="w-12 h-12 rounded-full bg-black flex items-center justify-center text-white shadow-lg hover-scale transition-all duration-300"
+          className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white shadow-lg"
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -210,7 +210,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Mobile sidebar overlay */}
       {mobileMenuOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-40 animate-fade-in"
+          className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-40"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -240,8 +240,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
           
           {/* Navigation Links (Same as desktop) */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-1 animate-slide-in">
-            {routes.map((route, index) => (
+          <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+            {routes.map(route => (
               <NavLink 
                 key={route.path} 
                 href={route.path} 
@@ -255,21 +255,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           
           {/* User Profile */}
           <div className="p-4 pt-2 border-t border-gray-200">
-            <div className="flex items-center px-3 py-2 mb-1 animate-fade-in">
-              <div className="h-8 w-8 rounded-full bg-black flex items-center justify-center shadow-md hover-scale transition-all duration-300">
+            <div className="flex items-center px-3 py-2 mb-1">
+              <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
               <div className="ml-3 flex-1 truncate">
-                <p className="text-sm font-medium text-black truncate">
+                <p className="text-sm font-medium text-gray-700 truncate">
                   {userLoading ? "Loading..." : user?.fullName || "User"}
                 </p>
-                <p className="text-xs text-black truncate opacity-70">
+                <p className="text-xs text-gray-500 truncate">
                   {user?.username || ""}
                 </p>
               </div>
             </div>
             <div 
-              className="flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer text-black hover:bg-white hover:bg-opacity-50 transition-all duration-300 hover-scale"
+              className="flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 transition-colors"
               onClick={handleLogout}
             >
               <span className="mr-3 text-lg"><LogOut className="h-4 w-4" /></span>
@@ -288,17 +288,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               {getCurrentTitle()}
             </h2>
             <div className="flex items-center space-x-3">
-              <button className="p-2 rounded-full hover:bg-white hover:bg-opacity-50 hover-scale transition-all duration-300">
-                <Bell className="h-5 w-5 text-black" />
+              <button className="p-2 rounded-full hover:bg-secondary hover-scale transition-all duration-300">
+                <Bell className="h-5 w-5 text-gray-700" />
               </button>
-              <button className="p-2 rounded-full hover:bg-white hover:bg-opacity-50 hover-scale transition-all duration-300">
-                <Search className="h-5 w-5 text-black" />
+              <button className="p-2 rounded-full hover:bg-secondary hover-scale transition-all duration-300">
+                <Search className="h-5 w-5 text-gray-700" />
               </button>
               <button 
-                className="p-2 rounded-full hover:bg-white hover:bg-opacity-50 hover-scale transition-all duration-300 md:hidden"
+                className="p-2 rounded-full hover:bg-secondary hover-scale transition-all duration-300 md:hidden"
                 onClick={() => setMobileMenuOpen(true)}
               >
-                <Menu className="h-5 w-5 text-black" />
+                <Menu className="h-5 w-5 text-gray-700" />
               </button>
             </div>
           </div>
