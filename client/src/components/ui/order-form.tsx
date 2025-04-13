@@ -902,9 +902,9 @@ export function OrderForm({ books, customers, onSubmit, isSubmitting }: OrderFor
                     </div>
                   </div>
                   
-                  <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                  <div className="flex justify-between items-center pt-2 border-t border-black-200">
                     <span className="text-sm font-medium text-gray-700">Final Total:</span>
-                    <span className="text-base font-semibold text-gray-900">
+                    <span className="text-base font-semibold text-green-900">
                       {formatCurrency(finalAmount)}
                     </span>
                   </div>
