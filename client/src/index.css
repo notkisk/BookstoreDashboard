@@ -3,11 +3,178 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
-
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Typography rules for better readability */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-gray-800 leading-tight;
+  }
+  
+  h1 {
+    @apply text-3xl md:text-4xl;
+  }
+  
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+  
+  h4 {
+    @apply text-lg md:text-xl;
+  }
+  
+  p {
+    @apply text-gray-700 leading-relaxed;
+  }
+  
+  /* Consistent form elements */
+  input, select, textarea {
+    @apply px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+  }
+  
+  /* Better mobile experience */
+  @media (max-width: 640px) {
+    .container {
+      @apply px-4;
+    }
+    
+    /* Touch-friendly buttons on mobile */
+    button, .btn, [role="button"] {
+      @apply min-h-[44px] min-w-[44px]; /* Minimum touch target size */
+    }
+    
+    /* Improved spacing for mobile */
+    .card {
+      @apply px-4 py-3;
+    }
+  }
+  
+  /* Better accessibility for focus states */
+  a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    @apply outline-none ring-2 ring-primary ring-offset-2;
+  }
+  
+  /* High contrast mode support */
+  @media (forced-colors: active) {
+    * {
+      @apply border-current;
+    }
+    a {
+      @apply text-[LinkText];
+    }
+    button, .btn {
+      @apply bg-[ButtonFace] text-[ButtonText] border-[ButtonText];
+    }
+  }
+}
+
+/* Dashboard specific styles */
+.dashboard-card {
+  @apply transition-all duration-200 hover:shadow-md;
+}
+
+.dashboard-card-icon {
+  @apply transition-all duration-200;
+}
+
+.dashboard-card:hover .dashboard-card-icon {
+  @apply scale-110;
+}
+
+/* Responsive data tables */
+.responsive-table {
+  @apply overflow-x-auto -mx-4 sm:mx-0;
+}
+
+.responsive-table table {
+  @apply min-w-full;
+}
+
+/* Print-friendly styles */
+@media print {
+  .no-print {
+    @apply hidden;
+  }
+  
+  body {
+    @apply bg-white text-black;
+  }
+  
+  .page-break {
+    page-break-after: always;
   }
 }
