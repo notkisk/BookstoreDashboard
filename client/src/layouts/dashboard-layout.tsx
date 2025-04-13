@@ -171,8 +171,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </nav>
           
           {/* User Profile */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center mb-3">
+          <div className="p-4 pt-2 border-t border-gray-200">
+            <div className="flex items-center px-3 py-2 mb-1">
               <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
@@ -185,15 +185,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full flex items-center justify-center gap-2"
+            <div 
+              className="flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 transition-colors"
               onClick={handleLogout}
             >
-              <LogOut className="h-3.5 w-3.5" />
+              <span className="mr-3 text-lg"><LogOut className="h-4 w-4" /></span>
               <span>Log out</span>
-            </Button>
+            </div>
           </div>
         </div>
       </aside>
@@ -254,8 +252,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </nav>
           
           {/* User Profile */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex items-center mb-3">
+          <div className="p-4 pt-2 border-t border-gray-200">
+            <div className="flex items-center px-3 py-2 mb-1">
               <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-4 w-4 text-white" />
               </div>
@@ -268,15 +266,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </p>
               </div>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="w-full flex items-center justify-center gap-2"
+            <div 
+              className="flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer text-gray-600 hover:bg-gray-50 transition-colors"
               onClick={handleLogout}
             >
-              <LogOut className="h-3.5 w-3.5" />
+              <span className="mr-3 text-lg"><LogOut className="h-4 w-4" /></span>
               <span>Log out</span>
-            </Button>
+            </div>
           </div>
         </div>
       </aside>
