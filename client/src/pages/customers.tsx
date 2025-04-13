@@ -88,8 +88,6 @@ export default function Customers() {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [selectedWilaya, setSelectedWilaya] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // for first to last or last to first
-  const [loyaltyFilter, setLoyaltyFilter] = useState<string>("all"); // all, regular, silver, gold, platinum
-  const [loyaltyPointsMinimum, setLoyaltyPointsMinimum] = useState<number>(0); // for filtering by minimum points
   const { toast } = useToast();
 
   // Fetch customers
@@ -148,10 +146,10 @@ export default function Customers() {
     },
   });
 
-  // Filter customers based on search query, loyalty tier, and points
+  // Filter customers based on search query only
   const typedCustomers = customers as Customer[] | undefined;
   
-  // First apply all filters sequentially
+  // First apply search filter
   let filtered = typedCustomers;
   
   // Apply search query filter
@@ -160,20 +158,6 @@ export default function Customers() {
       customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       customer.phone.includes(searchQuery) ||
       customer.address.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }
-  
-  // Apply loyalty tier filter
-  if (filtered && loyaltyFilter !== "all") {
-    filtered = filtered.filter((customer: Customer) => 
-      customer.loyaltyTier === loyaltyFilter
-    );
-  }
-  
-  // Apply minimum loyalty points filter
-  if (filtered && loyaltyPointsMinimum > 0) {
-    filtered = filtered.filter((customer: Customer) => 
-      (customer.loyaltyPoints || 0) >= loyaltyPointsMinimum
     );
   }
     
@@ -619,77 +603,7 @@ export default function Customers() {
               </div>
             </div>
             
-            {/* Loyalty filters */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <div className="flex items-center">
-                <Award className="h-4 w-4 mr-1.5 text-amber-500" />
-                <span className="text-sm font-medium">Loyalty Tier:</span>
-              </div>
-              
-              <div className="flex flex-wrap gap-2">
-                <Select
-                  value={loyaltyFilter}
-                  onValueChange={setLoyaltyFilter}
-                >
-                  <SelectTrigger className="w-[180px] h-9">
-                    <SelectValue placeholder="Select tier" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Tiers</SelectItem>
-                    <SelectItem value="regular">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 rounded-full bg-gray-200 mr-2"></div>
-                        Regular
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="silver">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 rounded-full bg-slate-300 mr-2"></div>
-                        Silver
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="gold">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 rounded-full bg-amber-200 mr-2"></div>
-                        Gold
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="platinum">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 rounded-full bg-purple-200 mr-2"></div>
-                        Platinum
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="flex items-center ml-2">
-                <div className="flex items-center">
-                  <Filter className="h-4 w-4 mr-1.5 text-gray-500" />
-                  <span className="text-sm font-medium mr-2">Min Points:</span>
-                </div>
-                <Input
-                  type="number"
-                  value={loyaltyPointsMinimum.toString()}
-                  onChange={(e) => setLoyaltyPointsMinimum(parseInt(e.target.value) || 0)}
-                  className="w-24 h-8 text-sm"
-                  min="0"
-                  step="50"
-                />
-                {loyaltyPointsMinimum > 0 && (
-                  <Button 
-                    size="sm" 
-                    variant="ghost" 
-                    className="h-8 px-2 ml-1"
-                    onClick={() => setLoyaltyPointsMinimum(0)}
-                  >
-                    <span className="sr-only">Reset</span>
-                    ✕
-                  </Button>
-                )}
-              </div>
-            </div>
+            {/* Note: Loyalty filters moved to Loyalty Management page */}
           </div>
         </CardHeader>
         <CardContent>
@@ -708,12 +622,8 @@ export default function Customers() {
               </div>
               <h3 className="text-gray-600 font-medium mb-1">No customers found</h3>
               <p className="text-gray-500 text-sm max-w-md mx-auto">
-                {searchQuery || loyaltyFilter !== "all" || loyaltyPointsMinimum > 0
-                  ? `No customers match your ${[
-                    searchQuery ? "search" : "", 
-                    loyaltyFilter !== "all" ? "loyalty tier" : "", 
-                    loyaltyPointsMinimum > 0 ? "points" : ""
-                  ].filter(Boolean).join(" and ")} criteria. Try adjusting your filters.`
+                {searchQuery 
+                  ? "No customers match your search criteria. Try adjusting your search term."
                   : "You have not added any customers yet. Add customers when creating orders or import them."}
               </p>
             </div>

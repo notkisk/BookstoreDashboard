@@ -1,24 +1,185 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Award, Settings, Users, AlertTriangle, BadgeInfo } from "lucide-react";
+import { Award, Settings, Users, AlertTriangle, BadgeInfo, Search, Phone, MapPin, Filter, BadgeCheck } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DataTable } from "@/components/ui/data-table";
+import { getWilayaById, getCommuneById } from "@/data/algeria";
 
 // Standard dashboard layout
 import DashboardLayout from "@/layouts/dashboard-layout";
 
+interface Customer {
+  id: number;
+  name: string;
+  phone: string;
+  phone2?: string;
+  address: string;
+  wilaya: string;
+  commune: string;
+  loyaltyPoints: number;
+  loyaltyTier: string;
+  createdAt: string;
+}
+
 export default function LoyaltyManagement() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("info");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loyaltyFilter, setLoyaltyFilter] = useState<string>("all");
+  const [loyaltyPointsMinimum, setLoyaltyPointsMinimum] = useState<number>(0);
 
   // Helper function to calculate points preview
   const calculatePoints = (amount: number) => {
     const pointsPerDinar = 1; // 1 point per 1 DZD spent
     return Math.round(amount * pointsPerDinar);
   };
+
+  // Fetch customers with loyalty information
+  const { data: customers, isLoading } = useQuery({
+    queryKey: ['/api/loyalty/customers', loyaltyFilter, loyaltyPointsMinimum],
+    queryFn: async () => {
+      // Build query params for filtering
+      const params = new URLSearchParams();
+      if (loyaltyFilter !== 'all') {
+        params.append('tier', loyaltyFilter);
+      }
+      if (loyaltyPointsMinimum > 0) {
+        params.append('minPoints', loyaltyPointsMinimum.toString());
+      }
+      
+      const queryString = params.toString();
+      const url = `/api/loyalty/customers${queryString ? `?${queryString}` : ''}`;
+      
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch customers');
+      }
+      return response.json();
+    },
+    enabled: activeTab === "customers",
+  });
+
+  // Apply search filter
+  const filteredCustomers = customers ? customers.filter((customer: Customer) => 
+    searchQuery === "" || 
+    customer.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    customer.phone.includes(searchQuery) ||
+    customer.address.toLowerCase().includes(searchQuery.toLowerCase())
+  ) : [];
+
+  // Define columns for the customer table
+  const columns = [
+    {
+      header: "Customer Name",
+      accessorKey: "name" as const,
+      cell: (customer: Customer) => (
+        <div className="flex items-center">
+          <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center mr-3">
+            <span className="text-xs font-medium text-primary-700">
+              {customer.name.substring(0, 2).toUpperCase()}
+            </span>
+          </div>
+          <div>
+            <p className="font-medium text-gray-800">{customer.name}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Contact",
+      accessorKey: "phone" as const,
+      cell: (customer: Customer) => (
+        <div className="flex flex-col">
+          <div className="flex items-center text-sm text-gray-600 mb-1">
+            <Phone className="h-3 w-3 mr-1" /> {customer.phone}
+          </div>
+          {customer.phone2 && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Phone className="h-3 w-3 mr-1" /> {customer.phone2}
+            </div>
+          )}
+        </div>
+      ),
+    },
+    {
+      header: "Address",
+      accessorKey: "address" as const,
+      cell: (customer: Customer) => {
+        // Get proper wilaya and commune names using helper functions
+        const wilaya = getWilayaById(customer.wilaya);
+        const commune = getCommuneById(customer.commune);
+        
+        return (
+          <div className="flex items-start">
+            <MapPin className="h-4 w-4 text-gray-400 mt-0.5 mr-1 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="text-gray-600">{customer.address}</p>
+              <p className="text-gray-500 text-xs">
+                {commune?.name || customer.commune}, {wilaya?.name || customer.wilaya}
+              </p>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Loyalty",
+      accessorKey: "loyaltyPoints" as const,
+      cell: (customer: Customer) => {
+        // Define colors based on loyalty tier
+        const tierColors = {
+          regular: "bg-gray-100 text-gray-800",
+          silver: "bg-slate-300 text-slate-800",
+          gold: "bg-amber-100 text-amber-800",
+          platinum: "bg-purple-100 text-purple-800"
+        };
+        
+        const tierColor = tierColors[customer.loyaltyTier as keyof typeof tierColors] || tierColors.regular;
+        
+        return (
+          <div className="flex flex-col">
+            <div className="flex items-center text-sm text-gray-600 mb-1">
+              <Award className="h-3.5 w-3.5 mr-1 text-amber-500" /> 
+              <span className="font-medium">{customer.loyaltyPoints || 0}</span> 
+              <span className="ml-1">points</span>
+            </div>
+            <div className="flex items-center">
+              <span className={`text-xs px-2 py-0.5 rounded-full ${tierColor} capitalize`}>
+                <BadgeCheck className="inline h-3 w-3 mr-0.5" />
+                {customer.loyaltyTier || 'regular'}
+              </span>
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      header: "Actions",
+      accessorKey: "id" as const,
+      cell: (customer: Customer) => (
+        <Button 
+          variant="outline" 
+          size="sm"
+          onClick={() => {
+            // Just a placeholder for now - this would open a details dialog
+            toast({
+              title: "View Customer Details",
+              description: `Feature for viewing details of ${customer.name} will be added soon.`,
+            });
+          }}
+        >
+          View Details
+        </Button>
+      ),
+    },
+  ];
 
   return (
       <div className="flex flex-col space-y-6 p-6">
@@ -170,17 +331,119 @@ export default function LoyaltyManagement() {
                 <CardDescription>
                   View and manage customer loyalty points and tiers
                 </CardDescription>
+                <div className="space-y-4 mt-4">
+                  {/* Search and filters */}
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <div className="relative flex-1">
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                        <Input
+                          type="search"
+                          placeholder="Search customers..."
+                          className="pl-8 bg-gray-50"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Loyalty filters */}
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <div className="flex items-center">
+                      <Award className="h-4 w-4 mr-1.5 text-amber-500" />
+                      <span className="text-sm font-medium">Loyalty Tier:</span>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      <Select
+                        value={loyaltyFilter}
+                        onValueChange={setLoyaltyFilter}
+                      >
+                        <SelectTrigger className="w-[180px] h-9">
+                          <SelectValue placeholder="Select tier" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Tiers</SelectItem>
+                          <SelectItem value="regular">
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full bg-gray-200 mr-2"></div>
+                              Regular
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="silver">
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full bg-slate-300 mr-2"></div>
+                              Silver
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="gold">
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full bg-amber-200 mr-2"></div>
+                              Gold
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="platinum">
+                            <div className="flex items-center">
+                              <div className="w-3 h-3 rounded-full bg-purple-200 mr-2"></div>
+                              Platinum
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="flex items-center ml-2">
+                      <div className="flex items-center">
+                        <Filter className="h-4 w-4 mr-1.5 text-gray-500" />
+                        <span className="text-sm font-medium mr-2">Min Points:</span>
+                      </div>
+                      <Input
+                        type="number"
+                        value={loyaltyPointsMinimum.toString()}
+                        onChange={(e) => setLoyaltyPointsMinimum(parseInt(e.target.value) || 0)}
+                        className="w-24 h-8 text-sm"
+                        min="0"
+                        step="50"
+                      />
+                      {loyaltyPointsMinimum > 0 && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-8 px-2 ml-1"
+                          onClick={() => setLoyaltyPointsMinimum(0)}
+                        >
+                          <span className="sr-only">Reset</span>
+                          ✕
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <Users className="w-12 h-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-medium mb-2">Customer Loyalty Management</h3>
-                  <p className="text-muted-foreground max-w-md">
-                    This feature will allow you to view and manage customer loyalty points, 
-                    tiers, and redemption history.
-                  </p>
-                  <Button disabled className="mt-6">Coming Soon</Button>
-                </div>
+                {isLoading ? (
+                  <div className="flex justify-center items-center py-12">
+                    <p className="text-muted-foreground">Loading customers...</p>
+                  </div>
+                ) : filteredCustomers && filteredCustomers.length > 0 ? (
+                  <DataTable
+                    data={filteredCustomers}
+                    columns={columns}
+                    searchable={false}
+                    pagination={true}
+                  />
+                ) : (
+                  <div className="text-center py-10">
+                    <Users className="h-10 w-10 text-gray-300 mx-auto mb-3" />
+                    <h3 className="text-lg font-medium mb-2">No customers found</h3>
+                    <p className="text-muted-foreground">
+                      {searchQuery || loyaltyFilter !== 'all' || loyaltyPointsMinimum > 0 ? 
+                        'Try adjusting your search or filters' : 
+                        'No customers with loyalty data are available'}
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
