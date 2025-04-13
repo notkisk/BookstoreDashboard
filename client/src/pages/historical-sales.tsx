@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,12 +22,14 @@ import {
   Filter,
   ShoppingBag,
   BookOpen,
-  DollarSign
+  DollarSign,
+  RefreshCcw
 } from "lucide-react";
 import { Link } from "wouter";
 import { formatCurrency } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiRequest } from "@/lib/queryClient";
+import { toast } from "@/hooks/use-toast";
 
 interface SalesDataItem {
   date: string;
@@ -71,12 +73,22 @@ function generateDailySalesData(days: number = 90): SalesDataItem[] {
 }
 
 export default function HistoricalSales() {
+  const queryClient = useQueryClient();
   const [chartType, setChartType] = useState<string>("line");
   const [dateRange, setDateRange] = useState<string>("all");
   const [groupBy, setGroupBy] = useState<string>("day");
   const [dataFormat, setDataFormat] = useState<SalesDataItem[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10; // Fixed at 10 entries per page
+  
+  // Function to manually refresh data
+  const refreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/analytics/sales'] });
+    toast({
+      title: "Refreshing data",
+      description: "Sales data is being updated...",
+    });
+  };
 
   // Query for sales data
   const { data: salesData, isLoading } = useQuery({
@@ -234,7 +246,18 @@ export default function HistoricalSales() {
               Back to Dashboard
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Historical Sales</h1>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-gray-900">Historical Sales</h1>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="ml-4 flex items-center gap-1 animate-pulse-subtle hover:animate-none"
+              onClick={refreshData}
+            >
+              <RefreshCcw className="h-4 w-4" />
+              <span className="hidden sm:inline">Refresh Data</span>
+            </Button>
+          </div>
           <p className="text-gray-600">Analyze your sales performance over time</p>
         </div>
       </div>
