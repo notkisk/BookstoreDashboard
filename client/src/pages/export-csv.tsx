@@ -594,30 +594,6 @@ export default function ExportCsv() {
           <div className="flex justify-end space-x-3">
             <Button variant="outline">Cancel</Button>
             <Button
-              onClick={exportToCsv}
-              disabled={
-                isLoading || !filteredOrders || filteredOrders.length === 0
-              }
-              className="bg-primary-300 hover:bg-primary-400 text-black"
-              variant="outline"
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              Export CSV
-            </Button>
-            
-            <Button
-              onClick={exportToExcel}
-              disabled={
-                isLoading || !filteredOrders || filteredOrders.length === 0
-              }
-              className="bg-blue-300 hover:bg-blue-400 text-black"
-              variant="outline"
-            >
-              <FileSpreadsheet className="mr-2 h-4 w-4" />
-              Export Excel
-            </Button>
-            
-            <Button
               onClick={exportToEcoTrack}
               disabled={
                 isLoading || !filteredOrders || filteredOrders.length === 0 || isExporting

@@ -35,7 +35,7 @@ const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => (
     <div className={cn(
       "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer",
       isActive 
-        ? "bg-primary-50 text-primary-800" 
+        ? "text-primary-800" 
         : "text-gray-600 hover:bg-gray-100"
     )}>
       <span className="mr-3 text-lg">{icon}</span>
@@ -58,8 +58,8 @@ export const dashboardRoutes = [
   { path: "/cost-management", label: "Cost Management", icon: <FileText /> },
   { path: "/loyalty-management", label: "Loyalty Program", icon: <Award /> },
   { path: "/location-data", label: "Location Data", icon: <MapPin /> },
-  { path: "/import", label: "CSV Import", icon: <Upload /> },
-  { path: "/export", label: "CSV Export", icon: <Download /> },
+  { path: "/import", label: "Import Books", icon: <Upload /> },
+  { path: "/export", label: "Export Orders", icon: <Download /> },
 ];
 
 // Export this component for reuse in other layouts
