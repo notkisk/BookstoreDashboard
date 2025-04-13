@@ -34,12 +34,12 @@ interface NavLinkProps {
 const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => (
   <Link href={href}>
     <div className={cn(
-      "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-colors",
+      "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-all duration-300 hover-scale",
       isActive 
         ? "text-black bg-white" 
         : "text-gray-700 hover:bg-white hover:bg-opacity-50"
     )}>
-      <span className="mr-3 text-lg">{icon}</span>
+      <span className="mr-3 text-lg transition-transform duration-300">{icon}</span>
       {children}
     </div>
   </Link>
@@ -151,9 +151,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
-            <div className="h-14 w-48 flex items-center justify-center">
-              <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain" />
+            <div className="h-14 w-14 flex items-center justify-center hover-scale">
+              <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain invert" />
             </div>
+            <h1 className="ml-2 font-semibold text-lg text-black animate-fade-in">GazalBookStore</h1>
           </div>
           
           {/* Navigation Links */}
@@ -225,9 +226,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           <div className="p-4 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center">
-              <div className="h-14 w-48 flex items-center justify-center">
-                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain" />
+              <div className="h-14 w-14 flex items-center justify-center hover-scale">
+                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain invert" />
               </div>
+              <h1 className="ml-2 font-semibold text-lg text-black animate-fade-in">GazalBookStore</h1>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(false)}
@@ -278,22 +280,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto" style={{ backgroundColor: "#e2d1b5" }}>
+      <main className="flex-1 overflow-y-auto animate-fade-in" style={{ backgroundColor: "#e2d1b5" }}>
         {/* Top header bar - height matches sidebar header */}
         <header className="border-b border-gray-200 shadow-sm" style={{ backgroundColor: "#e2d1b5" }}>
           <div className="px-4 flex items-center justify-between h-[69px]">
-            <h2 className="text-lg font-semibold text-black">
+            <h2 className="text-lg font-semibold text-black animate-fade-in">
               {getCurrentTitle()}
             </h2>
             <div className="flex items-center space-x-3">
-              <button className="p-2 rounded-full hover:bg-secondary">
+              <button className="p-2 rounded-full hover:bg-secondary hover-scale transition-all duration-300">
                 <Bell className="h-5 w-5 text-gray-700" />
               </button>
-              <button className="p-2 rounded-full hover:bg-secondary">
+              <button className="p-2 rounded-full hover:bg-secondary hover-scale transition-all duration-300">
                 <Search className="h-5 w-5 text-gray-700" />
               </button>
               <button 
-                className="p-2 rounded-full hover:bg-secondary md:hidden"
+                className="p-2 rounded-full hover:bg-secondary hover-scale transition-all duration-300 md:hidden"
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <Menu className="h-5 w-5 text-gray-700" />
@@ -303,7 +305,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Page content */}
-        <div className="px-4 py-6 sm:px-6 lg:px-8">
+        <div className="px-4 py-6 sm:px-6 lg:px-8 animate-slide-in">
           {children}
         </div>
       </main>

@@ -631,8 +631,8 @@ export default function CostManagement() {
       </Card>
 
       {/* Tips and Information */}
-      <Alert className="bg-blue-50 border-blue-200 mb-8">
-        <AlertDescription className="text-blue-800">
+      <Alert className="bg-blue-50 border-grey-200 mb-8">
+        <AlertDescription className="text-grey-800">
           <h3 className="text-lg font-semibold mb-2">Cost Management Tips</h3>
           <ul className="list-disc pl-5 space-y-1">
             <li>Fixed costs are expenses that remain the same regardless of production volume, like rent and salaries.</li>

@@ -2,6 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom animations for UI elements */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(226, 209, 181, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(226, 209, 181, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(226, 209, 181, 0); }
+}
+
+/* Apply animations to elements */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.hover-scale {
+  transition: transform 0.2s ease-in-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+.animate-pulse-light {
+  animation: pulse 2s infinite;
+}
+
+/* Smooth transitions for all interactive elements */
+button, a, .card, .nav-item {
+  transition: all 0.2s ease-in-out;
+}
+
 @layer base {
   :root {
     /* Background color to light beige (#e2d1b5) */
