@@ -996,12 +996,45 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
 
   // ==================== Analytics API ====================
   
-  // Get dashboard analytics
+  // Simple in-memory cache for dashboard analytics
+  const dashboardCache = {
+    data: new Map<string, any>(),
+    timestamp: new Map<string, number>(),
+    ttl: 5 * 60 * 1000, // 5 minutes cache
+    
+    get(key: string): any {
+      const cached = this.data.get(key);
+      const timestamp = this.timestamp.get(key);
+      
+      if (cached && timestamp && Date.now() - timestamp < this.ttl) {
+        console.log(`Using cached dashboard data for ${key}`);
+        return cached;
+      }
+      
+      return null;
+    },
+    
+    set(key: string, data: any): void {
+      this.data.set(key, data);
+      this.timestamp.set(key, Date.now());
+    }
+  };
+
+  // Get dashboard analytics with caching
   app.get("/api/analytics/dashboard", async (req, res) => {
     try {
       const period = req.query.period as 'day' | 'week' | 'month' | undefined;
+      const cacheKey = `dashboard_${period || 'all'}`;
       
-      // Get current period data
+      // Check cache first
+      const cachedData = dashboardCache.get(cacheKey);
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+      
+      console.log(`Generating fresh dashboard data for ${period || 'all'}`);
+      
+      // Get current period data with optimized querying
       const [
         ordersCount,
         totalSales,
@@ -1021,7 +1054,6 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
       ]);
       
       // Also get previous period data for comparison
-      // For example, if period is 'month', get data from previous month
       let previousPeriod = 'month';
       if (period === 'day') previousPeriod = 'day';
       if (period === 'week') previousPeriod = 'week';
@@ -1071,7 +1103,8 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
       // Calculate total books sold from the bestSellingBooks data
       const totalBooksSold = bestSellingBooks.reduce((total, item) => total + item.soldCount, 0);
       
-      res.json({
+      // Create response data
+      const responseData = {
         ordersCount,
         totalSales,
         profit,
@@ -1095,9 +1128,20 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
             current: profit,
             previous: prevProfit,
             percentChange: percentProfitChange
+          },
+          totalBooksSold: {
+            current: totalBooksSold,
+            previous: 0, // We don't track this yet
+            percentChange: 0
           }
         }
-      });
+      };
+      
+      // Store in cache for future requests
+      dashboardCache.set(cacheKey, responseData);
+      
+      // Send response
+      res.json(responseData);
     } catch (error) {
       console.error("Error fetching analytics:", error);
       res.status(500).json({ message: "Failed to fetch analytics" });
@@ -1106,12 +1150,47 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
 
   // ==================== Enhanced Analytics API ====================
 
-  // Get sales data for historical view
+  // Simple in-memory cache for historical sales data
+  const salesDataCache = {
+    data: new Map<string, any>(),
+    timestamp: new Map<string, number>(),
+    ttl: 5 * 60 * 1000, // 5 minutes cache
+    
+    get(key: string): any {
+      const cached = this.data.get(key);
+      const timestamp = this.timestamp.get(key);
+      
+      if (cached && timestamp && Date.now() - timestamp < this.ttl) {
+        console.log(`Using cached sales data for ${key}`);
+        return cached;
+      }
+      
+      return null;
+    },
+    
+    set(key: string, data: any): void {
+      this.data.set(key, data);
+      this.timestamp.set(key, Date.now());
+    }
+  };
+
+  // Get sales data for historical view with caching
   app.get("/api/analytics/sales", async (req, res) => {
     try {
       const period = req.query.period as string || 'year';
       const range = req.query.range as string || 'all';
       const groupBy = req.query.groupBy as string || 'month';
+      
+      // Create cache key based on query parameters
+      const cacheKey = `sales_${period}_${range}_${groupBy}`;
+      
+      // Check cache first
+      const cachedData = salesDataCache.get(cacheKey);
+      if (cachedData) {
+        return res.json(cachedData);
+      }
+      
+      console.log(`Generating fresh sales data for ${cacheKey}`);
       
       // Get all orders with items
       const allOrders = await storage.getOrders();
@@ -1196,6 +1275,10 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
         }
       }
       
+      // Store in cache for future requests
+      salesDataCache.set(cacheKey, filteredData);
+      
+      // Send response
       res.json(filteredData);
     } catch (error) {
       console.error("Error fetching sales data:", error);
