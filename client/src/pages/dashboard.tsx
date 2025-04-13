@@ -260,7 +260,11 @@ export default function Dashboard() {
     {
       header: "Total",
       accessorKey: "totalAmount" as const,
-      cell: (order: Order) => formatCurrency(order.totalAmount),
+      cell: (order: Order) => {
+        // Calculate the total with delivery price
+        const total = order.finalAmount || (order.totalAmount + (order.deliveryPrice || 0));
+        return formatCurrency(total);
+      },
     },
     {
       header: "Date",
