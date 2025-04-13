@@ -504,7 +504,7 @@ export default function CostManagement() {
                 </div>
 
                 <Button 
-                  className="w-full h-9 mt-4 text-sm" 
+                  className="w-full h-9 mt-4 text-sm text-black hover:text-black transition-all duration-300" 
                   onClick={handleAddCost}
                 >
                   <PlusCircle className="mr-2 h-3.5 w-3.5" />
