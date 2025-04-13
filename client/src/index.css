@@ -66,8 +66,8 @@ button, a, .card, .nav-item {
 
 @layer base {
   :root {
-    /* Background color to light beige (#e1d9cc) */
-    --background: 37 25% 83%;
+    /* Background color to light blue-gray */
+    --background: 210 25% 90%;
     --foreground: 0 0% 0%;  /* Black text */
 
     /* Card color to white */
