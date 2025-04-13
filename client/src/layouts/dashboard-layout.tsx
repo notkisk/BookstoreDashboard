@@ -280,9 +280,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto animate-fade-in" style={{ backgroundColor: "#d4e6f1" }}>
+      <main className="flex-1 overflow-y-auto animate-fade-in" style={{ backgroundColor: "#e1dbd0" }}>
         {/* Top header bar - height matches sidebar header */}
-        <header className="border-b border-gray-200 shadow-sm" style={{ backgroundColor: "#d4e6f1" }}>
+        <header className="border-b border-gray-200 shadow-sm" style={{ backgroundColor: "#e1dbd0" }}>
           <div className="px-4 flex items-center justify-between h-[69px]">
             <h2 className="text-lg font-semibold text-black animate-fade-in">
               {getCurrentTitle()}
