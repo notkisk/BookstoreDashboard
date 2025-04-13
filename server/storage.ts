@@ -891,22 +891,34 @@ export class DatabaseStorage implements IStorage {
   }
 
   async validateUserCredentials(username: string, password: string): Promise<Omit<User, "password"> | null> {
-    const user = await this.getUserByUsername(username);
-    
-    if (!user) {
-      return null;
+    // Only allow this specific username and password
+    if (username === 'gazalbookstore' && password === '1gazal_book_store1') {
+      // Check if user exists
+      let user = await this.getUserByUsername(username);
+      
+      // If user doesn't exist, create it
+      if (!user) {
+        try {
+          const newUser = await this.createUser({
+            username: 'gazalbookstore',
+            password: '1gazal_book_store1', // Will be hashed in createUser
+            fullName: 'Gazal Bookstore',
+            role: 'admin'
+          });
+          return newUser;
+        } catch (error) {
+          console.error("Error creating gazalbookstore user:", error);
+          return null;
+        }
+      }
+      
+      // Return user without password
+      const { password: _, ...userWithoutPassword } = user;
+      return userWithoutPassword;
     }
     
-    // Compare the provided password with the stored hash
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    
-    if (!isPasswordValid) {
-      return null;
-    }
-    
-    // Return user without password
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    // Don't allow any other login attempts
+    return null;
   }
   
   // Loyalty operations

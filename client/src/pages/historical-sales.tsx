@@ -245,6 +245,12 @@ export default function HistoricalSales() {
           <Filter className="h-5 w-5 text-gray-500" />
         </div>
         <div>
+          <Button variant="outline" size="sm" className="flex items-center gap-1">
+            <Download className="h-4 w-4" />
+            <span>Export Data</span>
+          </Button>
+        </div>
+        <div>
           <Select value={dateRange} onValueChange={setDateRange}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Time Period" />
@@ -297,12 +303,6 @@ export default function HistoricalSales() {
               </SelectItem>
             </SelectContent>
           </Select>
-        </div>
-        <div className="ml-auto">
-          <Button variant="outline" size="sm" className="flex items-center gap-1">
-            <Download className="h-4 w-4" />
-            <span>Export Data</span>
-          </Button>
         </div>
       </div>
 
