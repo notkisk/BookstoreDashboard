@@ -341,7 +341,7 @@ export default function Customers() {
         </div>
         <div className="mt-4 sm:mt-0">
           <Button 
-            className="bg-primary-500 hover:bg-primary-600 text-white"
+            className="bg-primary-500 hover:bg-primary-600 text-black"
             onClick={() => {
               toast({
                 title: "Add customer feature coming soon",
