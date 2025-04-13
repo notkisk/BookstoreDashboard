@@ -4,65 +4,82 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Background color to light beige (#e2d1b5) */
+    --background: 38 42% 80%;
+    --foreground: 0 0% 0%;  /* Black text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Card color to brown (#8a6240) */
+    --card: 33 37% 40%;
+    --card-foreground: 0 0% 0%;  /* Black text */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Popover to brown (#8a6240) */
+    --popover: 33 37% 40%;
+    --popover-foreground: 0 0% 0%;  /* Black text */
 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary color to brown (#8a6240) */
+    --primary: 33 37% 40%;
+    --primary-foreground: 38 42% 80%;  /* Light beige text on brown */
     
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary to light beige (#e2d1b5) */
+    --secondary: 38 42% 80%;
+    --secondary-foreground: 0 0% 20%;  /* Dark grey text */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted to a lighter beige */
+    --muted: 38 30% 90%;
+    --muted-foreground: 0 0% 40%;  /* Grey text */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent to a complementary color */
+    --accent: 38 42% 80%;
+    --accent-foreground: 0 0% 20%;  /* Dark grey text */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    /* Border and inputs to a darker shade of beige */
+    --border: 33 25% 70%;
+    --input: 33 25% 70%;
+    --ring: 33 37% 40%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Darker variant of the beige background */
+    --background: 33 30% 20%;
+    --foreground: 38 42% 90%;  /* Light text */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    /* Keep card brown, but darker */
+    --card: 33 37% 30%;
+    --card-foreground: 38 42% 90%;  /* Light text */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    /* Keep popovers consistent */
+    --popover: 33 37% 30%;
+    --popover-foreground: 38 42% 90%;  /* Light text */
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary brown, but darker */
+    --primary: 33 37% 40%;
+    --primary-foreground: 38 42% 90%;  /* Light text */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary dark brown */
+    --secondary: 33 30% 25%;
+    --secondary-foreground: 38 42% 90%;  /* Light text */
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted dark browns */
+    --muted: 33 25% 35%;
+    --muted-foreground: 38 20% 80%;  /* Light grey text */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Accent dark brown */
+    --accent: 33 25% 35%;
+    --accent-foreground: 38 42% 90%;  /* Light text */
 
+    /* Keep destructive for error states */
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 38 42% 90%;  /* Light text */
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    /* Border and inputs darker */
+    --border: 33 15% 45%;
+    --input: 33 15% 45%;
+    --ring: 33 37% 50%;
   }
 }
 
@@ -77,7 +94,7 @@
   
   /* Typography rules for better readability */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-gray-800 leading-tight;
+    @apply font-semibold text-black dark:text-gray-100 leading-tight;
   }
   
   h1 {
@@ -97,13 +114,14 @@
   }
   
   p {
-    @apply text-gray-700 leading-relaxed;
+    @apply text-gray-700 dark:text-gray-300 leading-relaxed;
   }
   
   /* Consistent form elements */
   input, select, textarea {
-    @apply px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-700;
+    @apply px-3 py-2 bg-secondary border border-gray-300 rounded-md shadow-sm text-black;
     @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
+    @apply dark:text-gray-100;
   }
   
   /* Better mobile experience */
@@ -144,8 +162,8 @@
 
 /* Dashboard specific styles */
 .dashboard-card {
-  @apply transition-all duration-200 hover:shadow-md border border-gray-100 overflow-hidden bg-white;
-  @apply dark:border-gray-800 dark:bg-gray-950;
+  @apply transition-all duration-200 hover:shadow-md border border-gray-100 overflow-hidden bg-card text-card-foreground;
+  @apply dark:border-gray-800;
 }
 
 .dashboard-card-icon {
@@ -173,12 +191,12 @@
 
 /* Stat value styling */
 .stat-value {
-  @apply text-2xl font-semibold text-gray-800 dark:text-gray-100;
+  @apply text-2xl font-semibold text-black dark:text-gray-100;
 }
 
 /* Stat label styling */
 .stat-label {
-  @apply text-sm font-medium text-gray-500 dark:text-gray-400;
+  @apply text-sm font-medium text-gray-600 dark:text-gray-300;
 }
 
 /* Stat trend indicator */
