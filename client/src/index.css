@@ -8,12 +8,12 @@
     --background: 38 42% 80%;
     --foreground: 0 0% 0%;  /* Black text */
 
-    /* Card color to brown (#8a6240) */
-    --card: 33 37% 40%;
+    /* Card color to white */
+    --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;  /* Black text */
 
-    /* Popover to brown (#8a6240) */
-    --popover: 33 37% 40%;
+    /* Popover to white */
+    --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;  /* Black text */
 
     /* Primary color to brown (#8a6240) */
