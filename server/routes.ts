@@ -1669,6 +1669,55 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
     }
   });
   
+  // Get all customers with loyalty information
+  app.get("/api/loyalty/customers", async (req, res) => {
+    try {
+      // Get query parameters for filtering
+      const loyaltyTier = req.query.tier ? String(req.query.tier) : undefined;
+      const minPoints = req.query.minPoints ? Number(req.query.minPoints) : 0;
+      
+      // Get all customers
+      const allCustomers = await storage.getCustomers();
+      
+      // Apply filters if specified
+      let filteredCustomers = allCustomers;
+      
+      if (loyaltyTier && loyaltyTier !== 'all') {
+        filteredCustomers = filteredCustomers.filter(customer => 
+          customer.loyaltyTier === loyaltyTier
+        );
+      }
+      
+      if (minPoints > 0) {
+        filteredCustomers = filteredCustomers.filter(customer => 
+          (customer.loyaltyPoints || 0) >= minPoints
+        );
+      }
+      
+      // Format and return the customers with their loyalty information
+      const customersWithLoyalty = filteredCustomers.map(customer => ({
+        id: customer.id,
+        name: customer.name,
+        phone: customer.phone,
+        phone2: customer.phone2,
+        address: customer.address,
+        wilaya: customer.wilaya,
+        commune: customer.commune,
+        loyaltyPoints: customer.loyaltyPoints || 0,
+        loyaltyTier: customer.loyaltyTier || 'regular',
+        createdAt: customer.createdAt,
+      }));
+      
+      res.json(customersWithLoyalty);
+    } catch (error) {
+      console.error("Error fetching customers with loyalty info:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch customers",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   // Get loyalty transactions for a customer
   app.get("/api/loyalty/customers/:id/transactions", async (req, res) => {
     try {
