@@ -17,7 +17,7 @@ import {
   Award,
   BarChart
 } from "lucide-react";
-import gazalLogo from "../assets/gazal-logo-black.png";
+import gazalLogo from "../assets/gazal-logo-with-text.png";
 import { cn } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -151,10 +151,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           {/* Logo */}
           <div className="p-4 flex items-center border-b border-gray-200">
-            <div className="h-10 w-10 flex items-center justify-center">
-              <img src={gazalLogo} alt="Gazal Logo" className="h-10 w-auto object-contain" />
+            <div className="h-14 w-48 flex items-center justify-center">
+              <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain" />
             </div>
-            <h1 className="ml-2 font-semibold text-lg text-black">GazalBookStore</h1>
           </div>
           
           {/* Navigation Links */}
@@ -226,10 +225,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="h-full flex flex-col">
           <div className="p-4 flex items-center justify-between border-b border-gray-200">
             <div className="flex items-center">
-              <div className="h-10 w-10 flex items-center justify-center">
-                <img src={gazalLogo} alt="Gazal Logo" className="h-10 w-auto object-contain" />
+              <div className="h-14 w-48 flex items-center justify-center">
+                <img src={gazalLogo} alt="Gazal Logo" className="h-14 w-auto object-contain" />
               </div>
-              <h1 className="ml-2 font-semibold text-lg text-black">GazalBookStore</h1>
             </div>
             <button 
               onClick={() => setMobileMenuOpen(false)}
@@ -283,7 +281,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <main className="flex-1 overflow-y-auto" style={{ backgroundColor: "#e2d1b5" }}>
         {/* Top header bar - height matches sidebar header */}
         <header className="border-b border-gray-200 shadow-sm" style={{ backgroundColor: "#e2d1b5" }}>
-          <div className="px-4 flex items-center justify-between h-[56px]">
+          <div className="px-4 flex items-center justify-between h-[69px]">
             <h2 className="text-lg font-semibold text-black">
               {getCurrentTitle()}
             </h2>
