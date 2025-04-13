@@ -489,9 +489,6 @@ export default function ExportCsv() {
               Export Format Preview
             </h3>
             <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-3">
-              <p className="text-xs font-medium text-gray-700 mb-2">
-                Your CSV will contain the following columns in this order:
-              </p>
               <div className="flex flex-wrap gap-2">
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   nom et prénom du destinataire*
@@ -499,84 +496,34 @@ export default function ExportCsv() {
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   telephone*
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  telephone 2
-                </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   code wilaya*
                 </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  wilaya de livraison
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
+                  commune*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
-                  commune de livraison*
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
-                  adresse de livraison*
+                  adresse*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
                   produit*
                 </span>
                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800">
-                  montant du colis*
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  poids(kg)
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  remarque
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  reference commande
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  FRAGILE (si oui mettez OUI sinon laissez vide)
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  ECHANGE (si oui mettez OUI sinon laissez vide)
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  PICK UP (si oui mettez OUI sinon laissez vide)
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  RECOUVREMENT (si oui mettez OUI sinon laissez vide)
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  STOP DESK (si oui mettez OUI sinon laissez vide)
-                </span>
-                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                  Lien map
+                  montant*
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-2">* Required fields</p>
             </div>
 
-            <Alert className="bg-primary-50 border-primary-200 mb-3">
-              <Info className="h-4 w-4 text-primary-600" />
-              <AlertDescription className="text-primary-700">
-                The CSV export follows the exact format required by the delivery company, 
-                including all column names and special fields. The "montant du colis" field
-                now correctly shows the final order amount after discounts and including delivery fees.
-                For compatibility with Excel, the file uses semicolons as separators and properly
-                formats phone numbers as text to prevent display issues.
-              </AlertDescription>
-            </Alert>
-            
             <Alert className="bg-green-50 border-green-200 mb-3">
               <Info className="h-4 w-4 text-green-600" />
               <AlertDescription className="text-green-700">
-                <strong>NEW!</strong> Use the EcoTrack Format button to export orders using the EcoTrack Excel template.
-                This export maintains all formatting, formulas, validation rules, and macros from the original template.
+                <strong>NEW!</strong> Use the EcoTrack Format for exports using the Excel template.
               </AlertDescription>
             </Alert>
             
             {/* EcoTrack Template Upload Section */}
             <div className="mt-4 p-4 border rounded-md bg-gray-50">
-              <h4 className="font-medium text-gray-700 mb-2">Upload EcoTrack Template</h4>
-              <p className="text-sm text-gray-600 mb-3">
-                Upload the official EcoTrack Excel template file to ensure your exports match their required format exactly.
-              </p>
-              
               <div className="flex items-center space-x-2">
                 <Input
                   type="file"
@@ -613,13 +560,9 @@ export default function ExportCsv() {
                   className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
                 <label htmlFor="keep-template" className="ml-2 block text-sm text-gray-700">
-                  Save as default template (you won't need to upload it again)
+                  Save as default template
                 </label>
               </div>
-              
-              <p className="text-xs text-gray-500 mt-2">
-                Accepted format: .xlsx (Excel) files only. This template will be used for all EcoTrack exports.
-              </p>
             </div>
             
 
