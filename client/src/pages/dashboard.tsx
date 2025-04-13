@@ -450,8 +450,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Total Orders Card */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">
@@ -498,8 +498,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Revenue Card */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Revenue</p>
@@ -544,8 +544,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Profit Card */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between">
                 <div>
                   <div className="flex items-center gap-2">
@@ -623,8 +623,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Discounts Card */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">Discounts</p>
@@ -837,10 +837,10 @@ export default function Dashboard() {
         <h3 className="text-base font-semibold text-gray-800 mb-4">
           Order Status Overview
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {/* Pending Orders */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex items-center mb-4">
                 <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
                   <Clock className="h-5 w-5 text-blue-600" />
@@ -864,8 +864,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Delivering Orders */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex items-center mb-4">
                 <div className="h-10 w-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
                   <Truck className="h-5 w-5 text-yellow-600" />
@@ -891,8 +891,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Delivered Orders */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex items-center mb-4">
                 <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
                   <CheckCircle className="h-5 w-5 text-green-600" />
@@ -918,8 +918,8 @@ export default function Dashboard() {
           </Card>
 
           {/* Returned Orders */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex items-center mb-4">
                 <div className="h-10 w-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
                   <RefreshCcw className="h-5 w-5 text-red-600" />
@@ -968,8 +968,8 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Sales Chart */}
-          <Card>
-            <CardContent className="p-5">
+          <Card className="dashboard-card">
+            <CardContent className="p-4 sm:p-5">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="text-sm font-medium text-gray-500">
                   Sales Overview
