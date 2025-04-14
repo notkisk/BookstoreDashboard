@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import os from "os";
 import session from "express-session";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
@@ -20,6 +21,13 @@ import {
   insertLoyaltyTransactionSchema
 } from "@shared/schema";
 import { z } from "zod";
+import { spawn } from 'child_process';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// ES module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Add a redirect from root to auto-login for easy testing
@@ -520,6 +528,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       );
       const orderItems = orderItemsSchema.parse(orderInput.items);
       
+      // <<< ADDED LOGGING HERE >>>
+      console.log(`[Order Create] Received Order Data (Ref: ${orderData.reference || 'N/A'}):`,
+        `Fragile: ${orderData.fragile}, Type: ${typeof orderData.fragile}`,
+        `Echange: ${orderData.echange}, Type: ${typeof orderData.echange}`,
+        `Pickup: ${orderData.pickup}, Type: ${typeof orderData.pickup}`,
+        `Recouvrement: ${orderData.recouvrement}, Type: ${typeof orderData.recouvrement}`,
+        `StopDesk: ${orderData.stopDesk}, Type: ${typeof orderData.stopDesk}`
+      );
+      
       // Create the order
       const order = await storage.createOrder(orderData, orderItems);
       
@@ -694,161 +711,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      // Use Python script to generate Excel file
-      // Using the imports from the top of the file (execSync, path, fs)
-      
-      // Create a temporary JSON file with order data
+      // Write orders to a temporary JSON file
       const timestamp = new Date().getTime();
-      const tempJsonPath = path.join(process.cwd(), `temp_orders_${timestamp}.json`);
-      fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
-      
-      // Execute Python script to generate Excel file
-      const outputPath = path.join(process.cwd(), `exports/orders_export_${timestamp}.xlsx`);
-      const pythonScript = `
-import sys
-import json
-import openpyxl
-from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
-from datetime import datetime
+      const ordersJsonPath = path.join(os.tmpdir(), `orders_${timestamp}.json`);
+      fs.writeFileSync(ordersJsonPath, JSON.stringify(ordersWithDetails));
 
-# Load order data from JSON
-with open('${tempJsonPath}', 'r') as f:
-    orders = json.load(f)
+      // Create output path
+      const outputPath = path.join(os.tmpdir(), `ecotrack_export_${timestamp}.xlsx`);
 
-# Template path
-template_path = 'templates/order_export_template.xlsx'
-
-# Output path
-output_path = '${outputPath}'
-
-# Load the template workbook with all its formatting
-workbook = openpyxl.load_workbook(template_path)
-sheet = workbook.active
-
-# Determine the row to start adding data (usually row 2, after headers)
-start_row = 2
-
-# Get styles from header row to maintain formatting consistency
-header_cell = sheet.cell(row=1, column=1)
-header_font = Font(name=header_cell.font.name, size=header_cell.font.size)
-header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-thin_border = Border(
-    left=Side(style='thin'),
-    right=Side(style='thin'),
-    top=Side(style='thin'),
-    bottom=Side(style='thin')
-)
-
-# Add order data starting from row 2
-for i, order in enumerate(orders):
-    row_num = start_row + i
-    
-    # Map order data to the columns
-    # Column 1: reference commande
-    sheet.cell(row=row_num, column=1).value = order.get('reference', '')
-    
-    # Column 2: nom et prenom du destinataire*
-    customer_name = ''
-    if 'customer' in order and order['customer']:
-        customer_name = order['customer'].get('name', '')
-    sheet.cell(row=row_num, column=2).value = customer_name
-    
-    # Column 3: telephone*
-    customer_phone = ''
-    if 'customer' in order and order['customer']:
-        customer_phone = order['customer'].get('phone', '')
-    sheet.cell(row=row_num, column=3).value = customer_phone
-    
-    # Column 4: telephone 2
-    customer_phone2 = ''
-    if 'customer' in order and order['customer']:
-        customer_phone2 = order['customer'].get('phone2', '')
-    sheet.cell(row=row_num, column=4).value = customer_phone2
-    
-    # Column 5-8: Leave wilaya info empty as requested
-    sheet.cell(row=row_num, column=5).value = '' # code wilaya (empty as requested)
-    sheet.cell(row=row_num, column=6).value = '' # wilaya name (empty as requested)
-    sheet.cell(row=row_num, column=7).value = '' # commune (empty as requested)
-    sheet.cell(row=row_num, column=8).value = '' # address (empty as requested)
-    
-    # Column 9: produit* - Simply use "livres" as requested
-    sheet.cell(row=row_num, column=9).value = "livres"
-    
-    # Column 10: poids (kg) - assuming 0.5kg per book
-    weight = 0.5  # Default weight
-    if 'items' in order and order['items']:
-        weight = sum([item.get('quantity', 0) * 0.5 for item in order['items']])
-    sheet.cell(row=row_num, column=10).value = weight
-    
-    # Column 11: montant du colis*
-    amount = 0
-    if 'finalAmount' in order:
-        amount = order['finalAmount']
-    elif 'totalAmount' in order:
-        amount = order['totalAmount']
-    sheet.cell(row=row_num, column=11).value = amount
-    
-    # Column 12: remarque
-    sheet.cell(row=row_num, column=12).value = order.get('notes', '')
-    
-    # Columns 13-17: special flags (defaulting to empty)
-    for col in range(13, 18):
-        sheet.cell(row=row_num, column=col).value = ''
-    
-    # Column 18: Lien map
-    sheet.cell(row=row_num, column=18).value = ''
-    
-    # Apply styling to all cells in this row
-    for col in range(1, 19):
-        cell = sheet.cell(row=row_num, column=col)
-        cell.font = header_font
-        cell.alignment = header_alignment
-        cell.border = thin_border
-
-# Save the workbook to the output path
-workbook.save(output_path)
-
-# Clean up temporary JSON file
-import os
-os.remove('${tempJsonPath}')
-
-print(output_path)
-      `.trim();
-      
-      const pythonScriptPath = path.join(process.cwd(), `temp_excel_script_${timestamp}.py`);
-      fs.writeFileSync(pythonScriptPath, pythonScript);
-      
       try {
-        // Execute the Python script
-        const output = execSync(`python ${pythonScriptPath}`).toString().trim();
-        
-        // Clean up temporary files
-        fs.unlinkSync(pythonScriptPath);
-        
-        // Make sure the file exists
-        if (fs.existsSync(output)) {
-          // Send the file to the client
-          res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-          res.setHeader('Content-Disposition', `attachment; filename="orders_export_${timestamp}.xlsx"`);
-          
-          const fileStream = fs.createReadStream(output);
-          fileStream.pipe(res);
-          
-          // Set up cleanup after file is sent
-          res.on('finish', () => {
-            try {
-              // Clean up temporary files
-              fs.unlinkSync(output);
-            } catch (err) {
-              console.error("Error cleaning up export file:", err);
-            }
-          });
-        } else {
-          throw new Error("Excel file not generated");
-        }
+        // Execute the Python script with proper arguments
+        const pythonScript = path.join(__dirname, 'ecotrack_excel_export.py');
+        const pythonProcess = spawn('python', [
+          pythonScript,
+          '--orders', ordersJsonPath,
+          '--template', 'templates/upload_ecotrack_v31.xlsx',
+          '--output', outputPath
+        ]);
+
+        let stdoutData = '';
+        let stderrData = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+          stdoutData += data.toString();
+          console.log(`[EcoTrack Export] ${data.toString()}`);
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+          stderrData += data.toString();
+          console.error(`[EcoTrack Export Error] ${data.toString()}`);
+        });
+
+        pythonProcess.on('close', (code) => {
+          if (code !== 0) {
+            console.error(`[EcoTrack Export] Process exited with code ${code}`);
+            console.error(`[EcoTrack Export] Error output: ${stderrData}`);
+            return res.status(500).json({ 
+              error: 'Failed to generate EcoTrack Excel file',
+              details: stderrData
+            });
+          }
+
+          if (fs.existsSync(outputPath)) {
+            // Send the file to the client
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename="ecotrack_export_${timestamp}.xlsx"`);
+            
+            const fileStream = fs.createReadStream(outputPath);
+            fileStream.pipe(res);
+            
+            // Clean up the temporary files after sending
+            fileStream.on('end', () => {
+              try {
+                fs.unlinkSync(ordersJsonPath);
+                fs.unlinkSync(outputPath);
+              } catch (err) {
+                console.error("Error cleaning up files:", err);
+              }
+            });
+          } else {
+            res.status(500).json({ 
+              error: 'Failed to generate EcoTrack Excel file',
+              details: 'Output file not found'
+            });
+          }
+        });
+
       } catch (error) {
-        console.error("Error generating Excel file:", error);
-        res.status(500).json({ message: "Failed to generate Excel file" });
+        console.error("Error generating EcoTrack Excel file:", error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        res.status(500).json({ 
+          error: 'Failed to generate EcoTrack Excel file',
+          details: errorMessage
+        });
       }
     } catch (error) {
       console.error("Error exporting orders to Excel:", error);
@@ -896,101 +831,180 @@ print(output_path)
               ...orderWithItems,
               reference: order.reference,
               finalAmount: Math.round(finalAmount), // Round to nearest integer
+              // Explicitly add and convert all boolean checkbox fields
+              fragile: Boolean(order.fragile),
+              echange: Boolean(order.echange),
+              pickup: Boolean(order.pickup),
+              recouvrement: Boolean(order.recouvrement),
+              stopDesk: Boolean(order.stopDesk),
               // Add commune directly from customer to the order object for EcoTrack export
               commune: customer.commune,
+              wilayaCode: customer.wilaya, // Add wilaya code
               customer: {
                 ...customer,
                 // Ensure all customer fields needed for export exist
-                phone2: customer.phone2 || ""
+                phone2: customer.phone2 || "",
+                wilayaCode: customer.wilaya // Add wilaya code to customer data
               },
               // Include items for product description
-              items: orderWithItems.items || []
+              items: orderWithItems.items || [],
+              // Debug info
+              debug: {
+                stopDeskRaw: order.stopDesk,
+                stopDeskType: typeof order.stopDesk,
+                wilayaCodeRaw: customer.wilaya
+              }
             });
           }
         }
       }
       
-      // Use the new EcoTrack export module through child_process
-      
-      // Create a temporary JSON file with order data
+      // Write orders to a temporary JSON file
       const timestamp = new Date().getTime();
-      const tempJsonPath = path.join(process.cwd(), `temp_orders_${timestamp}.json`);
-      fs.writeFileSync(tempJsonPath, JSON.stringify(ordersWithDetails));
+      const ordersJsonPath = path.join(os.tmpdir(), `orders_${timestamp}.json`);
+      fs.writeFileSync(ordersJsonPath, JSON.stringify(ordersWithDetails));
+
+      // Create output path
+      const outputPath = path.join(os.tmpdir(), `ecotrack_export_${timestamp}.xlsx`);
+
+      // Get template path - first check for uploaded template, then fallback to default
+      const templatePath = path.join(process.cwd(), 'templates', 'upload_ecotrack_v31.xlsx');
+      const defaultTemplatePath = path.join(process.cwd(), 'templates', 'upload_ecotrack_v31_default.xlsx');
       
-      // Create exports directory if it doesn't exist
-      const exportsDir = path.join(process.cwd(), 'exports');
-      if (!fs.existsSync(exportsDir)) {
-        fs.mkdirSync(exportsDir, { recursive: true });
+      // Use default template if custom template doesn't exist
+      const finalTemplatePath = fs.existsSync(templatePath) ? templatePath : defaultTemplatePath;
+      
+      if (!fs.existsSync(finalTemplatePath)) {
+        return res.status(500).json({ 
+          error: 'Failed to generate EcoTrack Excel file',
+          details: 'Template file not found'
+        });
       }
-      
-      // Define the output path
-      const outputPath = path.join(exportsDir, `ecotrack_export_${timestamp}.xlsx`);
-      
-      // Define the template paths
-      const templatePath = path.join(process.cwd(), 'templates/upload_ecotrack_v31.xlsx');
-      const defaultTemplatePath = path.join(process.cwd(), 'templates/upload_ecotrack_v31_default.xlsx');
-      
-      // Check if the template exists, if not check for default template
-      if (!fs.existsSync(templatePath)) {
-        console.log("Primary EcoTrack template not found, checking for default template...");
-        
-        // Try to use the default template if available
-        if (fs.existsSync(defaultTemplatePath)) {
-          console.log("Using default EcoTrack template:", defaultTemplatePath);
-          // Copy the default template to the standard location
-          fs.copyFileSync(defaultTemplatePath, templatePath);
-        } else {
-          console.error("EcoTrack template file not found at:", templatePath);
-          return res.status(400).json({ 
-            message: "EcoTrack template file not found. Please upload the template file to /templates/upload_ecotrack_v31.xlsx." 
-          });
-        }
-      }
-      
-      // Execute our specialized Python module for EcoTrack exports
+
       try {
-        // Use a Python script with multiple lines properly formatted
-        const command = `python -c "
-from server.ecotrack_excel_export import export_orders_to_ecotrack
-import json
-with open('${tempJsonPath}', 'r') as f:
-    orders = json.load(f)
-print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
-"`;
-        const output = execSync(command).toString().trim();
-        
-        // Clean up temporary files
-        fs.unlinkSync(tempJsonPath);
-        
-        // Make sure the file exists
-        if (fs.existsSync(output)) {
-          // Send the file to the client
-          res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-          res.setHeader('Content-Disposition', `attachment; filename="ecotrack_export_${timestamp}.xlsx"`);
-          
-          const fileStream = fs.createReadStream(output);
-          fileStream.pipe(res);
-          
-          // Set up cleanup after file is sent
-          res.on('finish', () => {
-            try {
-              // Clean up temporary files after sending
-              fs.unlinkSync(output);
-            } catch (err) {
-              console.error("Error cleaning up EcoTrack export file:", err);
-            }
-          });
-        } else {
-          throw new Error("EcoTrack Excel file not generated");
-        }
+        // Execute the Python script with proper arguments
+        const pythonScript = path.join(process.cwd(), 'server', 'ecotrack_excel_export.py');
+        const pythonProcess = spawn('python', [
+          pythonScript,
+          '--orders', ordersJsonPath,
+          '--template', finalTemplatePath,
+          '--output', outputPath
+        ]);
+
+        let stdoutData = '';
+        let stderrData = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+          stdoutData += data.toString();
+          console.log(`[EcoTrack Export] ${data.toString()}`);
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+          stderrData += data.toString();
+          console.error(`[EcoTrack Export Error] ${data.toString()}`);
+        });
+
+        pythonProcess.on('close', (code) => {
+          if (code !== 0) {
+            console.error(`[EcoTrack Export] Process exited with code ${code}`);
+            console.error(`[EcoTrack Export] Error output: ${stderrData}`);
+            return res.status(500).json({ 
+              error: 'Failed to generate EcoTrack Excel file',
+              details: stderrData
+            });
+          }
+
+          if (fs.existsSync(outputPath)) {
+            // Send the file to the client
+            res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            res.setHeader('Content-Disposition', `attachment; filename="ecotrack_export_${timestamp}.xlsx"`);
+            
+            const fileStream = fs.createReadStream(outputPath);
+            fileStream.pipe(res);
+            
+            // Clean up the temporary files after sending
+            fileStream.on('end', () => {
+              try {
+                fs.unlinkSync(ordersJsonPath);
+                fs.unlinkSync(outputPath);
+              } catch (err) {
+                console.error("Error cleaning up files:", err);
+              }
+            });
+          } else {
+            res.status(500).json({ 
+              error: 'Failed to generate EcoTrack Excel file',
+              details: 'Output file not found'
+            });
+          }
+        });
+
       } catch (error) {
         console.error("Error generating EcoTrack Excel file:", error);
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        res.status(500).json({ message: "Failed to generate EcoTrack Excel file: " + errorMessage });
+        res.status(500).json({ 
+          error: 'Failed to generate EcoTrack Excel file',
+          details: errorMessage
+        });
       }
     } catch (error) {
       console.error("Error exporting orders to EcoTrack Excel:", error);
       res.status(500).json({ message: "Failed to export orders to EcoTrack Excel" });
+    }
+  });
+
+  // Delete an order by ID
+  app.delete("/api/orders/:id", async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid order ID" });
+      }
+      
+      const success = await storage.deleteOrder(id);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Order not found or could not be deleted" });
+      }
+      
+      res.status(204).send(); // No content response on successful delete
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      res.status(500).json({ message: "Failed to delete order" });
+    }
+  });
+
+  // Bulk delete orders
+  app.post("/api/orders/bulk-delete", async (req, res) => {
+    try {
+      const { ids } = req.body;
+      
+      // Validate ids is an array of numbers
+      if (!Array.isArray(ids)) {
+        return res.status(400).json({ 
+          message: "Invalid request body: 'ids' must be an array" 
+        });
+      }
+      
+      // Validate each ID is a number
+      const numericIds = ids.map(id => Number(id)).filter(id => !isNaN(id));
+      
+      if (numericIds.length === 0) {
+        return res.status(400).json({ 
+          message: "No valid order IDs provided" 
+        });
+      }
+      
+      const result = await storage.bulkDeleteOrders(numericIds);
+      
+      res.json({
+        message: `Deleted ${result.success} orders successfully. Failed to delete ${result.failed} orders.`,
+        success: result.success,
+        failed: result.failed
+      });
+    } catch (error) {
+      console.error("Error bulk deleting orders:", error);
+      res.status(500).json({ message: "Failed to bulk delete orders" });
     }
   });
 
@@ -1442,7 +1456,7 @@ print(export_orders_to_ecotrack(orders, '${templatePath}', '${outputPath}'))
           results.failed++;
           results.errors.push(
             error instanceof z.ZodError 
-              ? `Validation error for wilaya ${priceData.wilayaId}: ${error.errors.map(e => e.message).join(', ')}` 
+              ? `Validation error for wilaya ${priceData.wilayaId}: ${error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ')}` 
               : `Error processing wilaya ${priceData.wilayaId}: ${error instanceof Error ? error.message : "Unknown error"}`
           );
         }

@@ -31,19 +31,27 @@ interface NavLinkProps {
   isActive: boolean;
 }
 
-const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => (
-  <Link href={href}>
-    <div className={cn(
-      "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-all duration-300 hover-scale",
-      isActive 
-        ? "text-black bg-white" 
-        : "text-black hover:bg-white hover:bg-opacity-50"
-    )}>
-      <span className="mr-3 text-lg transition-transform duration-300">{icon}</span>
-      {children}
-    </div>
-  </Link>
-);
+const NavLink = ({ href, icon, children, isActive }: NavLinkProps) => {
+  const [, navigate] = useLocation();
+  
+  return (
+    <a
+      onClick={(e) => {
+        e.preventDefault();
+        navigate(href);
+      }}
+      className={cn(
+        "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer transition-all duration-300 hover-scale",
+        isActive 
+          ? "text-black bg-white" 
+          : "text-black hover:bg-white hover:bg-opacity-50"
+      )}
+    >
+      <span className="mr-3">{icon}</span>
+      <span>{children}</span>
+    </a>
+  );
+};
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -51,7 +59,7 @@ interface DashboardLayoutProps {
 
 // Export the routes for use in other components
 export const dashboardRoutes = [
-  { path: "/", label: "Dashboard", icon: <LayoutDashboard /> },
+  { path: "/dashboard", label: "Dashboard", icon: <LayoutDashboard /> },
   { path: "/inventory", label: "Book Inventory", icon: <BookOpen /> },
   { path: "/orders", label: "Orders", icon: <ShoppingCart /> },
   { path: "/customers", label: "Customers", icon: <User /> },

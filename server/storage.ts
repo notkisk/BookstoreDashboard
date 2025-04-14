@@ -41,6 +41,7 @@ export interface IStorage {
   getOrderWithItems(id: number): Promise<{ order: Order; items: (OrderItem & { book: Book })[] } | undefined>;
   createOrder(order: InsertOrder, items: Omit<InsertOrderItem, "orderId">[]): Promise<Order>;
   updateOrderStatus(id: number, status: string): Promise<Order | undefined>;
+  deleteOrder(id: number): Promise<boolean>;
   
   // Delivery price operations
   getDeliveryPrices(): Promise<DeliveryPrice[]>;
@@ -453,6 +454,11 @@ export class DatabaseStorage implements IStorage {
     return updatedOrder;
   }
 
+  async deleteOrder(id: number): Promise<boolean> {
+    const result = await db.delete(orders).where(eq(orders.id, id));
+    return true;
+  }
+
   // Analytics
   async getOrdersCount(period?: 'day' | 'week' | 'month'): Promise<number> {
     const now = new Date();
@@ -554,7 +560,7 @@ export class DatabaseStorage implements IStorage {
         total: orders.totalAmount
       })
       .from(orders)
-      .where(eq(orders.status, 'delivered'));
+      .where(eq(orders.status, 'delivered')); // Only count delivered orders
     
     // Add date filter if period is specified
     if (fromDate) {

@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-
-// Use DATABASE_URL environment variable provided by Replit
+import dotenv from "dotenv";
+dotenv.config();// Use DATABASE_URL environment variable provided by Replit
 if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL environment variable is not set!");
   process.exit(1);

@@ -1,0 +1,9 @@
+
+--- Error Log 2025-04-14T01:38:21.069749 ---
+Error exporting orders to Excel: Failed to add order data: unhashable type: 'StyleProxy'
+
+--- Error Log 2025-04-14T01:38:40.939966 ---
+Error exporting orders to Excel: Failed to add order data: unhashable type: 'StyleProxy'
+
+--- Error Log 2025-04-14T01:38:43.945201 ---
+Error exporting orders to Excel: Failed to add order data: unhashable type: 'StyleProxy'

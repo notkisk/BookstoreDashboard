@@ -17,6 +17,8 @@ from datetime import datetime
 import logging
 import openpyxl
 from openpyxl.utils import get_column_letter
+import argparse
+import sys
 
 # Set up logging
 logging.basicConfig(
@@ -60,6 +62,20 @@ class EcoTrackExcelExporter:
             Path to the saved Excel file
         """
         try:
+            # Verify template exists and is readable
+            if not os.path.exists(self.template_path):
+                error_msg = f"Template file not found at: {self.template_path}"
+                logger.error(error_msg)
+                raise FileNotFoundError(error_msg)
+                
+            # Try to read the template to verify it's a valid Excel file
+            try:
+                workbook = openpyxl.load_workbook(self.template_path, keep_vba=True, data_only=False)
+            except Exception as e:
+                error_msg = f"Failed to load template file - it may be corrupted or not a valid Excel file: {str(e)}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
+
             # If no output path specified, create one with timestamp
             if not output_path:
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -72,20 +88,32 @@ class EcoTrackExcelExporter:
             logger.info(f"Starting export of {len(orders)} orders to {output_path}")
             logger.info(f"Using template: {self.template_path}")
             
-            # Load the template workbook with all macros and formatting preserved
-            workbook = openpyxl.load_workbook(self.template_path, keep_vba=True, data_only=False)
-            
             # Get the active sheet (assumes the template uses the active sheet for data)
             sheet = workbook.active
             
             # Discover the column mappings and header row
-            self._discover_column_mapping(sheet)
+            try:
+                self._discover_column_mapping(sheet)
+            except Exception as e:
+                error_msg = f"Failed to discover column mappings: {str(e)}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
             
             # Add order data
-            self._add_order_data(sheet, orders)
+            try:
+                self._add_order_data(sheet, orders)
+            except Exception as e:
+                error_msg = f"Failed to add order data: {str(e)}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
             
             # Save the workbook to the output path
-            workbook.save(output_path)
+            try:
+                workbook.save(output_path)
+            except Exception as e:
+                error_msg = f"Failed to save output file: {str(e)}"
+                logger.error(error_msg)
+                raise Exception(error_msg)
             
             # Log any errors
             if self.log_errors:
@@ -112,13 +140,13 @@ class EcoTrackExcelExporter:
         # Header mapping with synonyms (lowercase for case-insensitive matching)
         header_synonyms = {
             'ref': ['ref', 'reference', 'reference commande', 'commande ref', 'réf', 'référence'],
-            'name': ['nom', 'destinataire', 'nom et prenom', 'nom et prénom', 'nom et prenom du destinataire', 'client'],
-            'phone': ['telephone*', 'téléphone*', 'telephone', 'téléphone', 'tel', 'tél', 'tel1', 'numéro téléphone'],
+            'name': ['nom', 'nom client', 'client', 'customer', 'customer name', 'destinataire', 'nom destinataire'],
+            'phone': ['telephone', 'téléphone', 'tel', 'tél', 'phone', 'mobile', 'gsm', 'phone number', 'numéro'],
             'phone2': ['telephone 2', 'téléphone 2', 'telephone2', 'téléphone2', 'tel2', 'tél2', 'numéro téléphone2', 'numéro secondaire'],
-            'wilaya_code': ['code wilaya', 'wilaya code', 'code', 'cod wilaya'],
-            'wilaya': ['wilaya', 'wilaya de livraison', 'w'],
+            'wilaya_code': ['code wilaya', 'wilaya code', 'code', 'cod wilaya', 'code w', 'codew', 'code wilaya*'],
+            'wilaya': ['wilaya', 'ville', 'city', 'province', 'region', 'région'],
             'commune': ['commune', 'commune de livraison', 'ville'],
-            'address': ['adresse', 'adresse de livraison', 'address'],
+            'address': ['adresse', 'address', 'adresse client', 'delivery address', 'adresse livraison', 'lieu'],
             'product': ['produit', 'product', 'article', 'désignation', 'designation'],
             'weight': ['poids', 'poids (kg)', 'weight', 'kg'],
             'amount': ['montant', 'montant du colis', 'prix', 'price', 'cod', 'c.o.d'],
@@ -127,9 +155,12 @@ class EcoTrackExcelExporter:
             'exchange': ['échange', 'echange', 'exchange'],
             'pickup': ['pick up', 'pickup', 'ramassage'],
             'cod': ['recouvrement', 'c.o.d', 'cod', 'contre remboursement'],
-            'stop_desk': ['stop desk', 'stopdesk', 'point de relais', 'point relais'],
+            'stop_desk': ['stop desk', 'stopdesk', 'point de relais', 'point relais', 'store desk', 'STOP DESK( si oui mettez OUI sinon laissez vide )'],
             'map': ['lien map', 'map', 'carte', 'google map', 'link', 'url']
         }
+        
+        # Define required columns
+        REQUIRED_COLUMNS = ['name', 'phone', 'address']
         
         # Find the header row by scanning first 10 rows for keyword matches
         max_matches = 0
@@ -155,46 +186,19 @@ class EcoTrackExcelExporter:
         
         logger.info(f"Detected header row at row {self.header_row}, data starts at row {self.data_start_row}")
         
-        # Map column indices to our field names, with special handling for phone/phone2
+        # Map column indices to our field names
         # Track which columns we've already mapped to avoid duplicates
         mapped_columns = set()
         
-        # Log all column headers to identify the exact value of the telephone column
-        logger.info(f"===== COLUMN HEADERS DEBUG START =====")
-        for col in range(1, sheet.max_column + 1):
-            cell_value = sheet.cell(row=header_row, column=col).value
-            if cell_value is not None:
-                logger.info(f"Column {get_column_letter(col)} (col {col}): '{cell_value}'")
-        logger.info(f"===== COLUMN HEADERS DEBUG END =====")
-                
-        # First, look for exact matches for telephone and telephone2
-        for col in range(1, sheet.max_column + 1):
-            cell_value = sheet.cell(row=header_row, column=col).value
-            if cell_value is not None:
-                cell_text = str(cell_value).lower().strip()
-                logger.info(f"Processing column {get_column_letter(col)} (col {col}) with text: '{cell_text}'")
-                
-                # Expanded phone column matching with more variations
-                if (cell_text == 'telephone' or 
-                    cell_text == 'téléphone' or 
-                    cell_text == 'telephone*' or 
-                    cell_text == 'téléphone*' or
-                    'telephone*' in cell_text or 
-                    'téléphone*' in cell_text):
-                    self.column_mapping['phone'] = col
-                    mapped_columns.add(col)
-                    logger.info(f"✓ Mapped 'phone' to column {get_column_letter(col)} (column {col})")
-                elif (cell_text == 'telephone 2' or 
-                      cell_text == 'téléphone 2' or 
-                      cell_text == 'telephone2' or 
-                      cell_text == 'téléphone2' or
-                      'telephone 2' in cell_text or
-                      'téléphone 2' in cell_text):
-                    self.column_mapping['phone2'] = col  
-                    mapped_columns.add(col)
-                    logger.info(f"✓ Mapped 'phone2' to column {get_column_letter(col)} (column {col})")
+        # Force specific column positions for wilaya code and stop desk
+        self.column_mapping = {
+            'wilaya_code': 5,  # Column E
+            'stop_desk': 17,   # Column Q
+        }
+        mapped_columns.add(5)  # Column E
+        mapped_columns.add(17) # Column Q
         
-        # Then map the rest of the columns
+        # Map other columns normally
         for col in range(1, sheet.max_column + 1):
             if col in mapped_columns:
                 continue
@@ -203,17 +207,15 @@ class EcoTrackExcelExporter:
             if cell_value is not None:
                 cell_text = str(cell_value).lower().strip()
                 
-                # Try to map this column to a field by matching against synonyms
+                # Try to match the column header with our field names
                 for field, synonyms in header_synonyms.items():
-                    # Skip already mapped fields
-                    if field in self.column_mapping:
+                    if field in ['wilaya_code', 'stop_desk']:  # Skip these as they're already mapped
                         continue
-                        
                     if any(synonym in cell_text for synonym in synonyms):
-                        self.column_mapping[field] = col
-                        mapped_columns.add(col)
-                        logger.info(f"Mapped '{field}' to column {get_column_letter(col)} (column {col})")
-                        break
+                        if field not in self.column_mapping:  # Only map the first matching column
+                            self.column_mapping[field] = col
+                            mapped_columns.add(col)
+                            break
         
         # Add one more debug logging of the complete mapping
         logger.info(f"===== FINAL COLUMN MAPPING =====")
@@ -223,13 +225,13 @@ class EcoTrackExcelExporter:
             logger.info(f"Field '{field}' mapped to column {column_letter} (col {col}) with header: '{header_value}'")
         logger.info(f"===== END FINAL COLUMN MAPPING =====")
         
-        # Log missing mappings as warnings
-        for field in header_synonyms.keys():
-            if field not in self.column_mapping:
-                warning = f"Warning: Could not find column for '{field}'"
-                logger.warning(warning)
-                self.log_errors.append(warning)
-    
+        # Validate that we have all required columns
+        missing_columns = [col for col in REQUIRED_COLUMNS if col not in self.column_mapping]
+        if missing_columns:
+            error_msg = f"Missing required columns in template: {', '.join(missing_columns)}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+            
     def _add_order_data(self, sheet, orders):
         """
         Add order data to the sheet, preserving all template properties.
@@ -238,149 +240,129 @@ class EcoTrackExcelExporter:
             sheet: The Excel worksheet object
             orders: List of order objects
         """
+        # Validate orders input
+        if not orders:
+            raise ValueError("No orders provided for export")
+            
+        if not isinstance(orders, list):
+            raise ValueError(f"Expected orders to be a list, got {type(orders)}")
+            
+        logger.info(f"Processing {len(orders)} orders")
+        
         for i, order in enumerate(orders):
+            if not isinstance(order, dict):
+                raise ValueError(f"Expected order to be a dictionary, got {type(order)}")
+                
             if self.data_start_row is None:
                 self.data_start_row = 2  # Default to row 2 if header detection failed
             row_num = self.data_start_row + i
             
             try:
+                # Log the order data for debugging
+                logger.info(f"Processing order {i+1}: {order.get('reference', 'NO_REF')}")
+                
                 # Set values using our column mapping
                 self._set_cell_value(sheet, row_num, 'ref', order.get('reference', ''))
                 
-                if 'customer' in order:
-                    customer = order['customer']
-                    self._set_cell_value(sheet, row_num, 'name', customer.get('name', ''))
+                # Validate customer data
+                if not order.get('customer'):
+                    raise ValueError(f"Missing customer data for order {order.get('reference', 'NO_REF')}")
                     
-                    # Fix for customer phone - ensure it's directly from customer object
-                    # Get phone directly from 'phone' property, with strict fallbacks
-                    phone = ''
-                    if 'phone' in customer and customer['phone']:
-                        phone = str(customer['phone'])
-                    elif order.get('customer', {}).get('phone'):
-                        # Extra fallback if nested differently
-                        phone = str(order['customer']['phone'])
-                        
-                    # Log the phone value for debugging
-                    logger.info(f"Customer phone for row {row_num}: Raw value='{phone}'")
-                    
-                    # We no longer add a leading apostrophe - we'll handle this in the cell formatting
-                    # Instead, ensure it's a clean string value
-                    self._set_cell_value(sheet, row_num, 'phone', phone)
-                    
-                    # Same approach for phone2
-                    phone2 = ''
-                    if 'phone2' in customer and customer['phone2']:
-                        phone2 = str(customer['phone2'])
-                    elif order.get('customer', {}).get('phone2'):
-                        # Extra fallback if nested differently
-                        phone2 = str(order['customer']['phone2'])
-                    
-                    self._set_cell_value(sheet, row_num, 'phone2', phone2)
-                    
-                    # Handle address data
-                    self._set_cell_value(sheet, row_num, 'wilaya_code', customer.get('wilaya', ''))
-                    
-                    # Look up wilaya name if available
-                    wilaya_name = customer.get('wilayaName', '')
-                    
-                    self._set_cell_value(sheet, row_num, 'wilaya', wilaya_name)
-                    
-                    # Fix commune handling to use ONLY the raw commune name from the order/customer
-                    # This should match exactly what was selected in the order form
-                    commune = ''
-                    
-                    # First priority: Get the raw commune name from the order's commune field
-                    if 'commune' in order and order['commune']:
-                        commune = str(order['commune'])
-                        logger.info(f"Using order.commune: '{commune}'")
-                    # Second priority: Get from the customer commune field  
-                    elif 'commune' in customer and customer['commune']:
-                        commune = str(customer['commune'])
-                        logger.info(f"Using customer.commune: '{commune}'")
-                    # Last fallback: Try customer's commune property
-                    elif order.get('customer', {}).get('commune'):
-                        commune = str(order['customer']['commune'])
-                        logger.info(f"Using order.customer.commune: '{commune}'")
-                    
-                    # For the commune, we need to look up the real name from the ID
-                    # The commune is stored as an ID like "CommuneName_16"
-                    if '_' in commune:
-                        original_commune = commune
-                        commune_id = commune
-                        
-                        # First try to find the real commune name by loading the location data
-                        try:
-                            import json
-                            import os
-                            
-                            # Load location data to get real commune names
-                            location_data_path = os.path.join(os.getcwd(), 'client', 'src', 'data', 'algeria_location_data.json')
-                            
-                            if os.path.exists(location_data_path):
-                                with open(location_data_path, 'r', encoding='utf-8') as f:
-                                    location_data = json.load(f)
-                                    
-                                # Find the commune by ID
-                                commune_obj = next((c for c in location_data.get('communes', []) if c['id'] == commune_id), None)
-                                
-                                if commune_obj and 'name' in commune_obj:
-                                    # Use the real commune name from location data
-                                    commune = commune_obj['name']
-                                    logger.info(f"Found real commune name from location data: '{commune}'")
-                                else:
-                                    # Fallback to splitting if commune not found
-                                    commune = commune.split('_')[0].strip()
-                                    logger.info(f"Commune not found in location data, using fallback: '{commune}'")
-                            else:
-                                # Fallback if location data file not found
-                                commune = commune.split('_')[0].strip()
-                                logger.info(f"Location data file not found, using fallback: '{commune}'")
-                                
-                        except Exception as e:
-                            # Fallback if there's any error loading the data
-                            commune = commune.split('_')[0].strip()
-                            logger.error(f"Error finding real commune name: {e}. Using fallback: '{commune}'")
-                            
-                        logger.info(f"Processed commune from '{original_commune}' to '{commune}'")
-                    
-                    # Add detailed logging to debug commune issues
-                    logger.info(f"Commune for row {row_num}: Final='{commune}'")
-                    
-                    # Always set the commune value if we have one
-                    self._set_cell_value(sheet, row_num, 'commune', commune)
-                    
-                    # Set the address
-                    address = customer.get('address', '')
-                    self._set_cell_value(sheet, row_num, 'address', address)
+                customer = order['customer']
+                if not isinstance(customer, dict):
+                    raise ValueError(f"Customer data must be a dictionary, got {type(customer)}")
                 
-                # Set product value as "livres" instead of book titles
-                self._set_cell_value(sheet, row_num, 'product', "livres")
+                # Required field: name
+                name = customer.get('name')
+                if not name:
+                    raise ValueError(f"Missing required field 'name' for order {order.get('reference', 'NO_REF')}")
+                self._set_cell_value(sheet, row_num, 'name', str(name))
                 
-                # Don't set any weight value - leave it empty
-                # Weight column will be left blank as requested
+                # Required field: phone
+                phone = customer.get('phone')
+                if not phone:
+                    raise ValueError(f"Missing required field 'phone' for order {order.get('reference', 'NO_REF')}")
+                self._set_cell_value(sheet, row_num, 'phone', str(phone))
                 
-                # Set amount
-                amount = order.get('finalAmount', order.get('totalAmount', 0))
-                self._set_cell_value(sheet, row_num, 'amount', amount)
+                # Optional: phone2
+                phone2 = customer.get('phone2', '')
+                if phone2:
+                    self._set_cell_value(sheet, row_num, 'phone2', str(phone2))
                 
-                # Set notes
-                self._set_cell_value(sheet, row_num, 'note', order.get('notes', ''))
+                # Required field: address
+                address = customer.get('address')
+                if not address:
+                    raise ValueError(f"Missing required field 'address' for order {order.get('reference', 'NO_REF')}")
+                self._set_cell_value(sheet, row_num, 'address', str(address))
                 
-                # Set special flags
-                self._set_cell_value(sheet, row_num, 'fragile', 'OUI' if order.get('fragile', False) else '')
-                self._set_cell_value(sheet, row_num, 'exchange', 'OUI' if order.get('echange', False) else '')
-                self._set_cell_value(sheet, row_num, 'pickup', 'OUI' if order.get('pickup', False) else '')
-                self._set_cell_value(sheet, row_num, 'cod', 'OUI' if order.get('recouvrement', False) else '')
-                self._set_cell_value(sheet, row_num, 'stop_desk', 'OUI' if order.get('stopDesk', False) else '')
+                # Handle wilaya code
+                wilaya_code = order.get('wilayaCode') or customer.get('wilayaCode') or customer.get('wilaya', '')
+                if wilaya_code:
+                    # Clean up wilaya code (remove any text, keep only numbers)
+                    wilaya_code = ''.join(c for c in str(wilaya_code) if c.isdigit())
+                    if wilaya_code:  # Only set if we have a numeric code
+                        self._set_cell_value(sheet, row_num, 'wilaya_code', wilaya_code)
+                        logger.info(f"Set wilaya_code to '{wilaya_code}' for order {order.get('reference', 'NO_REF')}")
                 
-                # Set map link if available
-                if 'customer' in order and 'mapLink' in order['customer']:
-                    self._set_cell_value(sheet, row_num, 'map', order['customer']['mapLink'])
+                # Skip wilaya de livraison - keep it empty as requested
+                
+                # Optional: commune
+                commune = order.get('commune') or customer.get('commune', '')
+                if commune:
+                    # Clean up commune name (remove ID part if present)
+                    if '_' in str(commune):
+                        commune = str(commune).split('_')[0]
+                    self._set_cell_value(sheet, row_num, 'commune', str(commune))
+                
+                # Optional: Set other fields if they exist in the mapping
+                optional_fields = {
+                    'product': 'livres',  # Always set product as "livres"
+                    'amount': order.get('finalAmount') or order.get('totalAmount', 0),
+                    'note': order.get('notes', ''),
+                    'map': customer.get('mapLink', '')
+                }
+                
+                # Handle checkbox fields - write directly to specific columns
+                checkbox_fields = {
+                    'fragile': {'column': 13, 'value': order.get('fragile')},      # Column M
+                    'exchange': {'column': 14, 'value': order.get('echange')},      # Column N
+                    'pickup': {'column': 15, 'value': order.get('pickup')},         # Column O
+                    'cod': {'column': 16, 'value': order.get('recouvrement')},      # Column P
+                    'stop_desk': {'column': 17, 'value': order.get('stopDesk')}     # Column Q
+                }
+                
+                # Process all checkbox fields
+                for field, config in checkbox_fields.items():
+                    value = config['value']
+                    cell = sheet.cell(row=row_num, column=config['column'])
+                    
+                    # Log the raw value for debugging
+                    logger.info(f"DEBUG: {field} raw value: {value}")
+                    logger.info(f"DEBUG: {field} type: {type(value)}")
+
+                    # Simplified check: Directly check if the value evaluates to True
+                    is_checked = False
+                    if isinstance(value, bool):
+                        is_checked = value
+                    elif isinstance(value, str):
+                         is_checked = value.lower() in ['true', '1', 'oui', 'yes']
+                    elif isinstance(value, int):
+                        is_checked = value == 1
+
+                    cell.value = 'OUI' if is_checked else ''
+                    
+                    logger.info(f"Set {field} to '{cell.value}' for order {order.get('reference', 'NO_REF')}")
+                
+                # Set other optional fields
+                for field, value in optional_fields.items():
+                    if field in self.column_mapping:
+                        self._set_cell_value(sheet, row_num, field, value)
                 
             except Exception as e:
-                error_msg = f"Error processing order {order.get('reference', 'Unknown')}: {str(e)}"
+                error_msg = f"Error processing row {row_num}: {str(e)}"
                 logger.error(error_msg)
                 self.log_errors.append(error_msg)
+                raise Exception(error_msg)
     
     def _set_cell_value(self, sheet, row, field, value):
         """
@@ -392,29 +374,48 @@ class EcoTrackExcelExporter:
             field: Field name in our mapping
             value: Value to set
         """
-        if field in self.column_mapping:
-            column = self.column_mapping[field]
-            try:
-                # Handle different value types appropriately
-                if isinstance(value, (int, float)) and field != 'phone' and field != 'phone2' and field != 'wilaya_code':
-                    sheet.cell(row=row, column=column).value = value
-                else:
-                    # Convert to string and ensure proper formatting
-                    if field == 'phone' or field == 'phone2' or field == 'wilaya_code':
-                        # Ensure phone numbers and wilaya codes are treated as text
-                        # Use a clean string value (no apostrophe prefix)
-                        clean_value = str(value)
-                        if clean_value.startswith("'"):
-                            clean_value = clean_value[1:]  # Remove leading apostrophe if present
-                            
-                        sheet.cell(row=row, column=column).value = clean_value
-                        sheet.cell(row=row, column=column).number_format = '@'  # Format as text
-                    else:
-                        sheet.cell(row=row, column=column).value = str(value)
-            except Exception as e:
-                error_msg = f"Error setting value for field '{field}' at row {row}: {str(e)}"
-                logger.error(error_msg)
-                self.log_errors.append(error_msg)
+        try:
+            if field not in self.column_mapping:
+                return  # Skip fields we don't have a mapping for
+                
+            col = self.column_mapping[field]
+            cell = sheet.cell(row=row, column=col)
+            
+            # Convert value to string and clean it
+            if value is None:
+                value = ''
+            value = str(value).strip()
+            
+            # Special handling for phone numbers
+            if field in ['phone', 'phone2'] and value:
+                # Ensure phone numbers are treated as text
+                cell.number_format = '@'
+                
+                # Clean up the phone number
+                value = ''.join(c for c in value if c.isdigit() or c == '+')
+                if not value.startswith('+'):
+                    value = '+213' + value.lstrip('0')
+            
+            # Special handling for amounts
+            elif field == 'amount' and value:
+                try:
+                    # Convert to float and format as currency
+                    float_value = float(value)
+                    cell.value = float_value
+                    cell.number_format = '#,##0.00'
+                    return
+                except ValueError:
+                    # If conversion fails, treat as text
+                    pass
+            
+            # Set the cell value
+            cell.value = value
+            
+        except Exception as e:
+            error_msg = f"Error setting cell value for field '{field}' at row {row}: {str(e)}"
+            logger.error(error_msg)
+            self.log_errors.append(error_msg)
+            raise Exception(error_msg)
     
     def _write_error_log(self):
         """Write all logged errors to the error log file."""
@@ -443,21 +444,29 @@ def export_orders_to_ecotrack(orders, template_path=None, output_path=None):
 
 # If run directly, perform test export from JSON
 if __name__ == "__main__":
-    import sys
+    import argparse
     
-    # Check if args provided
-    if len(sys.argv) > 1:
-        orders_json_path = sys.argv[1]
-        template_path = sys.argv[2] if len(sys.argv) > 2 else None
-        output_path = sys.argv[3] if len(sys.argv) > 3 else None
-        
-        # Load orders from JSON
-        with open(orders_json_path, 'r') as f:
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description='Export orders to EcoTrack Excel format')
+    parser.add_argument('--orders', required=True, help='Path to JSON file containing orders')
+    parser.add_argument('--template', required=True, help='Path to EcoTrack Excel template')
+    parser.add_argument('--output', required=True, help='Path to save the output Excel file')
+    
+    args = parser.parse_args()
+    
+    try:
+        # Load orders from JSON file
+        with open(args.orders, 'r', encoding='utf-8') as f:
             orders = json.load(f)
+            
+        # Create exporter and export
+        exporter = EcoTrackExcelExporter(args.template)
+        output_path = exporter.export_orders(orders, args.output)
         
-        # Export to Excel
-        result_path = export_orders_to_ecotrack(orders, template_path, output_path)
-        print(result_path)
-    else:
-        print("Usage: python ecotrack_excel_export.py orders_json_path [template_path] [output_path]")
+        # Print the output path for the Node.js process to capture
+        print(output_path)
+        
+    except Exception as e:
+        logger.error(f"Error during export: {str(e)}")
+        print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)

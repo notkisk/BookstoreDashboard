@@ -100,10 +100,11 @@ def export_orders_to_excel(orders, output_path=None):
         # Column 12: remarque
         sheet.cell(row=row_num, column=12).value = order.get('notes', '')
         
-        # Column 13-17: Special flags (default to empty)
-        # FRAGILE, ECHANGE, PICK UP, RECOUVREMENT, STOP DESK
-        for col in range(13, 18):
-            sheet.cell(row=row_num, column=col).value = ""
+        # Column 13-17: Special flags (FRAGILE, ECHANGE, PICK UP, RECOUVREMENT, STOP DESK)
+        checkbox_fields = ['fragile', 'echange', 'pickup', 'recouvrement', 'stopDesk']
+        for col, field in enumerate(checkbox_fields, start=13):
+            value = order.get(field, False)
+            sheet.cell(row=row_num, column=col).value = 'OUI' if value else ''
             
         # Column 18: Lien map
         if order.get('customer') and order['customer'].get('address') and order['customer']['address'].get('mapLink'):

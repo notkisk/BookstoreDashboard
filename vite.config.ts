@@ -18,6 +18,11 @@ export default defineConfig({
         ]
       : []),
   ],
+  server: {
+    host: true, // Listen on all addresses
+    port: 3000,
+    strictPort: true,
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -29,5 +34,5 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-  },
+  }
 });
